@@ -19,13 +19,13 @@ class EmailVerificationController extends Controller
             return redirect('/login')->with('error', 'Invalid Verification Token.');
         }
 
-        Logs::create([
-            'user_id' => $user->id,
-            'login_id' => $user->last_name,
-            'action' => "Registering",
-            'timestamp' => now(),
-            'ip_address' => RequestFacade::ip(),
-        ]);
+        // Logs::create([
+        //     'user_id' => $user->id,
+        //     'login_id' => $user->last_name,
+        //     'action' => "Registering",
+        //     'timestamp' => now(),
+        //     'ip_address' => RequestFacade::ip(),
+        // ]);
 
         $user->is_verified = true;
         $user->verification_token = null;

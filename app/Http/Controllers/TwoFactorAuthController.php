@@ -32,18 +32,18 @@ class TwoFactorAuthController extends Controller
         {
             $user->update([
                 'two_factor_code' => null, 
-                'two_factor_expires_at' => now()->addMinute(),
+                'two_factor_expires_at' => null,
             ]);
 
             Auth::login($user);
 
-            Logs::create([
-                'user_id' => $user->id,
-                'login_id' => $user->last_name,
-                'action' => 'Successful Login with 2FA',
-                'timestamp' => now(),
-                'ip_address' => $request->ip(), // Fixed request IP retrieval
-            ]);
+            // Logs::create([
+            //     'user_id' => $user->id,
+            //     'login_id' => $user->last_name,
+            //     'action' => 'Successful Login with 2FA',
+            //     'timestamp' => now(),
+            //     'ip_address' => $request->ip(), // Fixed request IP retrieval
+            // ]);
 
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard')->with('success', '2FA Verified Successfully. You are now logged in.');
@@ -53,13 +53,13 @@ class TwoFactorAuthController extends Controller
         }
 
         // Log failed 2FA attempt
-        Logs::create([
-            'user_id' => $user->id,
-            'login_id' => $user->last_name,
-            'action' => 'Failed 2FA attempt (Invalid or expired OTP)',
-            'timestamp' => now(),
-            'ip_address' => $request->ip(), // Fixed request IP retrieval
-        ]);
+        // Logs::create([
+        //     'user_id' => $user->id,
+        //     'login_id' => $user->last_name,
+        //     'action' => 'Failed 2FA attempt (Invalid or expired OTP)',
+        //     'timestamp' => now(),
+        //     'ip_address' => $request->ip(), // Fixed request IP retrieval
+        // ]);
 
         session()->forget('2fa_user_id');
 
