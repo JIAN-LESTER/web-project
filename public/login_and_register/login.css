@@ -1,0 +1,276 @@
+/*
+ * AcadBot Login Page Styles
+ * This file contains all styles for the login page layout and components
+ */
+
+/* Reset default browser styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Base layout styles */
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Main container for the split layout */
+.container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Top purple section - exactly 50% of height */
+.top-section {
+    background-color: #6C63FF;
+    height: 50%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    position: relative; /* For positioning the illustration */
+    overflow: visible; /* Changed to allow the illustration to overlap */
+}
+
+/* Bottom white section - exactly 50% of height */
+.bottom-section {
+    background-color: white;
+    height: 50%;
+    width: 100%;
+    position: relative;
+    z-index: 0;
+}
+
+/* Logo styling */
+.logo {
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    z-index: 1; /* Ensure text appears above the illustration */
+}
+
+/* "Sign in to" text styling */
+.sign-in-text {
+    color: white;
+    font-size: 34px;
+    font-weight: bold;
+    margin-top: 60px;
+    margin-left: 30px;
+    z-index: 1; /* Ensure text appears above the illustration */
+}
+
+/* Brand name styling */
+.brand-name {
+    color: white;
+    font-size: 24px;
+    margin-top: 10px;
+    margin-left: 30px;
+    z-index: 1; /* Ensure text appears above the illustration */
+}
+
+/* Container for the rocket illustration - positioned at boundary */
+.illustration-container {
+    position: absolute;
+    left: 0px;
+    bottom: 0;
+    transform: translateY(50%); /* Places rocket half above and half below the boundary */
+    z-index: 1; /* Ensures the rocket appears above both sections */
+}
+
+/* Rocket illustration styling */
+.rocket-illustration {
+    height: 1010px;
+    width: 1200px;
+    object-fit: contain; /* Maintain aspect ratio */
+    margin-top: -110px;
+
+}
+
+/* Login card styling - positioned to overlap top and bottom sections */
+.login-card {
+    position: absolute;
+    top: 50%;
+    right: 200px;
+    transform: translateY(-50%);
+    background: white;
+    width: 539px;
+    height: 800px;
+    padding: 50px;
+    border-radius: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    z-index: 2; /* Ensure card appears above everything else */
+}
+
+/* Header section with welcome text and sign up link */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+/* Welcome text styling */
+.welcome-text {
+    font-size: 21px;
+    font-weight: 400;
+}
+
+/* Highlighted brand name styling */
+.brand-highlight {
+    color: #6C63FF;
+    font-weight: bold;
+}
+
+/* Sign up section styling */
+.signup-section {
+
+    text-align: left;
+    font-size: 14px;
+    margin-top: 1px;
+    color: #a5a5a5;
+}
+
+/* Sign up link styling */
+.signup-link {
+    color: #6160DC;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+/* Main heading styling */
+.card-heading {
+    font-size: 55px;
+    font-weight: medium;
+    margin-bottom: 50px;
+    margin-top: 10px;
+}
+
+/* Form container styling */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Input group styling (label + input + optional elements) */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+}
+
+/* Input label styling */
+.input-label {
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+
+}
+
+/* Input field styling */
+.input-field {
+    width: 100%;
+    padding: 18px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #555;
+}
+
+/* Input placeholder styling */
+.input-field::placeholder {
+    color: #aaa;
+}
+
+/* Forgot password container styling */
+.forgot-password-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 5px;
+}
+
+/* Forgot password link styling */
+.forgot-password {
+    color: #6160DC;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* Login button styling */
+.login-button {
+    width: 100%;
+    padding: 18px;
+    background-color: #6160DC;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: medium;
+    cursor: pointer;
+    margin-top: 30px;
+    box-shadow: 0 4px 10px rgba(97, 96, 220, 0.3);
+}
+
+/* Button hover effect */
+.login-button:hover {
+    background-color: #5453c8;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1400px) {
+    /* Adjust illustration size for medium screens */
+    .rocket-illustration {
+        height: 350px;
+        width: 350px;
+    }
+}
+
+/* Media query for smaller screens */
+@media (max-width: 1200px) {
+    .login-card {
+        right: 40px;
+    }
+
+    /* Adjust the illustration position on smaller screens */
+    .illustration-container {
+        left: 50px;
+    }
+
+    .rocket-illustration {
+        height: 300px;
+        width: 300px;
+    }
+}
+
+/* Media query for tablet screens */
+@media (max-width: 900px) {
+    .login-card {
+        right: 50%;
+        transform: translate(50%, -50%);
+        width: 90%;
+        max-width: 539px;
+    }
+
+    /* Further hide the illustration */
+    .illustration-container {
+        display: none;
+    }
+}
+
+/* Media query for mobile screens */
+@media (max-width: 600px) {
+    .login-card {
+        height: auto;
+        padding: 30px;
+    }
+}
