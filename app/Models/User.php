@@ -18,7 +18,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'userStatus',
+        'user_status',
         'courseID',
         'yearID',
         'avatar',
