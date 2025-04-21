@@ -1,86 +1,64 @@
-@extends('layouts.app')
-
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Login</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcadBot Login</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="{{ asset('login_and_register/login.css') }}">
 </head>
+<body>
+    <!-- Main container -->
+    <div class="container">
+        <!-- Top purple section -->
+        <div class="top-section">
+            <div class="logo">Logo</div>
+            <div class="sign-in-text">Sign In to</div>
+            <div class="brand-name">GuideBot</div>
 
-<div class="container d-flex justify-content-center align-items-center vh-100" >
-    <div class="card shadow-lg p-4 rounded-4" style="width: 100%; max-width: 400px; background: white;">
-        <div class="text-center mb-3">
-            <h3 class="fw-bold text-dark">Login</h3>
-        </div>
-        <div class="card-body">
-            <form action="{{ route('login') }}" method="POST">
-                @csrf
-                <div class="mb-3">
-                    <label for="email" class="form-label fw-bold">Email Address</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-0">
-                            <i class="bi bi-envelope"></i>
-                        </span>
-                        <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label for="password" class="form-label fw-bold">Password</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-light border-0">
-                            <i class="bi bi-lock"></i>
-                        </span>
-                        <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
-                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                            <i id="eyeIcon" class="bi bi-eye"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <a href="{{ route('password.request') }}" class="text-decoration-none">Forgot Password?</a>
-                </div>
-                
-                <button type="submit" class="btn btn-dark w-100">Login</button>
-            </form>
-            
-            <div class="text-center mt-3">
-                <p>Don't have an account yet?</p>
-                <a href="{{ route('register') }}" class="btn btn-warning w-100" style="color: white; background-color: #f39c12;">Register</a>
+            <!-- Saly illustration image -->
+            <div class="illustration-container">
+                <img src="assets/images/Saly.png" alt="Rocket illustration" class="rocket-illustration">
             </div>
         </div>
+
+        <!-- Bottom white section -->
+        <div class="bottom-section"></div>
+
+        <!-- Login card that overlaps both sections -->
+        <div class="login-card">
+            <!-- Header with welcome text and sign up link -->
+            <div class="header-section">
+                <div class="welcome-text">Welcome to <span class="brand-highlight">GuideBot</span></div>
+                <div class="signup-section">
+                    No Account? <br><a href="{{ route('register') }}" class="signup-link">Sign Up</a>
+                </div>
+            </div>
+
+            <!-- Main heading -->
+            <h1 class="card-heading">Sign In</h1>
+
+            <!-- Login form -->
+            <form class="form-container">
+                <!-- Email input group -->
+                <div class="input-group">
+                    <label class="input-label">Enter your email address</label>
+                    <input type="text" class="input-field" placeholder="Email address" required>
+                </div>
+
+                <!-- Password input group -->
+                <div class="input-group">
+                    <label class="input-label">Enter your Password</label>
+                    <input type="password" class="input-field" placeholder="Password" required>
+                    <div class="forgot-password-container">
+                        <a href="#" class="forgot-password">Forgot Password</a>
+                    </div>
+                </div>
+
+                <!-- Submit button -->
+                <button class="login-button">Sign In</button>
+            </form>
+        </div>
     </div>
-</div>
-
-<script>
-    document.getElementById("togglePassword").addEventListener("click", function () {
-        let passwordInput = document.getElementById("password");
-        let eyeIcon = document.getElementById("eyeIcon");
-        if (passwordInput.type === "password") {
-            passwordInput.type = "text";
-            eyeIcon.classList.replace("bi-eye", "bi-eye-slash");
-        } else {
-            passwordInput.type = "password";
-            eyeIcon.classList.replace("bi-eye-slash", "bi-eye");
-        }
-    });
-</script>
-
-@if(session('success'))
-    <script>
-        Swal.fire({ icon: 'success', title: 'Success!', text: '{{ session('success') }}' });
-    </script>
-@endif
-@if(session('not_verified'))
-    <script>
-        Swal.fire({ icon: 'warning', title: 'Email Not Verified', text: '{{ session('not_verified') }}' });
-    </script>
-@endif
-@if(session('error'))
-    <script>
-        Swal.fire({ icon: 'error', title: 'Oops...', text: '{{ session('error') }}' });
-    </script>
-@endif
-@endsection
+</body>
+</html>
