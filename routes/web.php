@@ -16,6 +16,11 @@ Route::get('/', [AuthController::class, 'showLoginForm'])->name('home'); // or r
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login'); // <-- this is the fix
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/dashboard', function () {
+    return view('admin.dashboard');
+})->name('dashboard');
+
+
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
@@ -30,7 +35,3 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
 
 Route::get('/2fa/verify', [TwoFactorAuthController::class, 'verifyForm'])->name('2fa.verify.form');
 Route::post('/2fa/verify', [TwoFactorAuthController::class, 'verify'])->name('2fa.verify');
-
-
-
-
