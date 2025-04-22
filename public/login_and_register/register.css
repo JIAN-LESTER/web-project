@@ -1,7 +1,7 @@
 /*
- * AcadBot Login Page Styles
- * This file contains all styles for the login page layout and components
- */
+* AcadBot Register Page Styles
+* This file contains all styles for the register page layout and components
+*/
 
 /* Reset default browser styles */
 * {
@@ -56,7 +56,7 @@ html, body {
     z-index: 1; /* Ensure text appears above the illustration */
 }
 
-/* "Sign in to" text styling */
+/* "Sign up to" text styling */
 .sign-in-text {
     color: white;
     font-size: 34px;
@@ -81,7 +81,7 @@ html, body {
     left: 0px;
     bottom: 0;
     transform: translateY(50%); /* Places rocket half above and half below the boundary */
-    z-index: 1; /* Ensures the rocket appears above both sections */
+    z-index: 2; /* Ensures the rocket appears above both sections */
 }
 
 /* Rocket illustration styling */
@@ -93,24 +93,24 @@ html, body {
 
 }
 
-/* Login card styling - positioned to overlap top and bottom sections */
+/* Register card styling - positioned to overlap top and bottom sections */
 .login-card {
     position: absolute;
-    top: 50%;
-    right: 200px;
-    transform: translateY(-50%);
-    background: white;
-    width: 539px;
-    height: 800px;
-    padding: 50px;
-    border-radius: 25px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    z-index: 2; /* Ensure card appears above everything else */
+        top: 50%;
+        right: 200px;
+        transform: translateY(-50%);
+        background: white;
+        width: 539px;
+        height: 800px;
+        padding: 50px;
+        border-radius: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        z-index: 2; /* Ensure card appears above everything else */
 }
 
-/* Header section with welcome text and sign up link */
+/* Header section with welcome text and sign in link */
 .header-section {
     display: flex;
     justify-content: space-between;
@@ -120,7 +120,7 @@ html, body {
 
 /* Welcome text styling */
 .welcome-text {
-    font-size: 21px;
+    font-size: 18px;
     font-weight: 400;
 }
 
@@ -132,10 +132,8 @@ html, body {
 
 /* Sign up section styling */
 .signup-section {
-
-    text-align: left;
+    text-align: right;
     font-size: 14px;
-    margin-top: 1px;
     color: #a5a5a5;
 }
 
@@ -150,7 +148,7 @@ html, body {
 .card-heading {
     font-size: 55px;
     font-weight: medium;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
     margin-top: 10px;
 }
 
@@ -158,15 +156,27 @@ html, body {
 .form-container {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px; /* Reduced gap for more compact layout */
+}
+
+/* Row layout for side-by-side fields */
+.form-row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+}
+
+/* Half width input groups for the row */
+.half-width {
+    flex: 1;
+    min-width: 0; /* Prevents flex items from overflowing */
 }
 
 /* Input group styling (label + input + optional elements) */
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-
+    gap: 8px; /* Reduced gap between label and input */
 }
 
 /* Input label styling */
@@ -174,16 +184,39 @@ html, body {
     display: block;
     font-size: 16px;
     font-weight: 500;
+    color: #333;
+
 }
 
 /* Input field styling */
 .input-field {
     width: 100%;
-    padding: 18px 20px;
+    padding: 15px;
     border: 1px solid #e0e0e0;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 15px;
     color: #555;
+}
+
+/* Input field focus styling */
+.input-field:focus {
+    outline: none;
+    border-color: #6C63FF;
+}
+
+/* Wrapper for select fields */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+/* Select styling to match input fields */
+select.input-field {
+    appearance: none; /* Remove default arrow */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 9L.75 3.5 1.5 2.75 6 7.25 10.5 2.75l.75.75z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 30px;
 }
 
 /* Input placeholder styling */
@@ -191,38 +224,24 @@ html, body {
     color: #aaa;
 }
 
-/* Forgot password container styling */
-.forgot-password-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 5px;
-}
-
-/* Forgot password link styling */
-.forgot-password {
-    color: #6160DC;
-    text-decoration: none;
-    font-size: 14px;
-}
-
 /* Login button styling */
 .login-button {
     width: 100%;
-    padding: 18px;
-    background-color: #6160DC;
+    padding: 15px;
+    background-color: #6C63FF;
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 16px;
-    font-weight: medium;
+    font-weight: 500;
     cursor: pointer;
-    margin-top: 30px;
+    margin-top: 25px;
     box-shadow: 0 4px 10px rgba(97, 96, 220, 0.3);
 }
 
 /* Button hover effect */
 .login-button:hover {
-    background-color: #5453c8;
+    background-color: #6C63FF;
 }
 
 /* Media query for smaller screens */
@@ -271,5 +290,10 @@ html, body {
     .login-card {
         height: auto;
         padding: 30px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 20px;
     }
 }

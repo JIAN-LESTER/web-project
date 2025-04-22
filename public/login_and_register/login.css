@@ -1,7 +1,7 @@
 /*
- * AcadBot Login Page Styles
- * This file contains all styles for the login page layout and components
- */
+* GuideBot Login Page Styles
+* This file contains all styles for the login page layout and components
+*/
 
 /* Reset default browser styles */
 * {
@@ -96,36 +96,19 @@ html, body {
 /* Login card styling - positioned to overlap top and bottom sections */
 .login-card {
     position: absolute;
-    top: 50%;
-    right: 200px;
-    transform: translateY(-50%);
-    background: white;
-    width: 539px;
-    height: 800px;
-    padding: 50px;
-    border-radius: 25px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    z-index: 2; /* Ensure card appears above everything else */
+        top: 50%;
+        right: 200px;
+        transform: translateY(-50%);
+        background: white;
+        width: 539px;
+        height: 800px;
+        padding: 50px;
+        border-radius: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        z-index: 2; /* Ensure card appears above everything else */
 }
-
-.register-card {
-    position: absolute;
-    top: 50%;
-    right: 200px;
-    transform: translateY(-50%);
-    background: white;
-    width: 800px;
-    height: 800px;
-    padding: 50px;
-    border-radius: 25px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-    display: flex;
-    flex-direction: column;
-    z-index: 2; /* Ensure card appears above everything else */
-}
-
 
 /* Header section with welcome text and sign up link */
 .header-section {
@@ -137,7 +120,7 @@ html, body {
 
 /* Welcome text styling */
 .welcome-text {
-    font-size: 21px;
+    font-size: 18px;
     font-weight: 400;
 }
 
@@ -149,10 +132,8 @@ html, body {
 
 /* Sign up section styling */
 .signup-section {
-
-    text-align: left;
+    text-align: right;
     font-size: 14px;
-    margin-top: 1px;
     color: #a5a5a5;
 }
 
@@ -166,8 +147,8 @@ html, body {
 /* Main heading styling */
 .card-heading {
     font-size: 55px;
-    font-weight: medium;
-    margin-bottom: 50px;
+    font-weight:medium;
+    margin-bottom: 30px;
     margin-top: 10px;
 }
 
@@ -175,14 +156,16 @@ html, body {
 .form-container {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 20px; /* Reduced gap for more compact layout */
+
 }
 
 /* Input group styling (label + input + optional elements) */
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
+
 
 }
 
@@ -191,17 +174,37 @@ html, body {
     display: block;
     font-size: 16px;
     font-weight: 500;
+    color: #333;
+
+
+}
+
+/* Input label styling password */
+.input-label-password {
+    margin-top: 12px;
+    display: block;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+
 
 }
 
 /* Input field styling */
 .input-field {
     width: 100%;
-    padding: 18px 20px;
+    padding: 15px;
     border: 1px solid #e0e0e0;
-    border-radius: 10px;
-    font-size: 15px;
+    border-radius: 8px;
+    font-size: 14px;
     color: #555;
+    height: 57px;
+}
+
+/* Input field focus styling */
+.input-field:focus {
+    outline: none;
+    border-color: #6C63FF; /* Updated to match the image */
 }
 
 /* Input placeholder styling */
@@ -209,16 +212,23 @@ html, body {
     color: #aaa;
 }
 
+/* Error message styling */
+.error-message {
+    color: #ff3333;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
 /* Forgot password container styling */
 .forgot-password-container {
     display: flex;
     justify-content: flex-end;
-    margin-top: 5px;
+    margin-top: 13px;
 }
 
 /* Forgot password link styling */
 .forgot-password {
-    color: #6160DC;
+    color: #6C63FF; /* Updated to match the image */
     text-decoration: none;
     font-size: 14px;
 }
@@ -226,29 +236,34 @@ html, body {
 /* Login button styling */
 .login-button {
     width: 100%;
-    padding: 18px;
-    background-color: #6160DC;
+    padding: 15px;
+    background-color: #6C63FF; /* Updated to match the image */
     color: white;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     font-size: 16px;
-    font-weight: medium;
+    font-weight: 500;
     cursor: pointer;
-    margin-top: 30px;
-    box-shadow: 0 4px 10px rgba(97, 96, 220, 0.3);
+    margin-top: 28px;
 }
 
 /* Button hover effect */
 .login-button:hover {
-    background-color: #5453c8;
+    background-color: #6C63FF;
+}
+
+/* SweetAlert custom styling */
+.swal2-container {
+    z-index: 9999;
 }
 
 /* Media query for smaller screens */
 @media (max-width: 1400px) {
     /* Adjust illustration size for medium screens */
     .rocket-illustration {
-        height: 350px;
-        width: 350px;
+        height: 450px;
+        width: 480px;
+        margin-left: 120px;
     }
 }
 
@@ -256,16 +271,14 @@ html, body {
 @media (max-width: 1200px) {
     .login-card {
         right: 40px;
+        width: 380px;
     }
 
     /* Adjust the illustration position on smaller screens */
-    .illustration-container {
-        left: 50px;
-    }
-
     .rocket-illustration {
-        height: 300px;
-        width: 300px;
+        height: 400px;
+        width: 420px;
+        margin-left: 80px;
     }
 }
 
@@ -275,10 +288,10 @@ html, body {
         right: 50%;
         transform: translate(50%, -50%);
         width: 90%;
-        max-width: 539px;
+        max-width: 400px;
     }
 
-    /* Further hide the illustration */
+    /* Hide the illustration */
     .illustration-container {
         display: none;
     }
@@ -287,11 +300,22 @@ html, body {
 /* Media query for mobile screens */
 @media (max-width: 600px) {
     .login-card {
-        height: auto;
         padding: 30px;
     }
 
-   
+    .card-heading {
+        font-size: 36px;
+    }
+
+    .top-section {
+        padding: 20px;
+    }
+
+    .sign-in-text {
+        margin-left: 0;
+    }
+
+    .brand-name {
+        margin-left: 0;
+    }
 }
-
-
