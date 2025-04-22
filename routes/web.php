@@ -23,6 +23,8 @@ Route::get('/dashboard', function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+Route::get('/chatbot', [UserController::class, 'index'])->name('chatbot');
+
 
 
 

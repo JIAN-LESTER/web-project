@@ -12,7 +12,7 @@
 </head>
 <body>
     <!-- Main container -->
-    <div class="container-fluid">
+    
         <!-- Top purple section -->
         <div class="top-section">
             <div class="logo">Logo</div>
@@ -52,17 +52,17 @@
 
 <div class="input-group">
     <label for="email" class="input-label">Email</label>
-    <input type="email" name="email" id="email" class="input-field" placeholder="Email address" required>
+    <input type="email" name="email" id="email" class="input-field" placeholder="Enter your email address" required>
 </div>
 
 <div class="input-group">
     <label for="password" class="input-label">Password</label>
-    <input type="password" name="password" id="password" class="input-field" placeholder="Password" required>
+    <input type="password" name="password" id="password" class="input-field" placeholder="Enter your password" required>
 </div>
 
 <div class="input-group">
     <label for="password-confirmation" class="input-label">Confirm Password</label>
-    <input type="password" name="password_confirmation" id="password-confirmation" class="input-field" placeholder="Confirm Password" required>
+    <input type="password" name="password_confirmation" id="password-confirmation" class="input-field" placeholder="Confirm your password" required>
 </div>
 
 <div class="input-group">
@@ -99,6 +99,6 @@
 </form>
 
         </div>
-    </div>
+    
 </body>
 </html>

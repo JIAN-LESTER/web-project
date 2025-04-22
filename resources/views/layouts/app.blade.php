@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Responsive CoreUI Sidebar</title>
+  <title>Web Project</title>
 
   <!-- CoreUI CSS -->
   <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/css/coreui.min.css" rel="stylesheet" integrity="sha384-PDUiPu3vDllMfrUHnurV430Qg8chPZTNhY8RUpq89lq22R3PzypXQifBpcpE1eoB" crossorigin="anonymous">
@@ -94,7 +94,7 @@
   </style>
 </head>
 <body>
-@if (!request()->routeIs('login') && !request()->routeIs('register') && !request()->routeIs('password.request') && !request()->routeIs('password.update') && !request()->routeIs('password.reset') && !request()->routeIs('2fa.verify.form'))
+@if (!request()->routeIs('home') && !request()->routeIs('login') && !request()->routeIs('register') && !request()->routeIs('password.request') && !request()->routeIs('password.update') && !request()->routeIs('password.reset') && !request()->routeIs('2fa.verify.form'))
 
 
   <!-- Sidebar Content -->
@@ -105,8 +105,7 @@
   <!-- Backdrop overlay for small screen sidebar -->
   <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 
-  <!-- Main Page Wrapper -->
-  <div class="wrapper d-flex flex-column min-vh-100">
+
 
     <!-- Header/Navbar -->
     <header class="header header-sticky p-0 mb-4 bg-white shadow-sm">
@@ -161,13 +160,14 @@
         </ul>
       </div>
     </header>
+
     @endif
 
     <!-- Main Page Content -->
   
-      <div class="container-fluid">
-        @yield('content') <!-- Content placeholder -->
-       </div>
+    <div class=" container-fluid px-0">
+    @yield('content') <!-- Content placeholder -->
+    </div>
 
   <!-- CoreUI Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/js/coreui.bundle.min.js" crossorigin="anonymous"></script>
@@ -197,6 +197,7 @@
         backdrop.classList.remove('show');
       }
     });
-  </script>
+    </script>
+
 </body>
 </html>
