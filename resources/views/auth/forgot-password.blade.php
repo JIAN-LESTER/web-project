@@ -4,8 +4,9 @@
 
     <div class="container min-vh-100">
 
-        <div class="row justify-content-center">
-            <div class="col-md-6" style="margin-top:8%;">
+    <div class="container d-flex align-items-center justify-content-center min-vh-100" style="height: 100vh;">
+        <div class="row justify-content-center w-100">
+            <div class="col-md-6 col-lg-6">
                 <div class="card" style="background: transparent;border: 2px solid white; box-shadow: 3px 3px 5px gray; border-radius: 10px;">
                     <div class="card-header text-black text-center" style="background-color: white;">
                         <h4>Forgot Password</h4>

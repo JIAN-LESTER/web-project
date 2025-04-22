@@ -94,6 +94,8 @@
   </style>
 </head>
 <body>
+@if (!request()->routeIs('login') && !request()->routeIs('register') && !request()->routeIs('password.request') && !request()->routeIs('password.update') && !request()->routeIs('password.reset') && !request()->routeIs('2fa.verify.form'))
+
 
   <!-- Sidebar Content -->
   <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
@@ -159,14 +161,13 @@
         </ul>
       </div>
     </header>
+    @endif
 
     <!-- Main Page Content -->
-    <div class="body flex-grow-1">
-      <div class="container-lg px-4">
+  
+      <div class="container-fluid">
         @yield('content') <!-- Content placeholder -->
-      </div>
-    </div>
-  </div>
+       </div>
 
   <!-- CoreUI Bundle JS -->
   <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/js/coreui.bundle.min.js" crossorigin="anonymous"></script>

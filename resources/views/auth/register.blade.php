@@ -1,5 +1,8 @@
+<!-- @extends('layouts.app')
+@section('content')
+
+@endsection -->
 <!DOCTYPE html>
-<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +12,7 @@
 </head>
 <body>
     <!-- Main container -->
-    <div class="container">
+    <div class="container-fluid">
         <!-- Top purple section -->
         <div class="top-section">
             <div class="logo">Logo</div>
@@ -39,33 +42,62 @@
             <h1 class="card-heading">Sign Up</h1>
 
             <!-- Login form -->
-            <form class="form-container">
-                <!-- Email input group -->
-                <div class="input-group">
-                    <label class="input-label">Enter your email address</label>
-                    <input type="text" class="input-field" placeholder="Email address" required>
-                </div>
+            <form class="form-container" method="POST" action="{{ route('register') }}">
+    @csrf
 
-                <!-- Password input group -->
-                <div class="input-group">
-                    <label class="input-label">Enter your Password</label>
-                    <input type="password" class="input-field" placeholder="Password" required>
-                    <div class="forgot-password-container">
-                    </div>
+    <div class="input-group">
+    <label for="name" class="input-label">Name</label>
+    <input type="text" name="name" id="name" class="input-field" placeholder="Enter your name" required>
+</div>
 
-                 <!-- Confirm Password input group -->
-                 <div class="input-group">
-                    <label class="input-label">Confirm your Password</label>
-                    <input type="password" class="input-field" placeholder="Confirm Password" required>
-                    <div class="forgot-password-container">
-                    </div>
+<div class="input-group">
+    <label for="email" class="input-label">Email</label>
+    <input type="email" name="email" id="email" class="input-field" placeholder="Email address" required>
+</div>
 
+<div class="input-group">
+    <label for="password" class="input-label">Password</label>
+    <input type="password" name="password" id="password" class="input-field" placeholder="Password" required>
+</div>
 
-                </div>
+<div class="input-group">
+    <label for="password-confirmation" class="input-label">Confirm Password</label>
+    <input type="password" name="password_confirmation" id="password-confirmation" class="input-field" placeholder="Confirm Password" required>
+</div>
 
-                <!-- Submit button -->
-                <button class="login-button">Sign Up</button>
-            </form>
+<div class="input-group">
+    <label for="year" class="input-label">Year Level (Optional)</label>
+    <div class="input-wrapper">
+        <span class="input-icon">
+            <i class="bi bi-calendar"></i>
+        </span>
+        <select name="year_id" id="year" class="input-field">
+            <option value="">Select year level</option>
+            @foreach ($years as $year)
+                <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
+<div class="input-group">
+    <label for="course" class="input-label">Course (Optional)</label>
+    <div class="input-wrapper">
+        <span class="input-icon">
+            <i class="bi bi-book"></i>
+        </span>
+        <select name="course_id" id="course" class="input-field">
+            <option value="">Select course</option>
+            @foreach ($courses as $course)
+                <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
+            @endforeach
+        </select>
+    </div>
+</div>
+
+    <button type="submit" class="login-button">Sign Up</button>
+</form>
+
         </div>
     </div>
 </body>

@@ -81,7 +81,7 @@ html, body {
     left: 0px;
     bottom: 0;
     transform: translateY(50%); /* Places rocket half above and half below the boundary */
-    z-index: 1; /* Ensures the rocket appears above both sections */
+    z-index: 2; /* Ensures the rocket appears above both sections */
 }
 
 /* Rocket illustration styling */
@@ -109,6 +109,23 @@ html, body {
     flex-direction: column;
     z-index: 2; /* Ensure card appears above everything else */
 }
+
+.register-card {
+    position: absolute;
+    top: 50%;
+    right: 200px;
+    transform: translateY(-50%);
+    background: white;
+    width: 800px;
+    height: 800px;
+    padding: 50px;
+    border-radius: 25px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    z-index: 2; /* Ensure card appears above everything else */
+}
+
 
 /* Header section with welcome text and sign up link */
 .header-section {
@@ -273,4 +290,8 @@ html, body {
         height: auto;
         padding: 30px;
     }
+
+   
 }
+
+

@@ -1,25 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Course;
 use App\Models\Year;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
-
 use App\Models\User;
-use App\Models\Logs;
-use Illuminate\Support\Facades\Request as RequestFacade;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\VerifyEmail;
-
-use App\Mail\TwoFactorCodeMail;
-
-
-
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TwoFactorCodeMail;
 
 class AuthController extends Controller
 {
@@ -32,7 +24,7 @@ class AuthController extends Controller
             'course_id' => 'nullable|exists:courses,courseID', // Validate that the course_id exists in the courses table
             'year_id' => 'nullable|exists:years,yearID', // Validate that the year_id exists in the years table
         ]);
-    
+
         // Create the user with the actual foreign keys
         User::create([
             'name' => $validated['name'],
@@ -45,11 +37,9 @@ class AuthController extends Controller
             'verification_token' => Str::random(64),
             'avatar' => 'avatars/default.png',
         ]);
-    
+
         return redirect('login')->with('success', 'A verification link has been sent to your email.');
     }
-    
-    
 
     public function login(Request $request)
     {
@@ -57,43 +47,34 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required'
         ]);
-    
+
         $user = User::whereRaw('LOWER(email) = ?', [strtolower($request->email)])->first();
-    
+
         if (!$user || !Hash::check($request->password, $user->password)) {
             return back()->with('error', 'Incorrect email or password.');
         }
-    
+
         if ($user->is_verified == 0) {
             return back()->with('not_verified', 'Your email is not yet verified. Please check your email and try again.')->withInput();
         }
-    
+
+        // Generate and send a two-factor authentication code
         $user->two_factor_code = rand(100000, 999999);
         $user->two_factor_expires_at = now()->addMinutes(3);
         $user->save();
-    
+
         Mail::to($user->email)->send(new TwoFactorCodeMail($user));
-    
+
         session(['2fa_user_id' => $user->userID]);
-    
-      
-    
+
         return redirect()->route('2fa.verify.form')->with('message', 'A 2FA code has been sent to your email.');
     }
-    
-    
 
-    public function logout(Request $request){
+    public function logout(Request $request)
+    {
+        // Clearing the session data
         if (Session::has('user')) {
-            // Logs::create([
-            //     'user_id' => Session::get('user.id'),
-            //     'login_id' => Session::get('user.last_name'),
-            //     'action' => 'Logged out',
-            //     'timestamp' => now(),
-            //     'ip_address' => RequestFacade::ip(),
-            // ]);
-
-            Session::forget('user'); 
+            Session::forget('user');
             return redirect('/login')->with('success', 'You have been logged out.');
         }
 
@@ -112,18 +93,14 @@ class AuthController extends Controller
         return view('auth.register', compact('years', 'courses'));
     }
 
-    public function authenticated(Request $request, $user)  
+    public function authenticated(Request $request, $user)
     {
+        // If the user is not verified, log them out and show an error
         if (!$user->is_verified) {
             Auth::logout();
-            return redirect('/login')->with('error', 'Please verify your email
-           before logging in.');
-            }
-            return redirect('/users.index');
-           
+            return redirect('/login')->with('error', 'Please verify your email before logging in.');
+        }
+
+        return redirect('/users.index');
     }
-
-
-
-
 }
