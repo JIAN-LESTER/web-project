@@ -42,8 +42,8 @@
                 @csrf
 
                 <div class="input-group">
-                    <label for="email" class="input-label">Email address</label>
-                    <input type="email" name="email" id="email" class="input-field" placeholder="Username or email address" required>
+                    <label for="name" class="input-label">Name</label>
+                    <input type="text" name="name" id="name" class="input-field" placeholder="Enter Name" required>
                 </div>
 
                 <div class="form-row">
@@ -73,13 +73,13 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="username" class="input-label">Email address</label>
-                    <input type="email" name="username" id="username" class="input-field" placeholder="Username or email address" required>
+                    <label for="email" class="input-label">Email address</label>
+                    <input type="email" name="email" id="email" class="input-field" placeholder="Enter Email address" required>
                 </div>
 
                 <div class="input-group">
                     <label for="password" class="input-label">Password</label>
-                    <input type="password" name="password" id="password" class="input-field" placeholder="Password" required>
+                    <input type="password" name="password" id="password" class="input-field" placeholder="Enter Password" required>
                 </div>
 
                 <div class="input-group">
