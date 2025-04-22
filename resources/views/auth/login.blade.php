@@ -66,38 +66,54 @@
         </div>
     </div>
 
-    @if(session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Success!',
-                text: '{{ session('success') }}',
-                allowOutsideClick: false,
-                backdrop: true
-            });
-        </script>
-    @endif
-
-    @if(session('not_verified'))
-        <script>
-            Swal.fire({
-                icon: 'warning',
-                title: 'Email Not Verified',
-                text: '{{ session('not_verified') }}'
-            });
-        </script>
-    @endif
-
     @if(session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: '{{ session('error') }}',
-                allowOutsideClick: false,
-                backdrop: true
-            });
-        </script>
-    @endif
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create custom error element
+            const errorBox = document.createElement('div');
+            errorBox.className = 'custom-error-box';
+
+            // Create the title
+            const errorTitle = document.createElement('div');
+            errorTitle.className = 'custom-error-title';
+            errorTitle.textContent = 'Wrong credentials';
+
+            // Create the subtitle
+            const errorSubtitle = document.createElement('div');
+            errorSubtitle.className = 'custom-error-subtitle';
+            errorSubtitle.textContent = 'Invalid username or password';
+
+            // Create close button
+            const closeBtn = document.createElement('span');
+            closeBtn.className = 'custom-error-close';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.onclick = function() {
+                errorBox.style.display = 'none';
+            };
+
+            // Append elements to the error box
+            errorBox.appendChild(closeBtn);
+            errorBox.appendChild(errorTitle);
+            errorBox.appendChild(errorSubtitle);
+
+            // Insert at the beginning of the form
+            const form = document.querySelector('.form-container');
+            form.insertBefore(errorBox, form.firstChild);
+
+            // Auto-remove after 8 seconds
+            setTimeout(() => {
+                if (errorBox && errorBox.parentNode) {
+                    errorBox.style.opacity = '0';
+                    errorBox.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        if (errorBox && errorBox.parentNode) {
+                            errorBox.parentNode.removeChild(errorBox);
+                        }
+                    }, 500);
+                }
+            }, 10000);
+        });
+    </script>
+@endif
 </body>
 </html>
