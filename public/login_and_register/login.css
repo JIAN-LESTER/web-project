@@ -29,7 +29,7 @@ html, body {
 
 /* Top purple section - exactly 50% of height */
 .top-section {
-    background-color: #6C63FF;
+    background-color: #5A3092;
     height: 50%;
     width: 100%;
     display: flex;
@@ -126,7 +126,7 @@ html, body {
 
 /* Highlighted brand name styling */
 .brand-highlight {
-    color: #6C63FF;
+    color: #5A3092;
     font-weight: bold;
 }
 
@@ -148,7 +148,7 @@ html, body {
 .card-heading {
     font-size: 55px;
     font-weight:medium;
-    margin-bottom: 30px;
+    margin-bottom: 35px;
     margin-top: 10px;
 }
 
@@ -165,6 +165,7 @@ html, body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+
 
 
 }
@@ -204,7 +205,7 @@ html, body {
 /* Input field focus styling */
 .input-field:focus {
     outline: none;
-    border-color: #6C63FF; /* Updated to match the image */
+    border-color: #5A3092; /* Updated to match the image */
 }
 
 /* Input placeholder styling */
@@ -228,7 +229,7 @@ html, body {
 
 /* Forgot password link styling */
 .forgot-password {
-    color: #6C63FF; /* Updated to match the image */
+    color: #5A3092; /* Updated to match the image */
     text-decoration: none;
     font-size: 14px;
 }
@@ -237,19 +238,19 @@ html, body {
 .login-button {
     width: 100%;
     padding: 15px;
-    background-color: #6C63FF; /* Updated to match the image */
+    background-color: #5A3092; /* Updated to match the image */
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: medium;
     cursor: pointer;
     margin-top: 28px;
 }
 
 /* Button hover effect */
 .login-button:hover {
-    background-color: #6C63FF;
+    background-color: #5A3092;
 }
 
 /* SweetAlert custom styling */
@@ -305,6 +306,7 @@ html, body {
 
     .card-heading {
         font-size: 36px;
+
     }
 
     .top-section {

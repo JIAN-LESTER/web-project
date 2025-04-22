@@ -29,7 +29,7 @@ html, body {
 
 /* Top purple section - exactly 50% of height */
 .top-section {
-    background-color: #6C63FF;
+    background-color: #5A3092;
     height: 50%;
     width: 100%;
     display: flex;
@@ -126,7 +126,7 @@ html, body {
 
 /* Highlighted brand name styling */
 .brand-highlight {
-    color: #6C63FF;
+    color: #5A3092;
     font-weight: bold;
 }
 
@@ -201,7 +201,7 @@ html, body {
 /* Input field focus styling */
 .input-field:focus {
     outline: none;
-    border-color: #6C63FF;
+    border-color: #5A3092;
 }
 
 /* Wrapper for select fields */
@@ -228,12 +228,12 @@ select.input-field {
 .login-button {
     width: 100%;
     padding: 15px;
-    background-color: #6C63FF;
+    background-color: #5A3092;
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: medium;
     cursor: pointer;
     margin-top: 25px;
     box-shadow: 0 4px 10px rgba(97, 96, 220, 0.3);
@@ -241,7 +241,7 @@ select.input-field {
 
 /* Button hover effect */
 .login-button:hover {
-    background-color: #6C63FF;
+    background-color: #5A3092;
 }
 
 /* Media query for smaller screens */

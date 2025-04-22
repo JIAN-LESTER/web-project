@@ -1,69 +1,79 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ asset('login_and_register/forgot-password.css') }}">
+</head>
+<body>
+    <div class="full-container">
+        <div class="white-section">
+            <div class="content-box">
+                <div class="illustration-container">
+                    <img src="{{ asset('assets/images/fp.jpg') }}" alt="Forgot Password Illustration">
+                </div>
 
-@section('content')
+                <div class="info-section">
+                    <h3>Important Information</h3>
+                    <p class="info-text">Please <span class="highlight">read</span> the information below and then kindly <span class="highlight">share</span> the requested information.</p>
 
-    <div class="container min-vh-100">
+                    <ul>
+                        <li>Do &#8203<span class="highlight">not</span>&#8203 reveal your password to anybody</li>
+                        <li>Do &#8203<span class="highlight">not</span>&#8203 reuse passwords</li>
+                        <li>Use Alphanumeric passwords</li>
 
-    <div class="container d-flex align-items-center justify-content-center min-vh-100" style="height: 100vh;">
-        <div class="row justify-content-center w-100">
-            <div class="col-md-6 col-lg-6">
-                <div class="card" style="background: transparent;border: 2px solid white; box-shadow: 3px 3px 5px gray; border-radius: 10px;">
-                    <div class="card-header text-black text-center" style="background-color: white;">
-                        <h4>Forgot Password</h4>
-                    </div>
-                    <div class="card-body">
-
-                        @if($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-
-                        @if(session('success'))
-                            <div class="alert alert-success text-center">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-
-                        <p class=" text-center" style="color:black;">Enter your email address below and we'll send you a password reset link.</p>
-
-                        <form action="{{ route('password.email') }}" method="POST">
-                            @csrf
-                            <div class="mb-3">
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#000000"
-                                            viewBox="0 0 256 256">
-                                            <path
-                                                d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48Zm-96,85.15L52.57,64H203.43ZM98.71,128,40,181.81V74.19Zm11.84,10.85,12,11.05a8,8,0,0,0,10.82,0l12-11.05,58,53.15H52.57ZM157.29,128,216,74.18V181.82Z">
-                                            </path>
-                                        </svg>
-                                    </span>
-                                    <input type="email" name="email" id="email" class="form-control" placeholder="Email"
-                                        required style="background-color: #F5F7F8;">
-                                </div>
-                            </div>
-
-                            <!-- Apply black background for the button -->
-                            <button type="submit" class="btn w-100" style="background-color: #000000; color: white; border:none;">Send Reset Link</button>
-                        </form>
-                        <hr>
-
-                        <div class="text-center mt-3">
-                            <!-- Apply yellow gradient for the 'Back to Login' button -->
-                            <button style="background: linear-gradient(to right, #f39c12, #e67e22); width: 200px; height: 35px; border:none; border-radius: 8px;">
-                                <a href="{{ route('login') }}" class="text-decoration-none" style="color: white;">Back to Login</a>
-                            </button>
-                        </div>
-
-                    </div>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div>
 
-@endsection
+        <div class="purple-section">
+            <div class="content-box">
+                <h1 class="title">Forgot<br>password?</h1>
+                <p class="subtitle">Don't worry. We can help.</p>
+
+                @if($errors->any())
+                    <div class="error-message">
+                        <ul style="margin: 0; padding-left: 20px;">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                @if(session('success'))
+                    <div class="success-message">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                <form action="{{ route('password.email') }}" method="POST">
+                    @csrf
+                    <div class="email-input-container">
+                        <input type="email" name="email" class="email-input" placeholder="Please fill in your email address" required>
+                        <div class="email-icon">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 4H4C2.9 4 2.01 4.9 2.01 6L2 18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="#AAAAAA"/>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="actions-container">
+                        <div class="login-link">
+                            <p>Remembered your password?</p>
+                            <a href="{{ route('login') }}">Back to login</a>
+                        </div>
+
+                        <button type="submit" class="btn-continue">Continue</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
