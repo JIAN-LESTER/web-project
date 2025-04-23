@@ -8,7 +8,7 @@
   <div class="card">
     <div class="card-header">
       <h4>Welcome to Chatbot</h4>
-    </div>
+    </div>s
    
     <div class="card-body">
       <p>Sample</p>
