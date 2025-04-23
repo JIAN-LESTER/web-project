@@ -3,6 +3,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GuideBot Register</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Link to external CSS file -->
     <link rel="stylesheet" href="{{ asset('login_and_register/register.css') }}">
 </head>
@@ -17,7 +19,7 @@
 
             <!-- Saly illustration image -->
             <div class="illustration-container">
-                <img src="assets/images/Saly.png" alt="Rocket illustration" class="rocket-illustration">
+                <img src="{{ asset('assets/images/Saly.png') }}" alt="Rocket illustration" class="rocket-illustration">
             </div>
         </div>
 
@@ -29,8 +31,8 @@
             <!-- Header with welcome text and sign up link -->
             <div class="header-section">
                 <div class="welcome-text">Welcome to <span class="brand-highlight">GuideBot</span></div>
-                <div class="signup-section">
-                    Have an Account ?<br><a href="{{ route('login') }}" class="signup-link">Sign In</a>
+                <div class="signup-section"s>
+                    Have an Account?<br><a href="{{ route('login') }}" class="signup-link">Sign In</a>
                 </div>
             </div>
 
@@ -44,6 +46,9 @@
                 <div class="input-group">
                     <label for="name" class="input-label">Name</label>
                     <input type="text" name="name" id="name" class="input-field" placeholder="Enter Name" required>
+                    @error('name')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="form-row">
@@ -51,12 +56,15 @@
                         <label for="year" class="input-label">Year Level</label>
                         <div class="input-wrapper">
                             <select name="year_id" id="year" class="input-field">
-                                <option value="">Select Year  (Optional)</option>
+                                <option value="">Select Year (Optional)</option>
                                 @foreach ($years as $year)
                                     <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        @error('year_id')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="input-group half-width">
@@ -69,22 +77,34 @@
                                 @endforeach
                             </select>
                         </div>
+                        @error('course_id')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
                 <div class="input-group">
                     <label for="email" class="input-label">Email address</label>
                     <input type="email" name="email" id="email" class="input-field" placeholder="Enter Email address" required>
+                    @error('email')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="input-group">
                     <label for="password" class="input-label">Password</label>
                     <input type="password" name="password" id="password" class="input-field" placeholder="Enter Password" required>
+                    @error('password')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <div class="input-group">
                     <label for="password-confirmation" class="input-label">Confirm Password</label>
                     <input type="password" name="password_confirmation" id="password-confirmation" class="input-field" placeholder="Confirm Password" required>
+                    @error('password_confirmation')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
                 </div>
 
                 <button type="submit" class="login-button">Sign Up</button>
@@ -98,8 +118,34 @@
     <!-- Display success message -->
     @if(session('success'))
     <script>
-        Swal.fire({ icon: 'success', title: 'Success!', text: '{{ session('success') }}' });
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            customClass: {
+                container: 'my-swal-container'
+            },
+            didOpen: () => {
+                document.querySelector('.swal2-container').style.zIndex = '10000000';
+            }
+        });
     </script>
-@endif
+    @endif
+
+    @if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: '{{ session('error') }}',
+            customClass: {
+                container: 'my-swal-container'
+            },
+            didOpen: () => {
+                document.querySelector('.swal2-container').style.zIndex = '10000000';
+            }
+        });
+    </script>
+    @endif
 </body>
 </html>

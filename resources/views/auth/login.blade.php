@@ -1,7 +1,17 @@
-@extends('layouts.app')
-@section('content')
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuideBot Login</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="{{ asset('login_and_register/login.css') }}">
+</head>
+<body>
+    <!-- Main container -->
+    <div class="container">
+        <!-- Top purple section -->
         <div class="top-section">
             <div class="logo">Logo</div>
             <div class="sign-in-text">Sign In to</div>
@@ -9,7 +19,7 @@
 
             <!-- Saly illustration image -->
             <div class="illustration-container">
-                <img src="assets/images/Saly.png" alt="Rocket illustration" class="rocket-illustration">
+                <img src="{{ asset('assets/images/Saly.png') }}" alt="Rocket illustration" class="rocket-illustration">
             </div>
         </div>
 
@@ -33,6 +43,14 @@
             <form class="form-container" method="POST" action="{{ route('login') }}">
                 @csrf
 
+                @if(session('error'))
+                <div class="custom-error-box">
+                    <span class="custom-error-close" onclick="this.parentElement.style.display='none'">&times;</span>
+                    <div class="custom-error-title">Wrong credentials</div>
+                    <div class="custom-error-subtitle">Invalid username or password</div>
+                </div>
+                @endif
+
                 <div class="input-group">
                     <label for="email" class="input-label">Email address</label>
                     <input type="email" name="email" id="email" class="input-field" placeholder="Enter your email address" required>
@@ -42,7 +60,7 @@
                 </div>
 
                 <div class="input-group">
-                    <label for="password" class="input-label-password">Password</label>
+                    <label for="password" class="input-label">Password</label>
                     <input type="password" name="password" id="password" class="input-field" placeholder="Enter your password" required>
                     @error('password')
                         <div class="error-message">{{ $message }}</div>
@@ -55,75 +73,60 @@
                 <button type="submit" class="login-button">Sign In</button>
             </form>
         </div>
+    </div>
 
+    <!-- SweetAlert2 Script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<style>
-    .swal2-container {
-        position: fixed !important;
-        z-index: 99999999 !important; /* Extremely high z-index */
-        top: 0 !important;
-        left: 0 !important;
-        width: 100% !important;
-        height: 100% !important;
-    }
-    
-    .swal2-backdrop-show {
-        background: rgba(0,0,0,0.4) !important;
-    }
-</style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // Check for flash messages
+    <!-- Display success message -->
     @if(session('success'))
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: '{{ session('success') }}',
-        customClass: {
-          container: 'my-swal-container'
-        },
-        didOpen: () => {
-          // Force z-index on open
-          document.querySelector('.swal2-container').style.zIndex = '10000000';
-        }
-      });
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '{{ session('success') }}',
+            customClass: {
+                container: 'my-swal-container'
+            },
+            didOpen: () => {
+                document.querySelector('.swal2-container').style.zIndex = '10000000';
+            }
+        });
+    </script>
     @endif
-    
+
     @if(session('not_verified'))
-      Swal.fire({
-        icon: 'warning',
-        title: 'Email Not Verified',
-        text: '{{ session('not_verified') }}',
-        customClass: {
-          container: 'my-swal-container'
-        },
-        didOpen: () => {
-          document.querySelector('.swal2-container').style.zIndex = '10000000';
-        }
-      });
+    <script>
+        Swal.fire({
+            icon: 'warning',
+            title: 'Email Not Verified',
+            text: '{{ session('not_verified') }}',
+            customClass: {
+                container: 'my-swal-container'
+            },
+            didOpen: () => {
+                document.querySelector('.swal2-container').style.zIndex = '10000000';
+            }
+        });
+    </script>
     @endif
-    
-    @if(session('error'))
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: '{{ session('error') }}',
-        customClass: {
-          container: 'my-swal-container'
-        },
-        didOpen: () => {
-          document.querySelector('.swal2-container').style.zIndex = '10000000';
-        }
-      });
-    @endif
-  });
-</script>
 
-@endsection
-
-
-
-
+    <script>
+        // Auto-remove error message after 15 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const errorBox = document.querySelector('.custom-error-box');
+            if (errorBox) {
+                setTimeout(() => {
+                    errorBox.style.opacity = '0';
+                    errorBox.style.transition = 'opacity 0.5s ease';
+                    setTimeout(() => {
+                        if (errorBox.parentNode) {
+                            errorBox.parentNode.removeChild(errorBox);
+                        }
+                    }, 500);
+                }, 15000);
+            }
+        });
+    </script>
+</body>
+</html>
