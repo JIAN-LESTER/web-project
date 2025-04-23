@@ -44,7 +44,21 @@ class Chatbot extends Component
 
     }
 
-
+    public function askAI($message)
+    {
+        // Using OpenAI API to ask the AI for a reply
+        try {
+            $response = Http::withToken(env('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'))->post('https://api.openai.com/v1/chat/completions', [
+                'model' => 'gpt-3.5-turbo',
+                'messages' => [
+                    ['role' => 'user', 'content' => $message],
+                ],
+            ]);
+            return $response->json()['choices'][0]['message']['content'] ?? 'Sorry, I couldn’t respond right now.';
+        } catch (\Exception $e) {
+            return 'Oops! Something went wrong.';
+        }
+    }
 
 
     public function render()
