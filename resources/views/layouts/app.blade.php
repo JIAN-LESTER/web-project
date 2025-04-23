@@ -1,18 +1,21 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OASP Assist</title>
   <link rel="stylesheet" href="{{ asset('login_and_register/login.css') }}">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoA6V11gNQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous"></script>
-
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ENjdO4Dr2bkBIFxQpeoA6V11gNQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+    crossorigin="anonymous"></script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/css/coreui.min.css" rel="stylesheet" integrity="sha384-PDUiPu3vDllMfrUHnurV430Qg8chPZTNhY8RUpq89lq22R3PzypXQifBpcpE1eoB" crossorigin="anonymous">
 
 
   <!-- CoreUI CSS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+
   <style>
     /* Reset margin */
     body {
@@ -21,10 +24,11 @@
 
     .swal2-container {
       position: fixed !important;
-      z-index: 10000000 !important; /* Higher than any z-index in Bootstrap or CoreUI */
+      z-index: 10000000 !important;
+      /* Higher than any z-index in Bootstrap or CoreUI */
       padding: 0 !important;
     }
-    
+
     /* Make sure the modal dialog appears properly */
     .swal2-popup {
       position: relative !important;
@@ -40,17 +44,17 @@
       font-family: inherit !important;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.4) !important;
     }
-    
+
     /* Make sure the backdrop covers everything */
     .swal2-backdrop-show {
       background: rgba(0, 0, 0, 0.4) !important;
     }
-    
+
     /* Stop page from scrolling when alert is shown */
     body.swal2-shown {
       overflow-y: hidden !important;
     }
-    
+
     /* Override any container styles that might interfere */
     body.swal2-shown .container,
     body.swal2-shown .container-real,
@@ -59,13 +63,14 @@
     }
 
     .container-real {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-}
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
 
+    /* Sidebar styling */
     /* Sidebar styling */
     #sidebar {
       width: 240px;
@@ -145,19 +150,19 @@
     }
   </style>
 </head>
-<body>
-@if (!request()->routeIs('login') && !request()->routeIs('home') && !request()->routeIs('register') && !request()->routeIs('password.request') && !request()->routeIs('password.update') && !request()->routeIs('password.reset') && !request()->routeIs('2fa.verify.form'))
 
-  
+<body>
+  @if (!request()->routeIs('login') && !request()->routeIs('home') && !request()->routeIs('register') && !request()->routeIs('password.request') && !request()->routeIs('password.update') && !request()->routeIs('password.reset') && !request()->routeIs('2fa.verify.form'))
+
   <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
     @include('partials.menu') <!-- Loads sidebar menu content -->
   </div>
 
-
+  <!-- Backdrop overlay for small screen sidebar -->
   <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 
   <!-- Main Page Wrapper -->
-
+  <div class="wrapper d-flex flex-column min-vh-100">
 
     <!-- Header/Navbar -->
     <header class="header header-sticky p-0 mb-4 bg-white shadow-sm">
@@ -206,7 +211,7 @@
               <a class="dropdown-item" href="#">Profile</a>
               <a class="dropdown-item" href="#">Settings</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href={{route('logout')}}>Logout</a>
+              <a class="dropdown-item" href="#">Logout</a>
             </div>
           </li>
         </ul>
@@ -214,21 +219,22 @@
     </header>
   @endif
 
-    <!-- Main Page Content -->
-@php
-    $route = Route::currentRouteName();
-    $containerClass = in_array($route, ['login', 'register']) ? 'container-real' : 'container';
+  <!-- Main Page Content -->
+  @php
+  $route = Route::currentRouteName();
+  $containerClass = in_array($route, ['login', 'register']) ? 'container-real' : 'container';
 @endphp
 
-<div class="{{ $containerClass }}" style="position: relative; z-index: 1;">
+  <div class="{{ $containerClass }}" style="position: relative; z-index: 1;">
     @yield('content')
-</div>
+  </div>
 
 
 
 
   <!-- CoreUI Bundle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/js/coreui.bundle.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/js/coreui.bundle.min.js"
+    crossorigin="anonymous"></script>
 
   <!-- Sidebar Toggle Script -->
   <script>
@@ -257,4 +263,5 @@
     });
   </script>
 </body>
+
 </html>
