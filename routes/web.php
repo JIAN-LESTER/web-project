@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Chatbot;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthController;
@@ -8,6 +9,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LogsController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\TwoFactorAuthController;
+
+
 use App\Http\Controllers\PasswordResetController;
 
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -24,6 +27,21 @@ Route::get('/dashboard', function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/chatbot', [UserController::class, 'index'])->name('chatbot');
+
+Route::get('/dashboard', [AdminController::class, 'viewDashboard'])->name('admin.dashboard');
+Route::get('/knowledge-base', [AdminController::class, 'viewKB'])->name('admin.knowledge_base');
+Route::get('/reports-analytics', [AdminController::class, 'viewReports'])->name('admin.reports_analytics');
+Route::get('/logs', [AdminController::class, 'viewLogs'])->name('admin.logs');
+Route::get('/user-management', [AdminController::class, 'viewUsers'])->name('admin.user_management');
+Route::get('/charts', [AdminController::class, 'viewCharts'])->name('admin.charts');
+Route::get('/forms', [AdminController::class, 'viewForms'])->name('admin.forms');
+
+
+
+
+
+// Route::get('/chatbot', Chatbot::class)->name('livewire.chatbot');
+
 
 
 

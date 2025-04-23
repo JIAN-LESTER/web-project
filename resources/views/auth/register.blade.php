@@ -51,7 +51,7 @@
                         <label for="year" class="input-label">Year Level</label>
                         <div class="input-wrapper">
                             <select name="year_id" id="year" class="input-field">
-                                <option value="">Select Year Level</option>
+                                <option value="">Select Year  (Optional)</option>
                                 @foreach ($years as $year)
                                     <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
                                 @endforeach
@@ -63,7 +63,7 @@
                         <label for="course" class="input-label">Course</label>
                         <div class="input-wrapper">
                             <select name="course_id" id="course" class="input-field">
-                                <option value="">Select Course</option>
+                                <option value="">Select Course (Optional)</option>
                                 @foreach ($courses as $course)
                                     <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
                                 @endforeach
@@ -91,5 +91,15 @@
             </form>
         </div>
     </div>
+
+    <!-- SweetAlert2 Script -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Display success message -->
+    @if(session('success'))
+    <script>
+        Swal.fire({ icon: 'success', title: 'Success!', text: '{{ session('success') }}' });
+    </script>
+@endif
 </body>
 </html>

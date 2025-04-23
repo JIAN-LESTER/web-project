@@ -1,16 +1,7 @@
-<!DOCTYPE html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GuideBot Login</title>
-    <!-- Link to external CSS file -->
-    <link rel="stylesheet" href="{{ asset('login_and_register/login.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body>
-    <!-- Main container -->
-    <div class="container">
-        <!-- Top purple section -->
+@extends('layouts.app')
+@section('content')
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <div class="top-section">
             <div class="logo">Logo</div>
             <div class="sign-in-text">Sign In to</div>
@@ -64,56 +55,75 @@
                 <button type="submit" class="login-button">Sign In</button>
             </form>
         </div>
-    </div>
 
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+    .swal2-container {
+        position: fixed !important;
+        z-index: 99999999 !important; /* Extremely high z-index */
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+    
+    .swal2-backdrop-show {
+        background: rgba(0,0,0,0.4) !important;
+    }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check for flash messages
+    @if(session('success'))
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: '{{ session('success') }}',
+        customClass: {
+          container: 'my-swal-container'
+        },
+        didOpen: () => {
+          // Force z-index on open
+          document.querySelector('.swal2-container').style.zIndex = '10000000';
+        }
+      });
+    @endif
+    
+    @if(session('not_verified'))
+      Swal.fire({
+        icon: 'warning',
+        title: 'Email Not Verified',
+        text: '{{ session('not_verified') }}',
+        customClass: {
+          container: 'my-swal-container'
+        },
+        didOpen: () => {
+          document.querySelector('.swal2-container').style.zIndex = '10000000';
+        }
+      });
+    @endif
+    
     @if(session('error'))
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Create custom error element
-            const errorBox = document.createElement('div');
-            errorBox.className = 'custom-error-box';
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: '{{ session('error') }}',
+        customClass: {
+          container: 'my-swal-container'
+        },
+        didOpen: () => {
+          document.querySelector('.swal2-container').style.zIndex = '10000000';
+        }
+      });
+    @endif
+  });
+</script>
 
-            // Create the title
-            const errorTitle = document.createElement('div');
-            errorTitle.className = 'custom-error-title';
-            errorTitle.textContent = 'Wrong credentials';
+@endsection
 
-            // Create the subtitle
-            const errorSubtitle = document.createElement('div');
-            errorSubtitle.className = 'custom-error-subtitle';
-            errorSubtitle.textContent = 'Invalid username or password';
 
-            // Create close button
-            const closeBtn = document.createElement('span');
-            closeBtn.className = 'custom-error-close';
-            closeBtn.innerHTML = '&times;';
-            closeBtn.onclick = function() {
-                errorBox.style.display = 'none';
-            };
 
-            // Append elements to the error box
-            errorBox.appendChild(closeBtn);
-            errorBox.appendChild(errorTitle);
-            errorBox.appendChild(errorSubtitle);
 
-            // Insert at the beginning of the form
-            const form = document.querySelector('.form-container');
-            form.insertBefore(errorBox, form.firstChild);
-
-            // Auto-remove after 8 seconds
-            setTimeout(() => {
-                if (errorBox && errorBox.parentNode) {
-                    errorBox.style.opacity = '0';
-                    errorBox.style.transition = 'opacity 0.5s ease';
-                    setTimeout(() => {
-                        if (errorBox && errorBox.parentNode) {
-                            errorBox.parentNode.removeChild(errorBox);
-                        }
-                    }, 500);
-                }
-            }, 10000);
-        });
-    </script>
-@endif
-</body>
-</html>

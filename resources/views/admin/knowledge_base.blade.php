@@ -4,7 +4,7 @@
   <!-- Your home page content goes here -->
   <div class="card">
     <div class="card-header">
-      <h4>Welcome to Documents</h4>
+      <h4>Welcome to Knowledge Base</h4>
     </div>
     <div class="card-body">
       <p>Sample</p>

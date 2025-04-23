@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\VerifyEmail;
 use App\Models\Course;
 use App\Models\Year;
 use Illuminate\Support\Facades\Hash;
@@ -26,7 +27,7 @@ class AuthController extends Controller
         ]);
 
         // Create the user with the actual foreign keys
-        User::create([
+        $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
@@ -37,6 +38,8 @@ class AuthController extends Controller
             'verification_token' => Str::random(64),
             'avatar' => 'avatars/default.png',
         ]);
+
+        Mail::to($user->email)->send(new VerifyEmail($user));
 
         return redirect('login')->with('success', 'A verification link has been sent to your email.');
     }

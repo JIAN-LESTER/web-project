@@ -20,62 +20,47 @@
     <li class="nav-title">Quick Access</li>
 
     <li class="nav-item">
-      <a class="nav-link" href="index.html">
+      <a class="nav-link" href={{ route('admin.dashboard') }}>
         <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-speedometer.svg" alt="Dashboard" />
         Dashboard
       </a>
-      <a class="nav-link" href="colors.html">
+      <a class="nav-link" href={{route('admin.knowledge_base')}}>
         <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-drop.svg" alt="Knowledge Base" />
         Knowledge Base
       </a>
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="typography.html">
+      <a class="nav-link" href={{route('admin.reports_analytics')}}>
         <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-notes.svg" alt="Reports" />
         Reports
       </a>
     </li>
 
-    <li class="nav-item">
-      <a class="nav-link" href="typography.html">
-        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-speech.svg" alt="ChatBot" />
-        ChatBot
-      </a>
-    </li>
-
-    <!-- Preferences -->
-    <li class="nav-title">Preferences</li>
-
-    <!-- Users Group -->
     <li class="nav-group">
-      <a class="nav-link nav-group-toggle" href="#">
+      <a class="nav-link" href={{ route('admin.user_management') }}>
         <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-user.svg" alt="Users" />
         Users
       </a>
-      <ul class="nav-group-items">
-        <li class="nav-item"><a class="nav-link" href="base/accordion.html">Sample1</a></li>
-        <li class="nav-item"><a class="nav-link" href="base/cards.html">Sample2</a></li>
-        <li class="nav-item"><a class="nav-link" href="base/collapse.html">Sample3</a></li>
-        <li class="nav-item"><a class="nav-link" href="base/tables.html">Sample4</a></li>
-      </ul>
     </li>
+
+   
+
+    <!-- Preferences -->
+    <li class="nav-title">Preferences</li>
+   
 
     <!-- History Group -->
     <li class="nav-group">
-      <a class="nav-link nav-group-toggle" href="#">
+      <a class="nav-link" href={{route('admin.logs')}}>
         <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-history.svg" alt="History" />
-        History
+        Logs
       </a>
-      <ul class="nav-group-items">
-        <li class="nav-item"><a class="nav-link" href="buttons/buttons.html">System Logs</a></li>
-        <li class="nav-item"><a class="nav-link" href="buttons/dropdowns.html">ChatBot History</a></li>
-      </ul>
     </li>
 
     <!-- Charts -->
     <li class="nav-item">
-      <a class="nav-link" href="charts.html">
+      <a class="nav-link" href={{route('admin.charts')}}>
         <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-chart-pie.svg" alt="Charts" />
         Charts
       </a>
@@ -83,16 +68,16 @@
 
     <!-- Forms Group -->
     <li class="nav-group">
-      <a class="nav-link nav-group-toggle" href="#">
+      <a class="nav-link " href={{route('admin.forms')}}>
         <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-notes.svg" alt="Forms" />
         Forms
       </a>
-      <ul class="nav-group-items">
+      <!-- <ul class="nav-group-items">
         <li class="nav-item"><a class="nav-link" href="forms/form-control.html">Form Control</a></li>
         <li class="nav-item"><a class="nav-link" href="forms/select.html">Select</a></li>
         <li class="nav-item"><a class="nav-link" href="forms/checks-radios.html">Checks & Radios</a></li>
         <li class="nav-item"><a class="nav-link" href="forms/range.html">Range</a></li>
-      </ul>
+      </ul> -->
     </li>
   </ul>
 

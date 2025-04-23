@@ -15,7 +15,7 @@
 html, body {
     height: 100%;
     width: 100%;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow: hidden; /* Prevent horizontal scrolling */
 }
 
 /* Main container for the split layout */
@@ -30,7 +30,7 @@ html, body {
 /* Top purple section - exactly 50% of height */
 .top-section {
     background-color: #5A3092;
-    height: 50%;
+    height: 50vh;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -42,7 +42,7 @@ html, body {
 /* Bottom white section - exactly 50% of height */
 .bottom-section {
     background-color: white;
-    height: 50%;
+    height: 50vh;
     width: 100%;
     position: relative;
     z-index: 0;
@@ -79,7 +79,7 @@ html, body {
 .illustration-container {
     position: absolute;
     left: 0px;
-    bottom: 0;
+    bottom: 0vh;
     transform: translateY(50%); /* Places rocket half above and half below the boundary */
     z-index: 2; /* Ensures the rocket appears above both sections */
 }
@@ -254,9 +254,7 @@ html, body {
 }
 
 /* SweetAlert custom styling */
-.swal2-container {
-    z-index: 9999;
-}
+
 
 /* Media query for smaller screens */
 @media (max-width: 1400px) {

@@ -30,4 +30,9 @@ class KnowledgeBase extends Model
         return $this->hasMany(Message::class, 'kbID', 'kbID');
     }
 
+    public static function matchAnswer($question)
+    {
+        return self::where('question', 'LIKE', "%$question%")->first();
+    }
+
 }
