@@ -54,8 +54,22 @@ class AuthController extends Controller
         $user = User::whereRaw('LOWER(email) = ?', [strtolower($request->email)])->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            return back()->with('error', 'Incorrect email or password.');
+            $this->incrementFailedAttempts($user); 
+            if ($this->isAccountLocked($user)) {
+                return back()->with('error', 'Your account is locked due to too many failed login attempts. Please try again later.');
+            }
+            return back()->with('error', 'Incorrect email or password. ' . $user->failed_attempts . '/5 failed attempts.');
+            if ($this->isAccountLocked($user)) {
+                return back()->with('error', 'Your account is locked due to too many failed login attempts. Please try again later.');
+            }
         }
+
+        if ($this->isAccountLocked($user)) {
+            return back()->with('error', 'Your account is locked due to too many failed login attempts. Please try again later.');
+        }
+
+        $this->resetFailedAttempts($user);
+
 
         if ($user->is_verified == 0) {
             return back()->with('not_verified', 'Your email is not yet verified. Please check your email and try again.')->withInput();
@@ -63,8 +77,10 @@ class AuthController extends Controller
 
         // Generate and send a two-factor authentication code
         $user->two_factor_code = rand(100000, 999999);
-        $user->two_factor_expires_at = now()->addMinutes(3);
+        $user->two_factor_expires_at = now()->addMinutes(5);
         $user->save();
+
+
 
         Mail::to($user->email)->send(new TwoFactorCodeMail($user));
 
@@ -72,6 +88,36 @@ class AuthController extends Controller
 
         return redirect()->route('2fa.verify.form')->with('message', 'A 2FA code has been sent to your email.');
     }
+
+    protected function isAccountLocked($user)
+{
+    if ($user->failed_attempts >= 5 && $user->lockout_time && now()->lt($user->lockout_time)) {
+        return true; // Account is locked
+    }
+
+    return false;
+}
+
+
+protected function incrementFailedAttempts($user)
+{
+    $user->failed_attempts++;
+    if ($user->failed_attempts >= 5) {
+        // Lock the account for 15 minutes after 5 failed attempts
+        $user->lockout_time = now()->addMinutes(5);
+        $user->save();
+    } else {
+        $user->save();
+    }
+}
+
+// Reset failed attempts on successful login
+protected function resetFailedAttempts($user)
+{
+    $user->failed_attempts = 0;
+    $user->lockout_time = null; // Reset lockout time
+    $user->save();
+}
 
     public function logout(Request $request)
     {
