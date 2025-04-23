@@ -34,7 +34,7 @@
                     <label for="two_factor_code" class="form-label fw-bold text-dark">Enter 2FA Code:</label>
                     <div class="input-group">
                         <input type="text" name="two_factor_code" class="form-control form-control-lg text-center shadow-sm" required autofocus placeholder="6-digit code" 
-                        style="background-color: #FFF; border: 2px solid #FFC107; outline: none; border-radius: 6px; padding: 10px; font-size: 18px;">
+                        style="background-color: #FFF; border: 2px solid #FFC107; outline: none; border-radius: 6px; padding: 10px; font-size: 18px;width: 100%;height:50px;">
                     </div>
                 </div>
 
