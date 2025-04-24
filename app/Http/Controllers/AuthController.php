@@ -59,15 +59,10 @@ class AuthController extends Controller
                 return back()->with('error', 'Your account is locked due to too many failed login attempts. Please try again later.');
             }
             return back()->with('error', 'Incorrect email or password. ' . $user->failed_attempts . '/5 failed attempts.');
-            if ($this->isAccountLocked($user)) {
-                return back()->with('error', 'Your account is locked due to too many failed login attempts. Please try again later.');
-            }
+         
         }
 
-        if ($this->isAccountLocked($user)) {
-            return back()->with('error', 'Your account is locked due to too many failed login attempts. Please try again later.');
-        }
-
+    
         $this->resetFailedAttempts($user);
 
 
