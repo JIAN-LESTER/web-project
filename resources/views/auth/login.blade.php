@@ -111,6 +111,22 @@
     </script>
     @endif
 
+    @if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'warning',
+            title: 'Something went wrong',
+            text: '{{ session('error') }}',
+            customClass: {
+                container: 'my-swal-container'
+            },
+            didOpen: () => {
+                document.querySelector('.swal2-container').style.zIndex = '10000000';
+            }
+        });
+    </script>
+    @endif
+
     <script>
         // Auto-remove error message after 15 seconds
         document.addEventListener('DOMContentLoaded', function() {

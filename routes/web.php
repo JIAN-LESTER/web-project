@@ -1,10 +1,12 @@
 <?php
 
+
 use App\Livewire\Chatbot;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProductController;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\LogsController;
 use App\Http\Controllers\EmailVerificationController;
@@ -37,13 +39,21 @@ Route::get('/charts', [AdminController::class, 'viewCharts'])->name('admin.chart
 Route::get('/forms', [AdminController::class, 'viewForms'])->name('admin.forms');
 
 
+Route::prefix('admin/user_crud')->name('admin.')->group(function () {
+    Route::get('/create', [UserManagementController::class, 'create'])->name('create');
+    Route::post('/store', [UserManagementController::class, 'store'])->name('store');
+    Route::get('/show/{id}', [UserManagementController::class, 'show'])->name('show');
+    Route::get('/edit/{id}', [UserManagementController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}', [UserManagementController::class, 'update'])->name('update');
+    Route::delete('/destroy/{id}', [UserManagementController::class, 'destroy'])->name('destroy');
+});
+
+
+
 
 
 
 // Route::get('/chatbot', Chatbot::class)->name('livewire.chatbot');
-
-
-
 
 
 Route::get('/verify-email/{token}', [EmailVerificationController::class, 'verifyEmail'])->name('verify.email');

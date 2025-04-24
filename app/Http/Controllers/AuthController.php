@@ -22,8 +22,8 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'course_id' => 'nullable|exists:courses,courseID', // Validate that the course_id exists in the courses table
-            'year_id' => 'nullable|exists:years,yearID', // Validate that the year_id exists in the years table
+            'course_id' => 'nullable|exists:courses,courseID',
+            'year_id' => 'nullable|exists:years,yearID', 
         ]);
 
         // Create the user with the actual foreign keys
