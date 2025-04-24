@@ -15,6 +15,12 @@ use App\Http\Controllers\PasswordResetController;
 
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
+
+// registration success page
+Route::get('/registration/success', function () {
+    return view('auth.registration-success');
+})->name('registration.success');
+
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('home'); // or remove if not needed
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login'); // <-- this is the fix
 Route::post('/login', [AuthController::class, 'login']);
