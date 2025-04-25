@@ -28,10 +28,9 @@ class TwoFactorAuthController extends Controller
             return back()->withErrors(['two_factor_code' => 'Session expired. Please log in again.']);
         }
 
-        if ($request->input('two_factor_code') == $user->two_factor_code && now()->lt($user->two_factor_expires_at)) 
-        {
+        if ($request->input('two_factor_code') == $user->two_factor_code && now()->lt($user->two_factor_expires_at)) {
             $user->update([
-                'two_factor_code' => null, 
+                'two_factor_code' => null,
                 'two_factor_expires_at' => null,
             ]);
 

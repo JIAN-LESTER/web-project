@@ -1,17 +1,35 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Factor Authentication - GuideBot</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="{{ asset('login_and_register/two-factor.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="background-pattern"></div>
 
-@section('content')
+        <div class="auth-card">
+            <div class="auth-icon-container">
+                <svg class="shield-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                    <path class="lock-path" d="M11 14.6v2.4h2v-2.4c.6-.35 1-1 1-1.7 0-1.1-.9-2-2-2s-2 .9-2 2c0 .7.4 1.35 1 1.7z"/>
+                </svg>
+            </div>
 
-<div class="container d-flex justify-content-center align-items-center min-vh-100">
-    <div class="card shadow-lg p-4 rounded-3" style="max-width: 400px; width: 100%; background: transparent; border: 2px solid white; box-shadow: 3px 3px 5px gray;">
-        <div class="card-header text-center bg-white rounded-3">
-            <h4 class="fw-bold text-dark">Two-Factor Authentication</h4>
-        </div>
+            <h1 class="auth-heading">Two-Factor Authentication</h1>
+            <p class="auth-message">
+                Please enter the 6-digit code from your authentication app to verify your identity.
+            </p>
 
-        <div class="card-body">
             @if($errors->any())
-                <div class="alert alert-danger">
-                    <ul class="mb-0">
+                <div class="alert-box alert-danger">
+                    <ul>
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -20,46 +38,230 @@
             @endif
 
             @if(session('message'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ session('message') }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                <div class="alert-box alert-success">
+                    <p>{{ session('message') }}</p>
+                    <button type="button" class="close-btn" onclick="this.parentElement.style.display='none'">
+                        <span>&times;</span>
                     </button>
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('2fa.verify') }}">
+            <form method="POST" action="{{ route('2fa.verify') }}" class="auth-form">
                 @csrf
-                <div class="mb-3">
-                    <label for="two_factor_code" class="form-label fw-bold text-dark">Enter 2FA Code:</label>
-                    <div class="input-group">
-                        <input type="text" name="two_factor_code" class="form-control form-control-lg text-center shadow-sm" required autofocus placeholder="6-digit code" 
-                        style="background-color: #FFF; border: 2px solid #FFC107; outline: none; border-radius: 6px; padding: 10px; font-size: 18px;width: 100%;height:50px;">
+                <div class="form-group">
+                    <label for="two_factor_code">Enter 2FA Code:</label>
+                    <div class="code-input-container">
+                        <div class="code-input-wrapper">
+                            <input type="text"
+                                  name="two_factor_code"
+                                  id="two_factor_code"
+                                  class="code-input"
+                                  required
+                                  autofocus
+                                  maxlength="6"
+                                  pattern="[0-9]{6}"
+                                  autocomplete="off"
+                                  oninput="updateCodeInputUI(this)">
+                            <div class="code-digits">
+                                <div class="digit-box"></div>
+                                <div class="digit-box"></div>
+                                <div class="digit-box"></div>
+                                <div class="digit-box"></div>
+                                <div class="digit-box"></div>
+                                <div class="digit-box"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="code-expire-timer">
+                        <div class="timer-circle">
+                            <svg class="timer-svg" viewBox="0 0 36 36">
+                                <path class="timer-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                                <path class="timer-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
+                            </svg>
+                            <span class="timer-text">3:00</span>
+                        </div>
+                        <span class="timer-label">Code expires in</span>
+                    </div>
+
+                    <div class="resend-container">
+                        <p class="resend-text">Didn't receive a code?</p>
+                        <a href="{{ route('2fa.resend') }}" class="resend-link">
+                            <span class="resend-icon">↻</span> Resend verification code
+                        </a>
                     </div>
                 </div>
 
-            <!-- Black Verify Button -->
-            <button type="submit" class="btn w-100 fw-bold mt-3"
-                    style="background-color: black; color: white; border-radius: 8px; transition: 0.3s; box-shadow: 0 3px 5px rgba(0,0,0,0.2);"
-                    onmouseover="this.style.backgroundColor='#222';"
-                    onmouseout="this.style.backgroundColor='black';">
-                    Verify
-                </button>
+                <div class="buttons-container">
+                    <button type="submit" class="primary-button">
+                        <span class="button-icon">✓</span> Verify
+                    </button>
+                </div>
             </form>
 
-            <div class="text-center mt-3">
-                <p class="mb-2 fw-bold text-dark">or</p>
-                
-         
-                <a href="{{ route('login') }}" class="btn fw-bold w-100" 
-                    style="background-color: #f39c12; color: white; border-radius: 8px; border: none; transition: 0.3s; box-shadow: 0 3px 5px rgba(0,0,0,0.2);"
-                    onmouseover="this.style.backgroundColor='#e08e0b';"
-                    onmouseout="this.style.backgroundColor='#f39c12';">
-                    Re-login
+            <div class="secondary-options">
+                <span class="divider-text">or</span>
+                <a href="{{ route('login') }}" class="secondary-button">
+                    <span class="button-icon">↩</span> Back to Login
                 </a>
             </div>
         </div>
     </div>
-</div>
 
-@endsection
+    <script>
+        // Countdown timer for code expiration
+        document.addEventListener('DOMContentLoaded', function() {
+            let totalSeconds = 3 * 60; // 3 minutes in seconds
+            const timerText = document.querySelector('.timer-text');
+            const timerFill = document.querySelector('.timer-fill');
+            const resendLink = document.querySelector('.resend-link');
+            const codeInput = document.getElementById('two_factor_code');
+            const digitBoxes = document.querySelectorAll('.digit-box');
+
+            // Initially disable resend link for 30 seconds
+            resendLink.classList.add('disabled');
+            let resendCounter = 30;
+
+            const updateResendText = () => {
+                if (resendCounter > 0) {
+                    resendLink.textContent = `Wait ${resendCounter}s to resend`;
+                } else {
+                    resendLink.textContent = '↻ Resend verification code';
+                    resendLink.classList.remove('disabled');
+                }
+            };
+
+            // Set up pulsing effect on input focus
+            codeInput.addEventListener('focus', function() {
+                document.querySelector('.code-input-wrapper').classList.add('pulse');
+            });
+
+            codeInput.addEventListener('blur', function() {
+                document.querySelector('.code-input-wrapper').classList.remove('pulse');
+            });
+
+            // Focus the input field when clicking anywhere in the digit boxes
+            document.querySelector('.code-digits').addEventListener('click', function() {
+                codeInput.focus();
+            });
+
+            // Start resend countdown
+            updateResendText();
+            const resendTimer = setInterval(function() {
+                resendCounter--;
+                updateResendText();
+
+                if (resendCounter <= 0) {
+                    clearInterval(resendTimer);
+                }
+            }, 1000);
+
+            // Expiration timer
+            const timer = setInterval(function() {
+                totalSeconds--;
+
+                // Format minutes and seconds
+                const minutes = Math.floor(totalSeconds / 60);
+                const seconds = totalSeconds % 60;
+                timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                // Update the circle fill
+                const percent = (totalSeconds / (3 * 60)) * 100;
+                const dashoffset = 100 - percent;
+                timerFill.style.strokeDashoffset = dashoffset;
+
+                // Change color when time is running out
+                if (totalSeconds <= 30) {
+                    timerFill.style.stroke = '#dc3545';
+                    timerText.style.color = '#dc3545';
+
+                    if (!document.querySelector('.timer-pulse')) {
+                        timerText.classList.add('timer-pulse');
+                    }
+                }
+
+                if (totalSeconds <= 0) {
+                    clearInterval(timer);
+                    timerText.textContent = '0:00';
+                    document.querySelector('.auth-card').classList.add('expired');
+
+                    // Show expiration message
+                    const expiredMsg = document.createElement('div');
+                    expiredMsg.className = 'alert-box alert-danger';
+                    expiredMsg.innerHTML = '<p>Your verification code has expired. Please request a new one.</p>';
+
+                    const formGroup = document.querySelector('.form-group');
+                    formGroup.insertBefore(expiredMsg, formGroup.firstChild);
+
+                    // Disable the verify button
+                    document.querySelector('.primary-button').disabled = true;
+                }
+            }, 1000);
+
+            // Focus the input field when page loads
+            document.getElementById('two_factor_code').focus();
+        });
+
+        // Function to update the digit boxes when user types
+        function updateCodeInputUI(input) {
+            const digits = input.value.split('');
+            const boxes = document.querySelectorAll('.digit-box');
+
+            // Clear all boxes first
+            boxes.forEach(box => {
+                box.textContent = '';
+                box.classList.remove('filled');
+            });
+
+            // Fill boxes with entered digits
+            digits.forEach((digit, index) => {
+                if (index < boxes.length) {
+                    boxes[index].textContent = digit;
+                    boxes[index].classList.add('filled');
+
+                    // Add the "pop" animation
+                    boxes[index].classList.remove('pop');
+                    void boxes[index].offsetWidth; // Trigger reflow
+                    boxes[index].classList.add('pop');
+                }
+            });
+
+            // If all digits are entered, briefly show success animation
+            if (digits.length === 6) {
+                document.querySelector('.code-input-wrapper').classList.add('complete');
+                setTimeout(() => {
+                    document.querySelector('.code-input-wrapper').classList.remove('complete');
+                }, 1000);
+            }
+        }
+
+        // Add confetti animation when form is submitted
+        document.querySelector('.auth-form').addEventListener('submit', function(e) {
+            // Don't actually submit yet
+            e.preventDefault();
+
+            // Only proceed if code is 6 digits
+            const code = document.getElementById('two_factor_code').value;
+            if (code.length !== 6 || !/^\d+$/.test(code)) {
+                document.querySelector('.code-input-wrapper').classList.add('error');
+                setTimeout(() => {
+                    document.querySelector('.code-input-wrapper').classList.remove('error');
+                }, 500);
+                return;
+            }
+
+            // Show loading state
+            const submitBtn = document.querySelector('.primary-button');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<div class="spinner"></div> Verifying...';
+            submitBtn.disabled = true;
+
+            // Simulate verification (you'd remove this timeout in production)
+            setTimeout(() => {
+                // Submit the form after showing animation
+                this.submit();
+            }, 1500);
+        });
+    </script>
+    </script>
+</body>
+</html>

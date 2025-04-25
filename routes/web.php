@@ -23,13 +23,31 @@ Route::get('/registration/success', function () {
     return view('auth.registration-success');
 })->name('registration.success');
 
+
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('home'); // or remove if not needed
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login'); // <-- this is the fix
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::get('/2fa/resend', 'Auth\YourAuthController@resendTwoFactorCode')->name('2fa.resend');
+
+
+
+Route::get('/2fa', function () {
+    return view('auth.two-factor');
+})->name('dashboard');
+
+Route::get('/reset', function () {
+    return view('auth.reset-password');
+})->name('dashboard');
+
 Route::get('/dashboard', function () {
     return view('admin.dashboard');
 })->name('dashboard');
+
+
+
+
+
 
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

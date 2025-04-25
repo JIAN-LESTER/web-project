@@ -23,7 +23,7 @@ class AuthController extends Controller
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
             'course_id' => 'nullable|exists:courses,courseID',
-            'year_id' => 'nullable|exists:years,yearID', 
+            'year_id' => 'nullable|exists:years,yearID',
         ]);
 
         // Create the user with the actual foreign keys
@@ -32,7 +32,7 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
             'role' => 'user',
-            'user_status' => 'active',
+            // 'user_status' => 'active',
             'courseID' => $validated['course_id'] ?? null, // Use the course_id from the form
             'yearID' => $validated['year_id'] ?? null, // Use the year_id from the form
             'verification_token' => Str::random(64),
@@ -54,15 +54,14 @@ class AuthController extends Controller
         $user = User::whereRaw('LOWER(email) = ?', [strtolower($request->email)])->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
-            $this->incrementFailedAttempts($user); 
+            $this->incrementFailedAttempts($user);
             if ($this->isAccountLocked($user)) {
                 return back()->with('error', 'Your account is locked due to too many failed login attempts. Please try again later.');
             }
             return back()->with('error', 'Incorrect email or password. ' . $user->failed_attempts . '/5 failed attempts.');
-         
         }
 
-    
+
         $this->resetFailedAttempts($user);
 
 
@@ -85,34 +84,34 @@ class AuthController extends Controller
     }
 
     protected function isAccountLocked($user)
-{
-    if ($user->failed_attempts >= 5 && $user->lockout_time && now()->lt($user->lockout_time)) {
-        return true; // Account is locked
+    {
+        if ($user->failed_attempts >= 5 && $user->lockout_time && now()->lt($user->lockout_time)) {
+            return true; // Account is locked
+        }
+
+        return false;
     }
 
-    return false;
-}
 
+    protected function incrementFailedAttempts($user)
+    {
+        $user->failed_attempts++;
+        if ($user->failed_attempts >= 5) {
+            // Lock the account for 15 minutes after 5 failed attempts
+            $user->lockout_time = now()->addMinutes(5);
+            $user->save();
+        } else {
+            $user->save();
+        }
+    }
 
-protected function incrementFailedAttempts($user)
-{
-    $user->failed_attempts++;
-    if ($user->failed_attempts >= 5) {
-        // Lock the account for 15 minutes after 5 failed attempts
-        $user->lockout_time = now()->addMinutes(5);
-        $user->save();
-    } else {
+    // Reset failed attempts on successful login
+    protected function resetFailedAttempts($user)
+    {
+        $user->failed_attempts = 0;
+        $user->lockout_time = null; // Reset lockout time
         $user->save();
     }
-}
-
-// Reset failed attempts on successful login
-protected function resetFailedAttempts($user)
-{
-    $user->failed_attempts = 0;
-    $user->lockout_time = null; // Reset lockout time
-    $user->save();
-}
 
     public function logout(Request $request)
     {
@@ -146,5 +145,38 @@ protected function resetFailedAttempts($user)
         }
 
         return redirect('/users.index');
+    }
+
+
+
+
+
+
+    public function resendTwoFactorCode(Request $request)
+    {
+        // Check if we have a user ID in the session
+        if (!session()->has('2fa_user_id')) {
+            return redirect()->route('login')
+                ->with('error', 'Session expired. Please login again.');
+        }
+
+        $userId = session('2fa_user_id');
+        $user = User::find($userId);
+
+        if (!$user) {
+            return redirect()->route('login')
+                ->with('error', 'User not found. Please login again.');
+        }
+
+        // Generate a new code and update expiration time
+        $user->two_factor_code = rand(100000, 999999);
+        $user->two_factor_expires_at = now()->addMinutes(3); // Match the 3-minute timer in the UI
+        $user->save();
+
+        // Send the new code via email
+        Mail::to($user->email)->send(new TwoFactorCodeMail($user));
+
+        return redirect()->route('2fa.verify.form')
+            ->with('message', 'A new verification code has been sent to your email.');
     }
 }
