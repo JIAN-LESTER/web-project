@@ -1,10 +1,9 @@
 /*
- * Registration Success Page Styles
- * For GuideBot app
- * Still not Done
- */
-
- :root {
+  * Registration Success Page Styles
+  * For GuideBot app
+  */
+ 
+  :root {
     --primary-color: #5A3092;
     --light-primary: #8B68C1;
     --text-color: #333;
