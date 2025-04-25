@@ -41,7 +41,7 @@ class AuthController extends Controller
 
         Mail::to($user->email)->send(new VerifyEmail($user));
 
-        return redirect('login')->with('success', 'A verification link has been sent to your email.');
+        return redirect()->route('registration.success');
     }
 
     public function login(Request $request)
