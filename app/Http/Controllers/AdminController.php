@@ -35,7 +35,7 @@ class AdminController extends Controller
             $query->whereHas('user', function($q) use ($search){
                 $q->where('name', 'like',"%{$search}%");
             })
-            ->orWhere('action_type', 'like', "%{$search}%")
+            ->orWhere('action', 'like', "%{$search}%")
                 ->orWhere('timestamp', 'like', "%{$search}%");
         })->orderBy('timestamp', 'desc')
         ->paginate(12);
