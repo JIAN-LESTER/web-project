@@ -73,17 +73,26 @@ class AuthController extends Controller
             return back()->with('error', 'No account found')->withInput();
         }
 
-
         if ($this->isAccountLocked($user)) {
-            $secondsLeft = now()->diffInSeconds($user->lockout_time); // returns integer seconds
-            $minutesLeft = floor($secondsLeft / 60);                   // e.g., 1 if 80 seconds left
+            $secondsLeft = now()->diffInSeconds($user->lockout_time);
+            $minutesLeft = floor($secondsLeft / 60);
             $secondsRemainder = $secondsLeft % 60;
-            return back()->with('error', "Your account is locked. Try again in $minutesLeft minutes and $secondsRemainder seconds.");
+        
+            return back()
+                ->with('account_locked', true)
+                ->with('lockout_timer', "$minutesLeft minutes and $secondsRemainder seconds")
+                ->withInput(); 
         }
-
+        
         if (!Hash::check($request->password, $user->password)) {
             $this->incrementFailedAttempts($user);
-            return back()->with('error', 'Incorrect email or password. ' . $user->failed_attempts . '/5 failed attempts.');
+            $remainingAttempts = 5 - $user->failed_attempts;
+        
+            return back()
+                ->with('error', 'Incorrect email or password.')
+                ->with('failed_attempts', $user->failed_attempts)
+                ->with('remaining_attempts', $remainingAttempts)
+                ->withInput(); 
         }
         $this->resetFailedAttempts($user);
 

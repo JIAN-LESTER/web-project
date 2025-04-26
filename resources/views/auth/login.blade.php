@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -83,9 +84,17 @@
 
         /* Animation for icons */
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
 
         .animated-icon {
@@ -94,9 +103,22 @@
 
         /* Add bounce animation */
         @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-20px);
+            }
+
+            60% {
+                transform: translateY(-10px);
+            }
         }
 
         .bounce {
@@ -137,7 +159,7 @@
         .option:hover {
             background-color: #f8f8f8;
             transform: translateY(-3px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .option.selected {
@@ -164,6 +186,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Main container -->
     <div class="container">
@@ -199,19 +222,33 @@
             <form class="form-container" method="POST" action="{{ route('login') }}">
                 @csrf
 
-                @if(session('error'))
-                <div class="custom-error-box">
-                    <span class="custom-error-close" onclick="this.parentElement.style.display='none'">&times;</span>
-                    <div class="custom-error-title">Wrong credentials</div>
-                    <div class="custom-error-subtitle">Invalid username or password</div>
-                </div>
+                @if(session('account_locked'))
+                    <div class="custom-error-box">
+                        <span class="custom-error-close" onclick="this.parentElement.style.display='none'">&times;</span>
+                        <div class="custom-error-title">Account Locked</div>
+                        <div class="custom-error-subtitle">
+                            Please try again in {{ session('lockout_timer') }}.
+                        </div>
+                    </div>
+                @elseif(session('error'))
+                    <div class="custom-error-box">
+                        <span class="custom-error-close" onclick="this.parentElement.style.display='none'">&times;</span>
+                        <div class="custom-error-title">Wrong credentials</div>
+                        <div class="custom-error-subtitle">
+                            {{ session('error') }}
+                            @if(session('remaining_attempts') !== null)
+                                <br>Remaining Attempts: {{ session('remaining_attempts') }}/5
+                            @endif
+                        </div>
+                    </div>
                 @endif
 
                 <div class="input-group">
                     <label for="email" class="input-label">Email address</label>
                     <div class="input-field-wrapper">
                         <i class="fas fa-envelope input-icon"></i>
-                        <input type="email" name="email" id="email" class="input-field" placeholder="Enter your email address" required>
+                        <input type="email" name="email" id="email" class="input-field"
+                            placeholder="Enter your email address" value="{{ old('email') }}" required>
                     </div>
                     @error('email')
                         <div class="error-message">{{ $message }}</div>
@@ -222,7 +259,8 @@
                     <label for="password" class="input-label">Password</label>
                     <div class="input-field-wrapper">
                         <i class="fas fa-lock input-icon"></i>
-                        <input type="password" name="password" id="password" class="input-field" placeholder="Enter your password" required>
+                        <input type="password" name="password" id="password" class="input-field"
+                            placeholder="Enter your password" required>
                         <i class="fas fa-eye-slash toggle-password" id="togglePassword"></i>
                     </div>
                     @error('password')
@@ -253,218 +291,218 @@
 
     <!-- ENHANCED EMAIL VERIFICATION SUCCESS POPUP -->
     @if(session('email_verified'))
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            createConfetti();
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                createConfetti();
 
-            Swal.fire({
-                icon: 'success',
-                iconHtml: '<i class="fas fa-check-circle animated-icon" style="color:#7669F8;font-size:3rem;"></i>',
-                title: 'Email Verified Successfully!',
-                html: `
-                    <div style="margin-bottom:15px">
-                        <p>Your email has been verified and your account is now active.</p>
-                        <p>You can now access all features of GuideBot.</p>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar" id="progressBar"></div>
+                Swal.fire({
+                    icon: 'success',
+                    iconHtml: '<i class="fas fa-check-circle animated-icon" style="color:#7669F8;font-size:3rem;"></i>',
+                    title: 'Email Verified Successfully!',
+                    html: `
+                        <div style="margin-bottom:15px">
+                            <p>Your email has been verified and your account is now active.</p>
+                            <p>You can now access all features of GuideBot.</p>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" id="progressBar"></div>
+                            </div>
                         </div>
-                    </div>
-                `,
-                showConfirmButton: true,
-                confirmButtonText: '<i class="fas fa-thumbs-up"></i> Continue to Dashboard',
-                customClass: {
-                    popup: 'custom-popup-class verification-popup',
-                    confirmButton: 'verification-confirm-button',
-                },
-                allowOutsideClick: false,
-                backdrop: `rgba(118, 105, 248, 0.4)`,
-                didOpen: () => {
-                    document.querySelector('.swal2-container').style.zIndex = '10000000';
-                    // Animate progress bar
-                    document.getElementById('progressBar').style.width = '100%';
-                }
+                    `,
+                    showConfirmButton: true,
+                    confirmButtonText: '<i class="fas fa-thumbs-up"></i> Continue to Dashboard',
+                    customClass: {
+                        popup: 'custom-popup-class verification-popup',
+                        confirmButton: 'verification-confirm-button',
+                    },
+                    allowOutsideClick: false,
+                    backdrop: `rgba(118, 105, 248, 0.4)`,
+                    didOpen: () => {
+                        document.querySelector('.swal2-container').style.zIndex = '10000000';
+                        // Animate progress bar
+                        document.getElementById('progressBar').style.width = '100%';
+                    }
+                });
             });
-        });
 
-        function createConfetti() {
-            const confettiContainer = document.createElement('div');
-            confettiContainer.id = 'confetti-container';
-            confettiContainer.style.position = 'fixed';
-            confettiContainer.style.top = '0';
-            confettiContainer.style.left = '0';
-            confettiContainer.style.width = '100%';
-            confettiContainer.style.height = '100%';
-            confettiContainer.style.pointerEvents = 'none';
-            confettiContainer.style.zIndex = '9999999';
-            document.body.appendChild(confettiContainer);
+            function createConfetti() {
+                const confettiContainer = document.createElement('div');
+                confettiContainer.id = 'confetti-container';
+                confettiContainer.style.position = 'fixed';
+                confettiContainer.style.top = '0';
+                confettiContainer.style.left = '0';
+                confettiContainer.style.width = '100%';
+                confettiContainer.style.height = '100%';
+                confettiContainer.style.pointerEvents = 'none';
+                confettiContainer.style.zIndex = '9999999';
+                document.body.appendChild(confettiContainer);
 
-            const colors = ['#7669F8', '#FF9900', '#36B37E', '#FF5630'];
+                const colors = ['#7669F8', '#FF9900', '#36B37E', '#FF5630'];
 
-            for (let i = 0; i < 150; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.width = Math.random() * 10 + 5 + 'px';
-                    confetti.style.height = Math.random() * 10 + 5 + 'px';
-                    confetti.style.opacity = Math.random() * 0.8 + 0.2;
-                    confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
-
-                    confettiContainer.appendChild(confetti);
-
-                    // Remove confetti after animation
+                for (let i = 0; i < 150; i++) {
                     setTimeout(() => {
-                        if (confetti && confetti.parentNode) {
-                            confetti.parentNode.removeChild(confetti);
-                        }
-                    }, 5000);
-                }, i * 20);
-            }
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * 100 + 'vw';
+                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.width = Math.random() * 10 + 5 + 'px';
+                        confetti.style.height = Math.random() * 10 + 5 + 'px';
+                        confetti.style.opacity = Math.random() * 0.8 + 0.2;
+                        confetti.style.animationDuration = Math.random() * 3 + 2 + 's';
 
-            // Remove container after all animations
-            setTimeout(() => {
-                if (confettiContainer && confettiContainer.parentNode) {
-                    confettiContainer.parentNode.removeChild(confettiContainer);
+                        confettiContainer.appendChild(confetti);
+
+                        // Remove confetti after animation
+                        setTimeout(() => {
+                            if (confetti && confetti.parentNode) {
+                                confetti.parentNode.removeChild(confetti);
+                            }
+                        }, 5000);
+                    }, i * 20);
                 }
-            }, 8000);
-        }
-    </script>
+
+                // Remove container after all animations
+                setTimeout(() => {
+                    if (confettiContainer && confettiContainer.parentNode) {
+                        confettiContainer.parentNode.removeChild(confettiContainer);
+                    }
+                }, 8000);
+            }
+        </script>
     @endif
 
     <!-- ENHANCED NOT VERIFIED EMAIL POPUP -->
     @if(session('not_verified'))
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'warning',
-                iconHtml: '<i class="fas fa-envelope bounce" style="color:#FF9800;font-size:3rem;"></i>',
-                title: 'Email Not Verified',
-                html: `
-                    <div style="margin-bottom:15px">
-                        <p>{{ session('not_verified') }}</p>
-                        <div style="margin-top:15px;padding:15px;background:#f7f7f7;border-radius:8px;text-align:left;font-size:0.9rem;">
-                            <p><strong>Why verify your email?</strong></p>
-                            <ul style="padding-left:20px;margin-top:5px;margin-bottom:0;">
-                                <li style="margin-bottom:5px">Secure your account</li>
-                                <li style="margin-bottom:5px">Access all GuideBot features</li>
-                                <li style="margin-bottom:5px">Receive important notifications</li>
-                                <li>Get personalized recommendations</li>
-                            </ul>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                Swal.fire({
+                    icon: 'warning',
+                    iconHtml: '<i class="fas fa-envelope bounce" style="color:#FF9800;font-size:3rem;"></i>',
+                    title: 'Email Not Verified',
+                    html: `
+                        <div style="margin-bottom:15px">
+                            <p>{{ session('not_verified') }}</p>
+                            <div style="margin-top:15px;padding:15px;background:#f7f7f7;border-radius:8px;text-align:left;font-size:0.9rem;">
+                                <p><strong>Why verify your email?</strong></p>
+                                <ul style="padding-left:20px;margin-top:5px;margin-bottom:0;">
+                                    <li style="margin-bottom:5px">Secure your account</li>
+                                    <li style="margin-bottom:5px">Access all GuideBot features</li>
+                                    <li style="margin-bottom:5px">Receive important notifications</li>
+                                    <li>Get personalized recommendations</li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                `,
-                showCancelButton: true,
-                confirmButtonText: 'Resend Verification Email',
-                cancelButtonText: 'I\'ll do it later',
-                customClass: {
-                    popup: 'custom-popup-class',
-                    confirmButton: 'verification-confirm-button',
-                    cancelButton: 'logout-cancel-button',
-                },
-                footer: '<a href="#" id="helpLink" style="color:#7669F8;font-weight:500;">Need help with verification?</a>',
-                didOpen: () => {
-                    document.querySelector('.swal2-container').style.zIndex = '10000000';
+                    `,
+                    showCancelButton: true,
+                    confirmButtonText: 'Resend Verification Email',
+                    cancelButtonText: 'I\'ll do it later',
+                    customClass: {
+                        popup: 'custom-popup-class',
+                        confirmButton: 'verification-confirm-button',
+                        cancelButton: 'logout-cancel-button',
+                    },
+                    footer: '<a href="#" id="helpLink" style="color:#7669F8;font-weight:500;">Need help with verification?</a>',
+                    didOpen: () => {
+                        document.querySelector('.swal2-container').style.zIndex = '10000000';
 
-                    document.getElementById('helpLink').addEventListener('click', function(e) {
-                        e.preventDefault();
+                        document.getElementById('helpLink').addEventListener('click', function (e) {
+                            e.preventDefault();
+                            Swal.fire({
+                                title: 'Verification Help',
+                                html: `
+                                    <div style="text-align:left">
+                                        <div style="display:flex;align-items:flex-start;margin-bottom:12px">
+                                            <div style="background:#f0f4ff;border-radius:50%;width:25px;height:25px;display:flex;align-items:center;justify-content:center;margin-right:10px">
+                                                <span style="color:#7669F8;font-weight:bold">1</span>
+                                            </div>
+                                            <div>Check your inbox and spam folder</div>
+                                        </div>
+                                        <div style="display:flex;align-items:flex-start;margin-bottom:12px">
+                                            <div style="background:#f0f4ff;border-radius:50%;width:25px;height:25px;display:flex;align-items:center;justify-content:center;margin-right:10px">
+                                                <span style="color:#7669F8;font-weight:bold">2</span>
+                                            </div>
+                                            <div>Click the verification link in the email</div>
+                                        </div>
+                                        <div style="display:flex;align-items:flex-start;margin-bottom:12px">
+                                            <div style="background:#f0f4ff;border-radius:50%;width:25px;height:25px;display:flex;align-items:center;justify-content:center;margin-right:10px">
+                                                <span style="color:#7669F8;font-weight:bold">3</span>
+                                            </div>
+                                            <div>If you didn't receive an email, try resending</div>
+                                        </div>
+
+                                    </div>
+                                `,
+                                icon: 'info',
+                                confirmButtonText: 'Got it!',
+                                customClass: {
+                                    popup: 'custom-popup-class',
+                                    confirmButton: 'verification-confirm-button',
+                                },
+                            });
+                        });
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading state when resending verification email
                         Swal.fire({
-                            title: 'Verification Help',
+                            title: 'Sending Verification Email',
                             html: `
-                                <div style="text-align:left">
-                                    <div style="display:flex;align-items:flex-start;margin-bottom:12px">
-                                        <div style="background:#f0f4ff;border-radius:50%;width:25px;height:25px;display:flex;align-items:center;justify-content:center;margin-right:10px">
-                                            <span style="color:#7669F8;font-weight:bold">1</span>
-                                        </div>
-                                        <div>Check your inbox and spam folder</div>
+                                <div style="display:flex;flex-direction:column;align-items:center;gap:15px">
+                                    <i class="fas fa-paper-plane" style="font-size:2rem;color:#7669F8;animation:bounce 2s infinite"></i>
+                                    <p>Sending a new verification email to your inbox...</p>
+                                    <div class="progress-bar-container">
+                                        <div class="progress-bar" id="emailProgressBar"></div>
                                     </div>
-                                    <div style="display:flex;align-items:flex-start;margin-bottom:12px">
-                                        <div style="background:#f0f4ff;border-radius:50%;width:25px;height:25px;display:flex;align-items:center;justify-content:center;margin-right:10px">
-                                            <span style="color:#7669F8;font-weight:bold">2</span>
-                                        </div>
-                                        <div>Click the verification link in the email</div>
-                                    </div>
-                                    <div style="display:flex;align-items:flex-start;margin-bottom:12px">
-                                        <div style="background:#f0f4ff;border-radius:50%;width:25px;height:25px;display:flex;align-items:center;justify-content:center;margin-right:10px">
-                                            <span style="color:#7669F8;font-weight:bold">3</span>
-                                        </div>
-                                        <div>If you didn't receive an email, try resending</div>
-                                    </div>
-
                                 </div>
                             `,
-                            icon: 'info',
-                            confirmButtonText: 'Got it!',
+                            showConfirmButton: false,
+                            allowOutsideClick: false,
                             customClass: {
                                 popup: 'custom-popup-class',
-                                confirmButton: 'verification-confirm-button',
                             },
+                            didOpen: () => {
+                                document.getElementById('emailProgressBar').style.width = '100%';
+                                // Here you would make an AJAX call to resend the verification email
+                                // For demonstration, we'll just show a success message after a delay
+                                setTimeout(() => {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Email Sent!',
+                                        html: `
+                                            <p>Please check your inbox and follow the verification link.</p>
+                                            <p style="font-size:0.9rem;color:#666;margin-top:10px">
+                                                <i class="fas fa-info-circle"></i>
+                                                If you don't see the email within a few minutes, check your spam folder
+                                            </p>
+                                        `,
+                                        customClass: {
+                                            popup: 'custom-popup-class verification-popup',
+                                            confirmButton: 'verification-confirm-button',
+                                        },
+                                    });
+                                }, 2000);
+                            }
                         });
-                    });
-                }
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Show loading state when resending verification email
-                    Swal.fire({
-                        title: 'Sending Verification Email',
-                        html: `
-                            <div style="display:flex;flex-direction:column;align-items:center;gap:15px">
-                                <i class="fas fa-paper-plane" style="font-size:2rem;color:#7669F8;animation:bounce 2s infinite"></i>
-                                <p>Sending a new verification email to your inbox...</p>
-                                <div class="progress-bar-container">
-                                    <div class="progress-bar" id="emailProgressBar"></div>
-                                </div>
-                            </div>
-                        `,
-                        showConfirmButton: false,
-                        allowOutsideClick: false,
-                        customClass: {
-                            popup: 'custom-popup-class',
-                        },
-                        didOpen: () => {
-                            document.getElementById('emailProgressBar').style.width = '100%';
-                            // Here you would make an AJAX call to resend the verification email
-                            // For demonstration, we'll just show a success message after a delay
-                            setTimeout(() => {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Email Sent!',
-                                    html: `
-                                        <p>Please check your inbox and follow the verification link.</p>
-                                        <p style="font-size:0.9rem;color:#666;margin-top:10px">
-                                            <i class="fas fa-info-circle"></i>
-                                            If you don't see the email within a few minutes, check your spam folder
-                                        </p>
-                                    `,
-                                    customClass: {
-                                        popup: 'custom-popup-class verification-popup',
-                                        confirmButton: 'verification-confirm-button',
-                                    },
-                                });
-                            }, 2000);
-                        }
-                    });
-                }
+                    }
+                });
             });
-        });
-    </script>
+        </script>
     @endif
 
     <!-- Display regular success message (keep this as is) -->
     @if(session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: '{{ session('success') }}',
-            customClass: {
-                container: 'my-swal-container'
-            },
-            didOpen: () => {
-                document.querySelector('.swal2-container').style.zIndex = '10000000';
-            }
-        });
-    </script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                customClass: {
+                    container: 'my-swal-container'
+                },
+                didOpen: () => {
+                    document.querySelector('.swal2-container').style.zIndex = '10000000';
+                }
+            });
+        </script>
     @endif
 
 
@@ -516,13 +554,13 @@
                     const rememberOption = document.getElementById('rememberOption');
                     const everywhereOption = document.getElementById('everywhereOption');
 
-                    rememberOption.addEventListener('click', function() {
+                    rememberOption.addEventListener('click', function () {
                         this.classList.add('selected');
                         everywhereOption.classList.remove('selected');
                         selectedOption = 'remember';
                     });
 
-                    everywhereOption.addEventListener('click', function() {
+                    everywhereOption.addEventListener('click', function () {
                         this.classList.add('selected');
                         rememberOption.classList.remove('selected');
                         selectedOption = 'everywhere';
@@ -572,7 +610,7 @@
 
     <script>
         // Auto-remove error message after 15 seconds
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const errorBox = document.querySelector('.custom-error-box');
             if (errorBox) {
                 setTimeout(() => {
@@ -591,7 +629,7 @@
             const passwordInput = document.getElementById('password');
 
             if (togglePassword && passwordInput) {
-                togglePassword.addEventListener('click', function() {
+                togglePassword.addEventListener('click', function () {
                     const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
                     passwordInput.setAttribute('type', type);
 
@@ -602,4 +640,5 @@
         });
     </script>
 </body>
+
 </html>
