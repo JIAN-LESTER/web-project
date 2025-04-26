@@ -25,16 +25,16 @@ class AuthController extends Controller
             'year_id' => 'nullable|exists:years,yearID',
             'course_id' => 'nullable|exists:courses,courseID',
         ]);
-    
+
         // Default values
         $yearID = $validated['year_id'] ?? null;
         $courseID = $validated['course_id'] ?? null;
-    
+
         // If yearID is null (or 0), force courseID to null
         if ($yearID === null || $yearID == 0) {
             $courseID = null;
         }
-    
+
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -46,12 +46,12 @@ class AuthController extends Controller
             'verification_token' => Str::random(64),
             'avatar' => 'avatars/default.png',
         ]);
-    
+
         Mail::to($user->email)->send(new VerifyEmail($user));
-    
+
         return redirect()->route('registration.success');
     }
-    
+
 
     public function login(Request $request)
     {
@@ -78,7 +78,7 @@ class AuthController extends Controller
             return back()->with('error', 'Incorrect email or password. ' . $user->failed_attempts . '/5 failed attempts.');
         }
         $this->resetFailedAttempts($user);
-        
+
         if ($user->is_verified == 0) {
             return back()->with('not_verified', 'Your email is not yet verified. Please check your email and try again.')->withInput();
         }
