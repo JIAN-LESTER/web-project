@@ -1,4 +1,4 @@
-<!-- Kulang pag notif diay ni -->
+
 
 <link rel="stylesheet" href="{{ asset('login_and_register/reset-password.css') }}">
 
@@ -226,7 +226,7 @@
             const strength = checkPasswordStrength(password);
             const passwordsMatch = checkPasswordsMatch();
 
-            if (strength >= 2 && passwordsMatch) {
+            if (strength >= 0 && passwordsMatch) {
                 submitButton.disabled = false;
                 submitButton.classList.add('active');
             } else {

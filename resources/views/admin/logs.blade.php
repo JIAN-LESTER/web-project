@@ -6,16 +6,18 @@
 
     <form method="GET" action="{{ route('admin.logs') }}" class="mb-4">
         <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Search by user, action, or time..." value="{{ request('search') }}">
+            <input type="text" name="search" class="input-field" placeholder="Search by user, action, or time..." value="{{ request('search') }}">
             <button type="submit" class="btn btn-primary">Search</button>
         </div>
     </form>
 
     <div class="bg-white p-4 rounded shadow-sm">
         <div class="table-responsive">
-            <table class="table table-hover align-middle text-center">
+        <table class="table table-hover align-middle text-start">
+
                 <thead class="table-primary">
                     <tr>
+                        <th>Logs ID</th>
                         <th>User</th>
                         <th>Message ID</th>
                         <th>Action</th>
@@ -25,10 +27,21 @@
                 <tbody>
                     @forelse($logs as $log)
                         <tr>
+                          <td>{{ $log->logID }}</td>
                             <td class="fw-semibold">{{ $log->user->name ?? 'Unknown User' }}</td>
-                            <td>{{ $log->logID }}</td>
-                            <td>{{ $log->action }}</td>
-                            <td>{{ \Carbon\Carbon::parse($log->timestamp)->setTimezone('Asia/Manila')->format('l, F j, Y - h:i A') }}</td>
+                            @if ($log->messageID == null)
+                                <td class="text-muted fw-semibold">N/A</td>
+                            @else
+                                <td class="fw-semibold">{{ $log->messageID }}</td>
+                            @endif
+                            <td>{{ $log->action_type }}</td>
+                            <td class="text-start">
+  {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->timestamp)
+      ->subHours(8)
+      ->timezone('Asia/Manila')
+      ->format('l, F j, Y - h:i A') }}
+</td>
+
                         </tr>
                     @empty
                         <tr>
