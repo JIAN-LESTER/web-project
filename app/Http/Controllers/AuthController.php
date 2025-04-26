@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Mail\VerifyEmail;
 use App\Models\Course;
+use App\Models\Logs;
 use App\Models\Year;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -46,10 +47,16 @@ class AuthController extends Controller
             'verification_token' => Str::random(64),
             'avatar' => 'avatars/default.png',
         ]);
+
+        Logs::create([
+            'userID' => $user->userID,
+            'action_type' => 'Registered own account. Email verification sent.',
+            'timestamp' => now(),
+        ]);
     
         Mail::to($user->email)->send(new VerifyEmail($user));
     
-        return redirect()->route('registration.success');
+        return redirect()->route('registration.success')->with('success', 'Registration successful! Please check your email to verify your account.');
     }
     
 
@@ -88,6 +95,11 @@ class AuthController extends Controller
         $user->two_factor_expires_at = now()->addMinutes(5);
         $user->save();
 
+        Logs::create([
+            'userID' => $user->userID,
+            'action_type' => 'Attempted to login. 2FA code sent.',
+            'timestamp' => now(),
+        ]);
 
 
         Mail::to($user->email)->send(new TwoFactorCodeMail($user));
@@ -102,6 +114,11 @@ class AuthController extends Controller
 
         if ($user->failed_attempts >= 5) {
             if ($user->lockout_time && now()->lt($user->lockout_time)) {
+                Logs::create([
+                    'userID' => $user->userID,
+                    'action_type' => "Account locked due to multiple failed login attempts",
+                    'timestamp' => now(),
+                ]);
                 return true;
             }
             $this->resetFailedAttempts($user);
@@ -132,11 +149,19 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // Clearing the session data
-        if (Session::has('user')) {
-            Session::forget('user');
-            return redirect('/login')->with('success', 'You have been logged out.');
+        
+        $user = Auth::user();
+        if ($user) {
+            Logs::create([
+                'userID' => $user->userID,
+                'action_type' => "Logged out",
+                'timestamp' => now(),
+            ]);
         }
+ 
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
         return redirect('/login')->with('success', 'You have been logged out.');
     }
@@ -152,21 +177,6 @@ class AuthController extends Controller
         $courses = Course::all();
         return view('auth.register', compact('years', 'courses'));
     }
-
-    public function authenticated(Request $request, $user)
-    {
-        // If the user is not verified, log them out and show an error
-        if (!$user->is_verified) {
-            Auth::logout();
-            return redirect('/login')->with('error', 'Please verify your email before logging in.');
-        }
-
-        return redirect('/users.index');
-    }
-
-
-
-
 
 
     public function resendTwoFactorCode(Request $request)
@@ -192,6 +202,13 @@ class AuthController extends Controller
 
         // Send the new code via email
         Mail::to($user->email)->send(new TwoFactorCodeMail($user));
+
+        Logs::create([
+            'userID' => $user->userID,
+            'action_type' => "Resent 2FA code",
+            'timestamp' => now(),
+        ]);
+        
 
         return redirect()->route('2fa.verify.form')
             ->with('message', 'A new verification code has been sent to your email.');

@@ -9,10 +9,11 @@ use Illuminate\Notifications\Notifiable;
 class Logs extends Model
 {
     use HasFactory, Notifiable;
+
+    public $timestamps = false;
     protected $primaryKey = 'logID';
 
     protected $fillable = [
-        'logID',
         'userID',
         'messageID',
         'action_type',

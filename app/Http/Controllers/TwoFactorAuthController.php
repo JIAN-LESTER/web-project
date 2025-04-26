@@ -36,13 +36,11 @@ class TwoFactorAuthController extends Controller
 
             Auth::login($user);
 
-            // Logs::create([
-            //     'user_id' => $user->id,
-            //     'login_id' => $user->last_name,
-            //     'action' => 'Successful Login with 2FA',
-            //     'timestamp' => now(),
-            //     'ip_address' => $request->ip(), // Fixed request IP retrieval
-            // ]);
+            Logs::create([
+                'userID' => $user->userID,
+                'action_type' => 'Successful 2FA login',
+                'timestamp' => now(),
+            ]);
 
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard')->with('success', '2FA Verified Successfully. You are now logged in.');
@@ -51,14 +49,11 @@ class TwoFactorAuthController extends Controller
             }
         }
 
-        // Log failed 2FA attempt
-        // Logs::create([
-        //     'user_id' => $user->id,
-        //     'login_id' => $user->last_name,
-        //     'action' => 'Failed 2FA attempt (Invalid or expired OTP)',
-        //     'timestamp' => now(),
-        //     'ip_address' => $request->ip(), // Fixed request IP retrieval
-        // ]);
+        Logs::create([
+            'userID' => $user->userID,
+            'action_type' => 'Failed 2FA login attempt',
+            'timestamp' => now(),
+        ]);
 
         session()->forget('2fa_user_id');
 

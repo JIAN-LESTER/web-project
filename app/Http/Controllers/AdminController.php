@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Logs;
 use App\Models\User;
 use App\Models\Year;
 use Illuminate\Http\Request;
@@ -24,9 +25,22 @@ class AdminController extends Controller
         return view('admin.reports_analytics');
     }
 
-    public function viewLogs()
+    public function viewLogs(Request $request)
     {
-        return view('admin.logs');
+        $search = $request->get('search');
+
+        $logs = Logs::query()
+        ->with('user')
+        ->when($search, function ($query, $search) {
+            $query->whereHas('user', function($q) use ($search){
+                $q->where('name', 'like',"%{$search}%");
+            })
+            ->orWhere('action', 'like', "%{$search}%")
+                ->orWhere('timestamp', 'like', "%{$search}%");
+        })->orderBy('timestamp', 'desc')
+        ->paginate(12);
+
+        return view('admin.logs', compact('logs', 'search'));
     }
 
     public function viewUsers(Request $request)

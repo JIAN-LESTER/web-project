@@ -31,6 +31,12 @@ class EmailVerificationController extends Controller
         $user->verification_token = null;
         $user->save();
 
+        Logs::create([
+            'userID' => $user->userID,
+            'action_type' => "Email Verified",
+            'timestamp' => now(),
+        ]);
+
         return redirect('/login')->with('success', 'Email Verified successfully. You can now log in.');
     }
 }
