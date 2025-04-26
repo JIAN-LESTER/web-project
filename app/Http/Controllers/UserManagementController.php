@@ -36,15 +36,23 @@ class UserManagementController extends Controller
         if ($request->hasFile('avatar')) {
             $avatarPath = $request->file('avatar')->store('avatars', 'public');
         }
+        
+        $yearID = $validated['year_id'] ?? null;
+        $courseID = $validated['course_id'] ?? null;
+
+        if($yearID == 0 || $yearID == null){
+            $courseID = null;
+        }
+  
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
-            'role' => 'in:user,admin',
+            'role' => $validated['role'],
             'user_status' => 'active',
-            'courseID' => $validated['course_id'] ?? null, // Use the course_id from the form
-            'yearID' => $validated['year_id'] ?? null, // Use the year_id from the form
+            'courseID' => $courseID, 
+            'yearID' => $yearID, 
             'is_verified' => 1,
             'avatar' => $avatarPath,
         ]);
@@ -64,43 +72,66 @@ class UserManagementController extends Controller
 
     public function edit(string $id)
     {
+        // Use userID as the primary key
         $user = User::findOrFail($id);
-        return view('admin.user_crud.edit_user', compact('user'));
+        $years = Year::all();
+        $courses = Course::all();
+    
+        return view('admin.user_crud.edit_user', compact('user', 'years', 'courses'));
     }
-
+    
     public function update(Request $request, string $id)
     {
+        // Use userID as the primary key
         $user = User::findOrFail($id);
-
+    
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|min:6|confirmed',
-            'role' => 'nullable|in:user,admin',
+            'email' => 'required|email|unique:users,email,' . $id . ',userID',
+            'password' => 'nullable|min:6',
+            'role' => 'required|in:user,admin', // Making 'role' required
             'course_id' => 'nullable|exists:courses,courseID',
             'year_id' => 'nullable|exists:years,yearID',
             'avatar' => 'nullable|image|mimes:jpg,png,jpeg|max:2048',
-
         ]);
-
+    
+        // Update the user attributes
         $user->name = $validated['name'];
-
         $user->email = $validated['email'];
-        $user->password = $validated['password'];
+
+        $yearID = $validated['year_id'] ?? null;
+        $courseID = $validated['course_id'] ?? null;
+        
+        // Update the password if provided
+        if (!empty($validated['password'])) {
+            $user->password = bcrypt($validated['password']);
+        }
+
+        if($yearID == 0 || $yearID == null){
+            $courseID = null;
+        }
+    
+        // Update role, course, and year
         $user->role = $validated['role'];
-        $user->courseID = $validated['course_id'];
-        $user->yearID = $validated['year_id'];
+        $user->courseID = $courseID;
+        $user->yearID = $yearID;
+    
+        // Handle avatar upload
         if ($request->hasFile('avatar')) {
+            // Delete the old avatar if it exists
             if ($user->avatar) {
                 Storage::delete('public/avatars/' . $user->avatar);
             }
-
+    
+            // Store the new avatar
             $avatarPath = $request->file('avatar')->store('avatars', 'public');
             $user->avatar = $avatarPath;
         }
+    
+        // Save the updated user
         $user->save();
-
-
+    
+        // Redirect with success message
         return redirect()->route('admin.user_management')->with('success', 'User updated successfully.');
     }
 

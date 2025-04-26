@@ -22,27 +22,36 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'course_id' => 'nullable|exists:courses,courseID',
             'year_id' => 'nullable|exists:years,yearID',
+            'course_id' => 'nullable|exists:courses,courseID',
         ]);
-
-        // Create the user with the actual foreign keys
+    
+        // Default values
+        $yearID = $validated['year_id'] ?? null;
+        $courseID = $validated['course_id'] ?? null;
+    
+        // If yearID is null (or 0), force courseID to null
+        if ($yearID === null || $yearID == 0) {
+            $courseID = null;
+        }
+    
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
             'role' => 'user',
-            // 'user_status' => 'active',
-            'courseID' => $validated['course_id'] ?? null, // Use the course_id from the form
-            'yearID' => $validated['year_id'] ?? null, // Use the year_id from the form
+            'user_status' => 'active',
+            'yearID' => $yearID,
+            'courseID' => $courseID,
             'verification_token' => Str::random(64),
             'avatar' => 'avatars/default.png',
         ]);
-
+    
         Mail::to($user->email)->send(new VerifyEmail($user));
-
+    
         return redirect()->route('registration.success');
     }
+    
 
     public function login(Request $request)
     {
@@ -52,18 +61,6 @@ class AuthController extends Controller
         ]);
 
         $user = User::whereRaw('LOWER(email) = ?', [strtolower($request->email)])->first();
-
-<<<<<<< Updated upstream
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            $this->incrementFailedAttempts($user);
-            if ($this->isAccountLocked($user)) {
-                return back()->with('error', 'Your account is locked due to too many failed login attempts. Please try again later.');
-            }
-            return back()->with('error', 'Incorrect email or password. ' . $user->failed_attempts . '/5 failed attempts.');
-        }
-
-
-=======
         if (!$user) {
             return back()->with('error', 'No account found')->withInput();
         }
@@ -71,8 +68,8 @@ class AuthController extends Controller
 
         if ($this->isAccountLocked($user)) {
             $secondsLeft = now()->diffInSeconds($user->lockout_time); // returns integer seconds
-$minutesLeft = floor($secondsLeft / 60);                   // e.g., 1 if 80 seconds left
-$secondsRemainder = $secondsLeft % 60;  
+            $minutesLeft = floor($secondsLeft / 60);                   // e.g., 1 if 80 seconds left
+            $secondsRemainder = $secondsLeft % 60;
             return back()->with('error', "Your account is locked. Try again in $minutesLeft minutes and $secondsRemainder seconds.");
         }
 
@@ -80,12 +77,8 @@ $secondsRemainder = $secondsLeft % 60;
             $this->incrementFailedAttempts($user);
             return back()->with('error', 'Incorrect email or password. ' . $user->failed_attempts . '/5 failed attempts.');
         }
-
-
->>>>>>> Stashed changes
         $this->resetFailedAttempts($user);
-
-
+        
         if ($user->is_verified == 0) {
             return back()->with('not_verified', 'Your email is not yet verified. Please check your email and try again.')->withInput();
         }
@@ -106,18 +99,12 @@ $secondsRemainder = $secondsLeft % 60;
 
     protected function isAccountLocked($user)
     {
-<<<<<<< Updated upstream
-        if ($user->failed_attempts >= 5 && $user->lockout_time && now()->lt($user->lockout_time)) {
-            return true; // Account is locked
-=======
+
         if ($user->failed_attempts >= 5) {
             if ($user->lockout_time && now()->lt($user->lockout_time)) {
-                return true; 
+                return true;
             }
-
-            
             $this->resetFailedAttempts($user);
->>>>>>> Stashed changes
         }
 
         return false;
@@ -136,22 +123,6 @@ $secondsRemainder = $secondsLeft % 60;
         }
     }
 
-<<<<<<< Updated upstream
-=======
-    protected function incrementFailedAttempts($user)
-    {
-        $user->failed_attempts++;
-        if ($user->failed_attempts >= 5) {
-           
-            $user->lockout_time = now()->addMinutes(5);
-            $user->save();
-        } else {
-            $user->save();
-        }
-    }
-
->>>>>>> Stashed changes
-    // Reset failed attempts on successful login
     protected function resetFailedAttempts($user)
     {
         $user->failed_attempts = 0;

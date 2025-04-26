@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Two-Factor Authentication - GuideBot</title>
-    <!-- Google Fonts -->
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Link to your CSS file -->
+
     <link rel="stylesheet" href="{{ asset('login_and_register/two-factor.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -78,7 +78,7 @@
                                 <path class="timer-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                                 <path class="timer-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
                             </svg>
-                            <span class="timer-text">3:00</span>
+                            <span class="timer-text">5:00</span>
                         </div>
                         <span class="timer-label">Code expires in</span>
                     </div>
@@ -110,7 +110,7 @@
     <script>
         // Countdown timer for code expiration
         document.addEventListener('DOMContentLoaded', function() {
-            let totalSeconds = 3 * 60; // 3 minutes in seconds
+            let totalSeconds = 5 * 60; // 3 minutes in seconds
             const timerText = document.querySelector('.timer-text');
             const timerFill = document.querySelector('.timer-fill');
             const resendLink = document.querySelector('.resend-link');
@@ -165,7 +165,7 @@
                 timerText.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
 
                 // Update the circle fill
-                const percent = (totalSeconds / (3 * 60)) * 100;
+                const percent = (totalSeconds / (5 * 60)) * 100;
                 const dashoffset = 100 - percent;
                 timerFill.style.strokeDashoffset = dashoffset;
 

@@ -15,7 +15,7 @@
 html, body {
     height: 100%;
     width: 100%;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+     /* Prevent horizontal scrolling */
 }
 
 /* Main container for the split layout */
@@ -25,7 +25,7 @@ html, body {
     position: relative;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+  
 }
 
 /* Top purple section - exactly 50% of height */

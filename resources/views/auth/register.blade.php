@@ -112,6 +112,31 @@
         </div>
     </div>
 
+    <script>
+    const yearSelect = document.getElementById('year');
+    const courseSelect = document.getElementById('course');
+
+    function handleYearChange() {
+        const selectedValue = yearSelect.value;
+
+        if (!selectedValue || selectedValue === '0') {
+            // If year is empty OR equals 0, disable and clear course
+            courseSelect.value = '';
+            courseSelect.disabled = true;
+        } else {
+            // Else, enable course selection
+            courseSelect.disabled = false;
+        }
+    }
+
+    // Listen for changes
+    yearSelect.addEventListener('change', handleYearChange);
+
+    // Check initially on page load
+    handleYearChange();
+</script>
+
+
     <!-- SweetAlert2 Script -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
