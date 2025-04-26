@@ -28,38 +28,32 @@ class TwoFactorAuthController extends Controller
             return back()->withErrors(['two_factor_code' => 'Session expired. Please log in again.']);
         }
 
-        if ($request->input('two_factor_code') == $user->two_factor_code && now()->lt($user->two_factor_expires_at)) 
-        {
+        if ($request->input('two_factor_code') == $user->two_factor_code && now()->lt($user->two_factor_expires_at)) {
             $user->update([
-                'two_factor_code' => null, 
+                'two_factor_code' => null,
                 'two_factor_expires_at' => null,
             ]);
 
             Auth::login($user);
 
-            // Logs::create([
-            //     'user_id' => $user->id,
-            //     'login_id' => $user->last_name,
-            //     'action' => 'Successful Login with 2FA',
-            //     'timestamp' => now(),
-            //     'ip_address' => $request->ip(), // Fixed request IP retrieval
-            // ]);
+            Logs::create([
+                'userID' => $user->userID,
+                'action_type' => 'Successful 2FA login',
+                'timestamp' => now(),
+            ]);
 
             if ($user->role === 'admin') {
                 return redirect()->route('admin.dashboard')->with('success', '2FA Verified Successfully. You are now logged in.');
             } elseif ($user->role === 'user') {
-                return redirect()->route('user.chatbot')->with('success', '2FA Verified Successfully. You are now logged in.');
+                return redirect()->route('chatbot')->with('success', '2FA Verified Successfully. You are now logged in.');
             }
         }
 
-        // Log failed 2FA attempt
-        // Logs::create([
-        //     'user_id' => $user->id,
-        //     'login_id' => $user->last_name,
-        //     'action' => 'Failed 2FA attempt (Invalid or expired OTP)',
-        //     'timestamp' => now(),
-        //     'ip_address' => $request->ip(), // Fixed request IP retrieval
-        // ]);
+        Logs::create([
+            'userID' => $user->userID,
+            'action_type' => 'Failed 2FA login attempt',
+            'timestamp' => now(),
+        ]);
 
         session()->forget('2fa_user_id');
 

@@ -11,6 +11,7 @@ class Conversation extends Model
     use HasFactory, Notifiable;
 
     protected $primaryKey = 'conversationID';
+    public $timestamp = false;
 
     protected $fillable = [
         'userID',

@@ -1,0 +1,758 @@
+/*
+ * Enhanced Two-Factor Authentication Page Styles
+ * For GuideBot app
+ */
+
+ :root {
+    --primary-color: #5A3092;
+    --primary-gradient: linear-gradient(135deg, #5A3092, #6941C6);
+    --light-primary: #8B68C1;
+    --accent-color: #FF9800;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --text-color: #333;
+    --bg-light: #f8f9fa;
+    --white: #ffffff;
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 6px 15px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    width: 100%;
+    background: var(--primary-gradient);
+    overflow-x: hidden;
+}
+
+.container {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 20px;
+}
+
+/* Enhanced background elements */
+.background-pattern {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image:
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 1%, transparent 3%),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 1%, transparent 3%),
+        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 2%, transparent 5%);
+    background-size: 100px 100px;
+    z-index: 0;
+    opacity: 0.6;
+    animation: patternFloat 60s linear infinite;
+}
+
+/* Floating shapes animation */
+.floating-shapes {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.2;
+    filter: blur(40px);
+}
+
+.shape-1 {
+    bottom: 10%;
+    left: 10%;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.2);
+    animation: float1 15s ease-in-out infinite alternate;
+}
+
+.shape-2 {
+    top: 15%;
+    right: 15%;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.15);
+    animation: float2 20s ease-in-out infinite alternate;
+}
+
+.shape-3 {
+    top: 45%;
+    left: 30%;
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 152, 0, 0.1);
+    animation: float3 18s ease-in-out infinite alternate;
+}
+
+.shape-4 {
+    bottom: 30%;
+    right: 25%;
+    width: 180px;
+    height: 180px;
+    background: rgba(255, 255, 255, 0.1);
+    animation: float4 12s ease-in-out infinite alternate;
+}
+
+@keyframes float1 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(40px, -40px) rotate(10deg); }
+}
+
+@keyframes float2 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-50px, 30px) rotate(-15deg); }
+}
+
+@keyframes float3 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(30px, 50px) rotate(5deg); }
+}
+
+@keyframes float4 {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-40px, -30px) rotate(-8deg); }
+}
+
+.auth-card {
+    background: var(--white);
+    width: 450px;
+    max-width: 100%;
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(90, 48, 146, 0.15);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.auth-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 150px;
+    height: 150px;
+    background: linear-gradient(135deg, var(--light-primary) 0%, transparent 70%);
+    border-radius: 0 0 0 100%;
+    opacity: 0.2;
+    z-index: 0;
+}
+
+.auth-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(315deg, var(--light-primary) 0%, transparent 70%);
+    border-radius: 0 100% 0 0;
+    opacity: 0.2;
+    z-index: 0;
+}
+
+.auth-icon-container {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 30px;
+    background: linear-gradient(to bottom right, rgba(90, 48, 146, 0.1), rgba(105, 65, 198, 0.15));
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 5px 15px rgba(90, 48, 146, 0.15);
+}
+
+.shield-icon {
+    width: 50px;
+    height: 50px;
+    fill: var(--primary-color);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.lock-path {
+    fill: var(--accent-color);
+}
+
+.auth-heading {
+    color: var(--text-color);
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    position: relative;
+    z-index: 1;
+}
+
+.auth-message {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 30px;
+    line-height: 1.5;
+    position: relative;
+    z-index: 1;
+}
+
+/* Enhanced alert boxes */
+.alert-box {
+    padding: 16px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+.alert-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.alert-content {
+    flex: 1;
+    text-align: left;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 4px solid var(--danger-color);
+    color: var(--danger-color);
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-left: 4px solid var(--success-color);
+    color: var(--success-color);
+}
+
+.alert-box ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.alert-box p {
+    margin: 0;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0 5px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.close-btn:hover {
+    opacity: 1;
+}
+
+.auth-form {
+    position: relative;
+    z-index: 1;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+/* Enhanced code input styling */
+.code-input-container {
+    position: relative;
+    margin-bottom: 5px;
+}
+
+.code-input-wrapper {
+    position: relative;
+    width: 100%;
+    transition: all 0.3s ease;
+    border-radius: 12px;
+}
+
+.code-input {
+    width: 100%;
+    height: 60px;
+    padding: 10px 20px;
+    font-size: 24px;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    border: none;
+    background: transparent;
+    letter-spacing: 8px;
+    color: transparent;
+    caret-color: var(--primary-color);
+}
+
+.code-input:focus {
+    outline: none;
+}
+
+.code-digits {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    height: 60px;
+}
+
+.digit-box {
+    flex: 1;
+    background-color: var(--bg-light);
+    border: 2px solid rgba(90, 48, 146, 0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.digit-box.filled {
+    border-color: var(--primary-color);
+    background-color: rgba(90, 48, 146, 0.05);
+    box-shadow: 0 0 0 2px rgba(90, 48, 146, 0.1);
+}
+
+.code-input-wrapper.pulse .digit-box:not(.filled):first-of-type {
+    box-shadow: 0 0 0 2px rgba(90, 48, 146, 0.2);
+    animation: pulseBorder 1.5s infinite;
+}
+
+.code-input-wrapper.error {
+    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+.code-input-wrapper.complete .digit-box {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: var(--success-color);
+    color: var(--success-color);
+    transition: all 0.3s ease;
+}
+
+.digit-box.pop {
+    animation: popIn 0.3s ease forwards;
+}
+
+/* Enhanced timer styling */
+.code-expire-timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 24px;
+    gap: 12px;
+    padding: 8px 16px;
+    background-color: rgba(90, 48, 146, 0.05);
+    border-radius: 30px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.timer-circle {
+    position: relative;
+    width: 36px;
+    height: 36px;
+}
+
+.timer-svg {
+    transform: rotate(-90deg);
+    width: 36px;
+    height: 36px;
+}
+
+.timer-bg {
+    fill: none;
+    stroke: #e9e9e9;
+    stroke-width: 3;
+}
+
+.timer-fill {
+    fill: none;
+    stroke: var(--primary-color);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 1s linear;
+}
+
+.timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.timer-label {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Enhanced resend section */
+.resend-container {
+    margin-top: 24px;
+    text-align: center;
+    padding: 16px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+}
+
+.resend-text {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.resend-link {
+    color: var(--primary-color);
+    font-size: 15px;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: rgba(90, 48, 146, 0.05);
+}
+
+.resend-link:hover {
+    color: #4a2882;
+    background-color: rgba(90, 48, 146, 0.1);
+}
+
+.resend-icon {
+    font-size: 14px;
+}
+
+.resend-link.disabled {
+    color: #aaa;
+    background-color: #f1f1f1;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* Enhanced buttons */
+.buttons-container {
+    margin-top: 30px;
+}
+
+.primary-button, .secondary-button {
+    width: 100%;
+    padding: 16px 25px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border: none;
+}
+
+.primary-button {
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(90, 48, 146, 0.3);
+}
+
+.primary-button:hover {
+    box-shadow: 0 8px 20px rgba(90, 48, 146, 0.4);
+    transform: translateY(-2px);
+}
+
+.primary-button:active {
+    transform: translateY(0);
+}
+
+.primary-button:disabled {
+    background: linear-gradient(to right, #a3a3a3, #b8b8b8);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Enhanced divider */
+.secondary-options {
+    margin-top: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+.divider {
+    position: relative;
+    height: 20px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #e0e0e0;
+}
+
+.divider-text {
+    display: inline-block;
+    position: relative;
+    padding: 0 15px;
+    font-size: 14px;
+    color: #888;
+    background-color: white;
+}
+
+.secondary-button {
+    background-color: var(--bg-light);
+    color: var(--text-color);
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.secondary-button:hover {
+    background-color: #ececec;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.button-icon {
+    font-size: 16px;
+}
+
+/* Loading spinner */
+.spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 8px;
+}
+
+/* Animations */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes pulseBorder {
+    0% {
+        box-shadow: 0 0 0 0 rgba(90, 48, 146, 0.5);
+    }
+    70% {
+        box-shadow: 0 0 0 6px rgba(90, 48, 146, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(90, 48, 146, 0);
+    }
+}
+
+@keyframes shake {
+    10%, 90% {
+        transform: translateX(-1px);
+    }
+    20%, 80% {
+        transform: translateX(2px);
+    }
+    30%, 50%, 70% {
+        transform: translateX(-4px);
+    }
+    40%, 60% {
+        transform: translateX(4px);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes patternFloat {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 100px 100px;
+    }
+}
+
+.timer-pulse {
+    animation: timerPulse 1s infinite;
+}
+
+@keyframes timerPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Expired card state */
+.auth-card.expired {
+    border: 1px solid var(--danger-color);
+    box-shadow: 0 10px 30px rgba(220, 53, 69, 0.1);
+}
+
+.auth-card.expired .auth-icon-container {
+    background: rgba(220, 53, 69, 0.1);
+}
+
+.auth-card.expired .shield-icon {
+    fill: var(--danger-color);
+}
+
+/* Responsive styles */
+@media (max-width: 500px) {
+    .auth-card {
+        padding: 30px 20px;
+        width: 100%;
+    }
+
+    .auth-heading {
+        font-size: 24px;
+    }
+
+    .auth-icon-container {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
+    }
+
+    .shield-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .code-input {
+        font-size: 20px;
+        letter-spacing: 6px;
+        height: 50px;
+    }
+
+    .code-digits {
+        gap: 6px;
+    }
+
+    .digit-box {
+        border-radius: 8px;
+        font-size: 20px;
+    }
+
+    .code-expire-timer {
+        margin-top: 16px;
+        gap: 8px;
+        padding: 6px 12px;
+    }
+
+    .timer-circle {
+        width: 30px;
+        height: 30px;
+    }
+
+    .timer-svg {
+        width: 30px;
+        height: 30px;
+    }
+
+    .timer-text {
+        font-size: 10px;
+    }
+
+    .timer-label {
+        font-size: 12px;
+    }
+
+    .resend-container {
+        padding: 12px;
+        margin-top: 16px;
+    }
+
+    .primary-button, .secondary-button {
+        padding: 14px 20px;
+        font-size: 15px;
+    }
+}
