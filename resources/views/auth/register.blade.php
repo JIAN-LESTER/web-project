@@ -43,95 +43,90 @@
 
             <!-- Register form -->
             <form class="form-container" method="POST" action="{{ route('register') }}">
-    @csrf
+                @csrf
 
-    <div class="input-group">
-        <label for="name" class="input-label">Name</label>
-        <div class="input-field-wrapper">
-            <i class="fas fa-user input-icon"></i>
-            <input type="text" name="name" id="name" class="input-field" placeholder="Enter your name" value="{{ old('name') }}" required>
-        </div>
-        @error('name')
-            <div class="error-message">{{ $message }}</div>
-        @enderror
-    </div>
+                <div class="input-group">
+                    <label for="name" class="input-label">Name</label>
+                    <div class="input-field-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" name="name" id="name" class="input-field" placeholder="Enter your name" required>
+                    </div>
+                    @error('name')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
 
-    <div class="form-row">
-        <div class="input-group half-width">
-            <label for="year" class="input-label">Year Level</label>
-            <div class="input-field-wrapper">
-                <i class="fas fa-graduation-cap input-icon"></i>
-                <select name="year_id" id="year" class="input-field">
-                    <option value="">Select Year (Optional)</option>
-                    @foreach ($years as $year)
-                        <option value="{{ $year->yearID }}" {{ old('year_id') == $year->yearID ? 'selected' : '' }}>
-                            {{ $year->year_level }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            @error('year_id')
-                <div class="error-message">{{ $message }}</div>
-            @enderror
-        </div>
+                <div class="form-row">
+                    <div class="input-group half-width">
+                        <label for="year" class="input-label">Year Level</label>
+                        <div class="input-field-wrapper">
+                            <i class="fas fa-graduation-cap input-icon"></i>
+                            <select name="year_id" id="year" class="input-field">
+                                <option value="">Select Year (Optional)</option>
+                                @foreach ($years as $year)
+                                    <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('year_id')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-        <div class="input-group half-width">
-            <label for="course" class="input-label">Course</label>
-            <div class="input-field-wrapper">
-                <i class="fas fa-book input-icon"></i>
-                <select name="course_id" id="course" class="input-field" {{ old('year_id') ? '' : 'disabled' }}>
-                    <option value="">Select Course (Optional)</option>
-                    @foreach ($courses as $course)
-                        <option value="{{ $course->courseID }}" {{ old('course_id') == $course->courseID ? 'selected' : '' }}>
-                            {{ $course->course_name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            @error('course_id')
-                <div class="error-message">{{ $message }}</div>
-            @enderror
-        </div>
-    </div>
+                    <div class="input-group half-width">
+                        <label for="course" class="input-label">Course</label>
+                        <div class="input-field-wrapper">
+                            <i class="fas fa-book input-icon"></i>
+                            <select name="course_id" id="course" class="input-field">
+                                <option value="">Select Course (Optional)</option>
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('course_id')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
 
-    <div class="input-group">
-        <label for="email" class="input-label">Email address</label>
-        <div class="input-field-wrapper">
-            <i class="fas fa-envelope input-icon"></i>
-            <input type="email" name="email" id="email" class="input-field" placeholder="Enter your email address" value="{{ old('email') }}" required>
-        </div>
-        @error('email')
-            <div class="error-message">{{ $message }}</div>
-        @enderror
-    </div>
+                <div class="input-group">
+                    <label for="email" class="input-label">Email address</label>
+                    <div class="input-field-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" name="email" id="email" class="input-field" placeholder="Enter your email address" required>
+                    </div>
+                    @error('email')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
 
-    <div class="input-group">
-        <label for="password" class="input-label">Password</label>
-        <div class="input-field-wrapper">
-            <i class="fas fa-lock input-icon"></i>
-            <input type="password" name="password" id="password" class="input-field" placeholder="Enter your password" required>
-            <i class="fas fa-eye-slash toggle-password" id="togglePassword"></i>
-        </div>
-        @error('password')
-            <div class="error-message">{{ $message }}</div>
-        @enderror
-    </div>
+                <div class="input-group">
+                    <label for="password" class="input-label">Password</label>
+                    <div class="input-field-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" name="password" id="password" class="input-field" placeholder="Enter your password" required>
+                        <i class="fas fa-eye-slash toggle-password" id="togglePassword"></i>
+                    </div>
+                    @error('password')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
 
-    <div class="input-group">
-        <label for="password-confirmation" class="input-label">Confirm Password</label>
-        <div class="input-field-wrapper">
-            <i class="fas fa-lock input-icon"></i>
-            <input type="password" name="password_confirmation" id="password-confirmation" class="input-field" placeholder="Confirm your password" required>
-            <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword"></i>
-        </div>
-        @error('password_confirmation')
-            <div class="error-message">{{ $message }}</div>
-        @enderror
-    </div>
+                <div class="input-group">
+                    <label for="password-confirmation" class="input-label">Confirm Password</label>
+                    <div class="input-field-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" name="password_confirmation" id="password-confirmation" class="input-field" placeholder="Confirm your password" required>
+                        <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword"></i>
+                    </div>
+                    @error('password_confirmation')
+                        <div class="error-message">{{ $message }}</div>
+                    @enderror
+                </div>
 
-    <button type="submit" class="login-button">Sign Up</button>
-</form>
-
+                <button type="submit" class="login-button">Sign Up</button>
+            </form>
         </div>
     </div>
 

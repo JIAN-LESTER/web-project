@@ -23,11 +23,10 @@ Route::get('/registration/success', function () {
     return view('auth.registration-success');
 })->name('registration.success');
 
+
 Route::get('/password-reset/success', function () {
     return view('auth.reset_password_success');
 })->name('reset-password.success');
-
-
 
 
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('home'); // or remove if not needed
