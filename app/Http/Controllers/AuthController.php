@@ -53,6 +53,7 @@ class AuthController extends Controller
 
         $user = User::whereRaw('LOWER(email) = ?', [strtolower($request->email)])->first();
 
+<<<<<<< Updated upstream
         if (!$user || !Hash::check($request->password, $user->password)) {
             $this->incrementFailedAttempts($user);
             if ($this->isAccountLocked($user)) {
@@ -62,6 +63,26 @@ class AuthController extends Controller
         }
 
 
+=======
+        if (!$user) {
+            return back()->with('error', 'No account found')->withInput();
+        }
+
+
+        if ($this->isAccountLocked($user)) {
+            $secondsLeft = now()->diffInSeconds($user->lockout_time); // returns integer seconds
+$minutesLeft = floor($secondsLeft / 60);                   // e.g., 1 if 80 seconds left
+$secondsRemainder = $secondsLeft % 60;  
+            return back()->with('error', "Your account is locked. Try again in $minutesLeft minutes and $secondsRemainder seconds.");
+        }
+
+        if (!Hash::check($request->password, $user->password)) {
+            $this->incrementFailedAttempts($user);
+            return back()->with('error', 'Incorrect email or password. ' . $user->failed_attempts . '/5 failed attempts.');
+        }
+
+
+>>>>>>> Stashed changes
         $this->resetFailedAttempts($user);
 
 
@@ -85,8 +106,18 @@ class AuthController extends Controller
 
     protected function isAccountLocked($user)
     {
+<<<<<<< Updated upstream
         if ($user->failed_attempts >= 5 && $user->lockout_time && now()->lt($user->lockout_time)) {
             return true; // Account is locked
+=======
+        if ($user->failed_attempts >= 5) {
+            if ($user->lockout_time && now()->lt($user->lockout_time)) {
+                return true; 
+            }
+
+            
+            $this->resetFailedAttempts($user);
+>>>>>>> Stashed changes
         }
 
         return false;
@@ -105,6 +136,21 @@ class AuthController extends Controller
         }
     }
 
+<<<<<<< Updated upstream
+=======
+    protected function incrementFailedAttempts($user)
+    {
+        $user->failed_attempts++;
+        if ($user->failed_attempts >= 5) {
+           
+            $user->lockout_time = now()->addMinutes(5);
+            $user->save();
+        } else {
+            $user->save();
+        }
+    }
+
+>>>>>>> Stashed changes
     // Reset failed attempts on successful login
     protected function resetFailedAttempts($user)
     {
