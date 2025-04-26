@@ -15,7 +15,7 @@
 html, body {
     height: 100%;
     width: 100%;
-    overflow-x: hidden; /* Prevent horizontal scrolling */
+    overflow: hidden; /* Prevent scrolling */
 }
 
 /* Main container for the split layout */
@@ -30,7 +30,7 @@ html, body {
 
 /* Top purple section - exactly 50% of height */
 .top-section {
-    background-color: #5A3092;
+    background: linear-gradient(135deg, #5A3092, #6941C6);
     height: 50vh;
     width: 100%;
     display: flex;
@@ -91,8 +91,9 @@ html, body {
     width: 1200x;
     object-fit: contain; /* Maintain aspect ratio */
     margin-top: -110px;
-
 }
+
+/* ===== IMPROVED REGISTER CARD STYLES ===== */
 
 /* Register card styling - positioned to overlap top and bottom sections */
 .login-card {
@@ -101,63 +102,93 @@ html, body {
     right: 200px;
     transform: translateY(-50%);
     background: white;
-    width: 539px;
-    height: auto; /* Changed to auto to accommodate all content */
-    padding: 50px;
-    border-radius: 25px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    width: 500px; /* Slightly reduced width */
+    height: 860px; /* Fixed height to match login card */
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(90, 48, 146, 0.15);
     display: flex;
     flex-direction: column;
     z-index: 2; /* Ensure card appears above everything else */
+    overflow-y: auto; /* Allow scrolling if content is too large */
+}
+
+/* Custom scrollbar for the register card */
+.login-card::-webkit-scrollbar {
+    width: 6px;
+}
+
+.login-card::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.login-card::-webkit-scrollbar-thumb {
+    background: #d1c6e2;
+    border-radius: 10px;
+}
+
+.login-card::-webkit-scrollbar-thumb:hover {
+    background: #5A3092;
 }
 
 /* Header section with welcome text and sign in link */
 .header-section {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 20px;
+    align-items: center;
+    margin-bottom: 25px;
 }
 
 /* Welcome text styling */
 .welcome-text {
-    font-size: 18px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 500;
+    color: #555;
 }
 
 /* Highlighted brand name styling */
 .brand-highlight {
     color: #5A3092;
-    font-weight: bold;
+    font-weight: 700;
 }
 
 /* Sign up section styling */
 .signup-section {
     text-align: right;
     font-size: 14px;
-    color: #a5a5a5;
+    color: #777;
+    line-height: 1.4;
 }
 
 /* Sign up link styling */
 .signup-link {
     color: #5A3092;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.signup-link:hover {
+    color: #7d58b5;
+    text-decoration: underline;
 }
 
 /* Main heading styling */
 .card-heading {
-    font-size: 55px;
-    font-weight: 500;
-    margin-bottom: 30px;
-    margin-top: 10px;
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 35px;
+    margin-top: 5px;
+    color: #333;
+    letter-spacing: -0.5px;
 }
 
 /* Form container styling */
 .form-container {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Reduced gap for more compact layout */
+    gap: 20px; /* Slightly reduced gap for more compact layout */
 }
 
 /* Row layout for side-by-side fields */
@@ -177,38 +208,65 @@ html, body {
 .input-group {
     display: flex;
     flex-direction: column;
-    gap: 8px; /* Reduced gap between label and input */
+    gap: 8px;
 }
 
 /* Input label styling */
 .input-label {
     display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+}
+
+/* Input field wrapper styling */
+.input-field-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* Input icon styling */
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #5A3092;
     font-size: 16px;
-    font-weight: 500;
-    color: #333;
+}
+
+/* Toggle password icon */
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    color: #aaa;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.toggle-password:hover {
+    color: #5A3092;
 }
 
 /* Input field styling */
 .input-field {
     width: 100%;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 15px;
-    color: #555;
-    height: 57px;
+    padding: 15px 15px 15px 42px;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #333;
+    height: 52px;
+    background-color: #f9f9fb;
+    transition: all 0.3s ease;
 }
 
 /* Input field focus styling */
 .input-field:focus {
     outline: none;
     border-color: #5A3092;
-}
-
-/* Wrapper for select fields */
-.input-wrapper {
-    position: relative;
-    width: 100%;
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(90, 48, 146, 0.08);
 }
 
 /* Select styling to match input fields */
@@ -223,33 +281,82 @@ select.input-field {
 /* Input placeholder styling */
 .input-field::placeholder {
     color: #aaa;
+    font-size: 14px;
 }
 
 /* Error message styling */
 .error-message {
-    color: #ff3333;
-    font-size: 14px;
+    color: #e53935;
+    font-size: 13px;
     margin-top: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.error-message::before {
+    content: "⚠️";
+    font-size: 12px;
+    margin-right: 5px;
 }
 
 /* Login button styling */
 .login-button {
     width: 100%;
     padding: 15px;
-    background-color: #5A3092;
+    background: linear-gradient(to right, #6941C6, #5A3092);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    margin-top: 25px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
     box-shadow: 0 4px 10px rgba(90, 48, 146, 0.3);
+    position: relative;
+    letter-spacing: 0.5px;
 }
 
-/* Button hover effect */
+/* Button hover and active effects */
 .login-button:hover {
-    background-color: #4a2882;
+    background: linear-gradient(to right, #5A3092, #4a2882);
+    box-shadow: 0 6px 15px rgba(90, 48, 146, 0.4);
+    transform: translateY(-2px);
+}
+
+.login-button:active {
+    transform: translateY(0);
+}
+
+/* Add subtle ripple effect */
+.login-button::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+}
+
+.login-button:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0, 0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(100, 100);
+        opacity: 0;
+    }
 }
 
 /* SweetAlert custom styling */
@@ -297,7 +404,9 @@ select.input-field {
         right: 50%;
         transform: translate(50%, -50%);
         width: 90%;
-        max-width: 500px;
+        max-width: 460px;
+        height: auto;
+        max-height: 80vh;
     }
 
     /* Hide the illustration */
@@ -310,6 +419,8 @@ select.input-field {
 @media (max-width: 600px) {
     .login-card {
         padding: 30px;
+        height: auto;
+        max-height: 90vh; /* Ensure it doesn't get too large on mobile */
     }
 
     .card-heading {

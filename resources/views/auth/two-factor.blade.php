@@ -6,13 +6,19 @@
     <title>Two-Factor Authentication - GuideBot</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('login_and_register/two-factor.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
         <div class="background-pattern"></div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
 
         <div class="auth-card">
             <div class="auth-icon-container">
@@ -29,19 +35,28 @@
 
             @if($errors->any())
                 <div class="alert-box alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                    <div class="alert-icon"><i class="fas fa-exclamation-circle"></i></div>
+                    <div class="alert-content">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <button type="button" class="close-btn" onclick="this.parentElement.style.display='none'">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
             @endif
 
             @if(session('message'))
                 <div class="alert-box alert-success">
-                    <p>{{ session('message') }}</p>
+                    <div class="alert-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="alert-content">
+                        <p>{{ session('message') }}</p>
+                    </div>
                     <button type="button" class="close-btn" onclick="this.parentElement.style.display='none'">
-                        <span>&times;</span>
+                        <i class="fas fa-times"></i>
                     </button>
                 </div>
             @endif
@@ -49,7 +64,7 @@
             <form method="POST" action="{{ route('2fa.verify') }}" class="auth-form">
                 @csrf
                 <div class="form-group">
-                    <label for="two_factor_code">Enter 2FA Code:</label>
+                    <label for="two_factor_code">Enter Authentication Code</label>
                     <div class="code-input-container">
                         <div class="code-input-wrapper">
                             <input type="text"
@@ -86,22 +101,24 @@
                     <div class="resend-container">
                         <p class="resend-text">Didn't receive a code?</p>
                         <a href="{{ route('2fa.resend') }}" class="resend-link">
-                            <span class="resend-icon">↻</span> Resend verification code
+                            <i class="fas fa-sync-alt resend-icon"></i> Resend verification code
                         </a>
                     </div>
                 </div>
 
                 <div class="buttons-container">
                     <button type="submit" class="primary-button">
-                        <span class="button-icon">✓</span> Verify
+                        <i class="fas fa-check button-icon"></i> Verify
                     </button>
                 </div>
             </form>
 
             <div class="secondary-options">
-                <span class="divider-text">or</span>
+                <div class="divider">
+                    <span class="divider-text">or</span>
+                </div>
                 <a href="{{ route('login') }}" class="secondary-button">
-                    <span class="button-icon">↩</span> Back to Login
+                    <i class="fas fa-arrow-left button-icon"></i> Back to Login
                 </a>
             </div>
         </div>
@@ -110,7 +127,7 @@
     <script>
         // Countdown timer for code expiration
         document.addEventListener('DOMContentLoaded', function() {
-            let totalSeconds = 5 * 60; // 3 minutes in seconds
+            let totalSeconds = 5 * 60; // 5 minutes in seconds
             const timerText = document.querySelector('.timer-text');
             const timerFill = document.querySelector('.timer-fill');
             const resendLink = document.querySelector('.resend-link');
@@ -123,9 +140,9 @@
 
             const updateResendText = () => {
                 if (resendCounter > 0) {
-                    resendLink.textContent = `Wait ${resendCounter}s to resend`;
+                    resendLink.innerHTML = `<i class="fas fa-clock resend-icon"></i> Wait ${resendCounter}s to resend`;
                 } else {
-                    resendLink.textContent = '↻ Resend verification code';
+                    resendLink.innerHTML = '<i class="fas fa-sync-alt resend-icon"></i> Resend verification code';
                     resendLink.classList.remove('disabled');
                 }
             };
@@ -170,7 +187,7 @@
                 timerFill.style.strokeDashoffset = dashoffset;
 
                 // Change color when time is running out
-                if (totalSeconds <= 30) {
+                if (totalSeconds <= 60) {
                     timerFill.style.stroke = '#dc3545';
                     timerText.style.color = '#dc3545';
 
@@ -187,7 +204,7 @@
                     // Show expiration message
                     const expiredMsg = document.createElement('div');
                     expiredMsg.className = 'alert-box alert-danger';
-                    expiredMsg.innerHTML = '<p>Your verification code has expired. Please request a new one.</p>';
+                    expiredMsg.innerHTML = '<div class="alert-icon"><i class="fas fa-exclamation-circle"></i></div><div class="alert-content"><p>Your verification code has expired. Please request a new one.</p></div>';
 
                     const formGroup = document.querySelector('.form-group');
                     formGroup.insertBefore(expiredMsg, formGroup.firstChild);
@@ -234,7 +251,7 @@
             }
         }
 
-        // Add confetti animation when form is submitted
+        // Add animation when form is submitted
         document.querySelector('.auth-form').addEventListener('submit', function(e) {
             // Don't actually submit yet
             e.preventDefault();
@@ -261,7 +278,6 @@
                 this.submit();
             }, 1500);
         });
-    </script>
     </script>
 </body>
 </html>

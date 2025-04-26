@@ -208,18 +208,17 @@
               </div>
             </a>
             <div class="dropdown-menu dropdown-menu-end">
-    <a class="dropdown-item" href="#">Profile</a>
-    <a class="dropdown-item" href="#">Settings</a>
-    <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Profile</a>
+              <a class="dropdown-item" href="#">Settings</a>
+              <div class="dropdown-divider"></div>
+              <form action="{{ route('logout') }}" method="POST" class="dropdown-item p-0">
+                @csrf
+                <button type="submit" class="dropdown-item" style="background:none; border:none; width:100%; text-align:left;">
+                    Logout
+                </button>
+            </form>
+            </div>
 
-    <!-- Proper Logout Button -->
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-inline">
-        @csrf
-        <button type="submit" class="dropdown-item text-danger">
-            Logout
-        </button>
-    </form>
-</div>
           </li>
         </ul>
       </div>

@@ -5,6 +5,8 @@
     <title>GuideBot Register</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Link to external CSS file -->
     <link rel="stylesheet" href="{{ asset('login_and_register/register.css') }}">
 </head>
@@ -26,12 +28,12 @@
         <!-- Bottom white section -->
         <div class="bottom-section"></div>
 
-        <!-- Login card that overlaps both sections -->
+        <!-- Register card that overlaps both sections -->
         <div class="login-card">
-            <!-- Header with welcome text and sign up link -->
+            <!-- Header with welcome text and sign in link -->
             <div class="header-section">
                 <div class="welcome-text">Welcome to <span class="brand-highlight">GuideBot</span></div>
-                <div class="signup-section"s>
+                <div class="signup-section">
                     Have an Account?<br><a href="{{ route('login') }}" class="signup-link">Sign In</a>
                 </div>
             </div>
@@ -39,13 +41,16 @@
             <!-- Main heading -->
             <h1 class="card-heading">Sign Up</h1>
 
-            <!-- Login form -->
+            <!-- Register form -->
             <form class="form-container" method="POST" action="{{ route('register') }}">
                 @csrf
 
                 <div class="input-group">
                     <label for="name" class="input-label">Name</label>
-                    <input type="text" name="name" id="name" class="input-field" placeholder="Enter Name" required>
+                    <div class="input-field-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" name="name" id="name" class="input-field" placeholder="Enter your name" required>
+                    </div>
                     @error('name')
                         <div class="error-message">{{ $message }}</div>
                     @enderror
@@ -54,7 +59,8 @@
                 <div class="form-row">
                     <div class="input-group half-width">
                         <label for="year" class="input-label">Year Level</label>
-                        <div class="input-wrapper">
+                        <div class="input-field-wrapper">
+                            <i class="fas fa-graduation-cap input-icon"></i>
                             <select name="year_id" id="year" class="input-field">
                                 <option value="">Select Year (Optional)</option>
                                 @foreach ($years as $year)
@@ -69,7 +75,8 @@
 
                     <div class="input-group half-width">
                         <label for="course" class="input-label">Course</label>
-                        <div class="input-wrapper">
+                        <div class="input-field-wrapper">
+                            <i class="fas fa-book input-icon"></i>
                             <select name="course_id" id="course" class="input-field">
                                 <option value="">Select Course (Optional)</option>
                                 @foreach ($courses as $course)
@@ -85,7 +92,10 @@
 
                 <div class="input-group">
                     <label for="email" class="input-label">Email address</label>
-                    <input type="email" name="email" id="email" class="input-field" placeholder="Enter Email address" required>
+                    <div class="input-field-wrapper">
+                        <i class="fas fa-envelope input-icon"></i>
+                        <input type="email" name="email" id="email" class="input-field" placeholder="Enter your email address" required>
+                    </div>
                     @error('email')
                         <div class="error-message">{{ $message }}</div>
                     @enderror
@@ -93,7 +103,11 @@
 
                 <div class="input-group">
                     <label for="password" class="input-label">Password</label>
-                    <input type="password" name="password" id="password" class="input-field" placeholder="Enter Password" required>
+                    <div class="input-field-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" name="password" id="password" class="input-field" placeholder="Enter your password" required>
+                        <i class="fas fa-eye-slash toggle-password" id="togglePassword"></i>
+                    </div>
                     @error('password')
                         <div class="error-message">{{ $message }}</div>
                     @enderror
@@ -101,7 +115,11 @@
 
                 <div class="input-group">
                     <label for="password-confirmation" class="input-label">Confirm Password</label>
-                    <input type="password" name="password_confirmation" id="password-confirmation" class="input-field" placeholder="Confirm Password" required>
+                    <div class="input-field-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" name="password_confirmation" id="password-confirmation" class="input-field" placeholder="Confirm your password" required>
+                        <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword"></i>
+                    </div>
                     @error('password_confirmation')
                         <div class="error-message">{{ $message }}</div>
                     @enderror
@@ -112,33 +130,63 @@
         </div>
     </div>
 
-    <script>
-    const yearSelect = document.getElementById('year');
-    const courseSelect = document.getElementById('course');
-
-    function handleYearChange() {
-        const selectedValue = yearSelect.value;
-
-        if (!selectedValue || selectedValue === '0') {
-            // If year is empty OR equals 0, disable and clear course
-            courseSelect.value = '';
-            courseSelect.disabled = true;
-        } else {
-            // Else, enable course selection
-            courseSelect.disabled = false;
-        }
-    }
-
-    // Listen for changes
-    yearSelect.addEventListener('change', handleYearChange);
-
-    // Check initially on page load
-    handleYearChange();
-</script>
-
-
     <!-- SweetAlert2 Script -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Year and course dependency
+            const yearSelect = document.getElementById('year');
+            const courseSelect = document.getElementById('course');
+
+            function handleYearChange() {
+                const selectedValue = yearSelect.value;
+
+                if (!selectedValue || selectedValue === '0') {
+                    // If year is empty OR equals 0, disable and clear course
+                    courseSelect.value = '';
+                    courseSelect.disabled = true;
+                } else {
+                    // Else, enable course selection
+                    courseSelect.disabled = false;
+                }
+            }
+
+            // Listen for changes
+            yearSelect.addEventListener('change', handleYearChange);
+
+            // Check initially on page load
+            handleYearChange();
+
+            // Toggle password visibility for password field
+            const togglePassword = document.getElementById('togglePassword');
+            const passwordInput = document.getElementById('password');
+
+            if (togglePassword && passwordInput) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
+
+            // Toggle password visibility for confirm password field
+            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
+            const confirmPasswordInput = document.getElementById('password-confirmation');
+
+            if (toggleConfirmPassword && confirmPasswordInput) {
+                toggleConfirmPassword.addEventListener('click', function() {
+                    const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    confirmPasswordInput.setAttribute('type', type);
+
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                });
+            }
+        });
+    </script>
 
     <!-- Display success message -->
     @if(session('success'))
