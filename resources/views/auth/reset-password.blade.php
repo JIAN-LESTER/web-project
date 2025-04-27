@@ -1,4 +1,4 @@
-
+<!-- Kulang pag notif diay ni -->
 
 <link rel="stylesheet" href="{{ asset('login_and_register/reset-password.css') }}">
 
