@@ -11,8 +11,9 @@ class Message extends Model
     use HasFactory, Notifiable;
 
     protected $primaryKey = 'messageID';
+    public $timestamp = false;
 
-    protected $filable = [
+    protected $fillable = [
         'userID',
         'kbID',
         'conversationID',
