@@ -6,15 +6,29 @@ use App\Models\Course;
 use App\Models\Logs;
 use App\Models\User;
 use App\Models\Year;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
     public function viewDashboard()
     {
-      
 
-        return view('admin.dashboard');
+        $days = collect();
+        $counts = collect();
+
+        for ($i = 6; $i >= 0; $i--){
+            $date = Carbon::today()->subDays($i)->toDateString();
+            $days->push(Carbon::parse($date)->format('M d'));
+
+            $count = \DB::table('messages')
+                ->whereDate('created_at', $date)
+                ->count();
+
+                $counts->push($count);
+        }
+
+        return view('admin.dashboard', ['days' => $days, 'counts' => $counts]);
     }
 
     public function viewKB()
