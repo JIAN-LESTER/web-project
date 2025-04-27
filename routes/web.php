@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Http\Controllers\ChatbotController;
 use App\Livewire\Chatbot;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,10 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/2fa/resend', 'Auth\YourAuthController@resendTwoFactorCode')->name('2fa.resend');
 
+Route::get('/chatbot', [UserController::class, 'index'])->name('chatbot');
+
+// For AJAX POST
+Route::post('/chatbot/message', [ChatbotController::class, 'handleChat'])->name('chatbot.handle');
 
 
 Route::get('/2fa', function () {
@@ -57,7 +62,6 @@ Route::get('/dashboard', function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/chatbot', [UserController::class, 'index'])->name('chatbot');
 
 Route::get('/dashboard', [AdminController::class, 'viewDashboard'])->name('admin.dashboard');
 Route::get('/knowledge-base', [AdminController::class, 'viewKB'])->name('admin.knowledge_base');

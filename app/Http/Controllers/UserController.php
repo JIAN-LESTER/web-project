@@ -10,7 +10,7 @@ class UserController extends Controller
         return view('user.chatbot');
     }
 
-    public function sendMessage(Request $request){
-        
-    }
+  
+
+
 }

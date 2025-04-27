@@ -11,6 +11,7 @@ class KnowledgeBase extends Model
     use HasFactory, Notifiable;
 
     protected $primaryKey = 'kbID';
+    public $timestamp = false;
 
     protected $fillable = [
         'kb_title',
