@@ -52,12 +52,11 @@ class AuthController extends Controller
             'action_type' => 'Registered own account. Email verification sent.',
             'timestamp' => now(),
         ]);
-    
+
 
         Mail::to($user->email)->send(new VerifyEmail($user));
 
         return redirect()->route('registration.success');
-
     }
 
 
@@ -77,22 +76,22 @@ class AuthController extends Controller
             $secondsLeft = now()->diffInSeconds($user->lockout_time);
             $minutesLeft = floor($secondsLeft / 60);
             $secondsRemainder = $secondsLeft % 60;
-        
+
             return back()
                 ->with('account_locked', true)
                 ->with('lockout_timer', "$minutesLeft minutes and $secondsRemainder seconds")
-                ->withInput(); 
+                ->withInput();
         }
-        
+
         if (!Hash::check($request->password, $user->password)) {
             $this->incrementFailedAttempts($user);
             $remainingAttempts = 5 - $user->failed_attempts;
-        
+
             return back()
                 ->with('error', 'Incorrect email or password.')
                 ->with('failed_attempts', $user->failed_attempts)
                 ->with('remaining_attempts', $remainingAttempts)
-                ->withInput(); 
+                ->withInput();
         }
         $this->resetFailedAttempts($user);
 
@@ -159,7 +158,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        
+
         $user = Auth::user();
         if ($user) {
             Logs::create([
@@ -168,7 +167,7 @@ class AuthController extends Controller
                 'timestamp' => now(),
             ]);
         }
- 
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -218,7 +217,7 @@ class AuthController extends Controller
             'action_type' => "Resent 2FA code",
             'timestamp' => now(),
         ]);
-        
+
 
         return redirect()->route('2fa.verify.form')
             ->with('message', 'A new verification code has been sent to your email.');
