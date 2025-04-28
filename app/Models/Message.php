@@ -41,4 +41,8 @@ class Message extends Model
         return $this->hasMany(Logs::class, 'messageID', 'messageID');
     }
 
+    public function category(){
+        return $this->belongsTo(Categories::class, 'categoryID', 'categoryID');
+    }
+
 }

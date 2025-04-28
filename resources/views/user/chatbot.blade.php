@@ -8,7 +8,7 @@
         </div>
 
         <div class="card-body" style="height: 400px; overflow-y: auto;" id="chat-messages">
-            <!-- Messages appear here -->
+            <!-- Messages will appear here dynamically -->
         </div>
 
         <div class="card-footer">
@@ -41,6 +41,7 @@ document.getElementById('chat-form').addEventListener('submit', async function(e
     inputField.value = '';
 
     try {
+        // Send message to Laravel route
         const response = await fetch('{{ route("chatbot.handle") }}', {
             method: 'POST',
             headers: {
@@ -52,15 +53,24 @@ document.getElementById('chat-form').addEventListener('submit', async function(e
 
         const data = await response.json();
 
-        // Display bot's response
+        // Display the bot's response (from KB or OpenAI)
         const botBubble = document.createElement('div');
         botBubble.classList.add('text-start', 'mb-2');
-        botBubble.innerHTML = `<span class="badge bg-secondary">${data.message}</span>`;
+        
+        // If the response comes from OpenAI (fallback), display appropriately
+        const responseMessage = data.message || "Sorry, I couldn't understand that.";
+        
+        botBubble.innerHTML = `<span class="badge bg-secondary">${responseMessage}</span>`;
         messagesDiv.appendChild(botBubble);
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
     } catch (error) {
         console.error('Error:', error);
+        const errorBubble = document.createElement('div');
+        errorBubble.classList.add('text-start', 'mb-2');
+        errorBubble.innerHTML = `<span class="badge bg-danger">Sorry, there was an error processing your message.</span>`;
+        messagesDiv.appendChild(errorBubble);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
 });
 </script>

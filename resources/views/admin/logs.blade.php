@@ -19,7 +19,6 @@
                     <tr>
                         <th>Logs ID</th>
                         <th>User</th>
-                        <th>Message ID</th>
                         <th>Action</th>
                         <th>Timestamp</th>
                     </tr>
@@ -29,11 +28,7 @@
                         <tr>
                           <td>{{ $log->logID }}</td>
                             <td class="fw-semibold">{{ $log->user->name ?? 'Unknown User' }}</td>
-                            @if ($log->messageID == null)
-                                <td class="text-muted fw-semibold">N/A</td>
-                            @else
-                                <td class="fw-semibold">{{ $log->messageID }}</td>
-                            @endif
+                           
                             <td>{{ $log->action_type }}</td>
                             <td class="text-start">
   {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->timestamp)

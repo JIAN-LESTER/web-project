@@ -20,4 +20,8 @@ class Categories extends Model
     {
         return $this->hasMany(KnowledgeBase::class, 'categoryID');
     }
+
+    public function message(){
+        return $this->hasMany(Message::class, 'conversationID', 'conversationID');
+    }
 }
