@@ -197,7 +197,30 @@
             </div>
 
             <div class="pagination-wrapper">
-                {{ $logs->appends(['search' => request('search')])->links('pagination::bootstrap-5') }}
+                <div class="pagination-info">
+                    Showing {{ $logs->firstItem() ?? 0 }} to {{ $logs->lastItem() ?? 0 }} of {{ $logs->total() }} results
+                </div>
+                <div class="pagination">
+                    <!-- Left arrow - using unicode character -->
+                    <a href="{{ $logs->previousPageUrl() }}"
+                       class="page-link {{ $logs->onFirstPage() ? 'disabled' : '' }}">
+                        ←
+                    </a>
+
+                    <!-- Page numbers -->
+                    @for ($i = 1; $i <= $logs->lastPage(); $i++)
+                        <a href="{{ $logs->url($i) }}"
+                           class="page-link {{ $logs->currentPage() == $i ? 'active' : '' }}">
+                            {{ $i }}
+                        </a>
+                    @endfor
+
+                    <!-- Right arrow - using unicode character -->
+                    <a href="{{ $logs->nextPageUrl() }}"
+                       class="page-link {{ !$logs->hasMorePages() ? 'disabled' : '' }}">
+                        →
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -250,9 +273,7 @@
                 <span class="detail-label">IP Address:</span>
                 <div class="detail-value">
                     <div class="ip-address-info">
-                        <div class="info-icon">
-                            <i class="fas fa-globe"></i>
-                        </div>
+                        <i class="fas fa-globe info-icon"></i>
                         <div class="info-details">
                             <span class="info-main" id="panel-ip">192.168.1.1</span>
                             <span class="info-secondary">Local Network</span>
@@ -264,9 +285,7 @@
                 <span class="detail-label">Browser:</span>
                 <div class="detail-value">
                     <div class="browser-info">
-                        <div class="info-icon">
-                            <i class="fab fa-chrome"></i>
-                        </div>
+                        <i class="fab fa-chrome info-icon"></i>
                         <div class="info-details">
                             <span class="info-main" id="panel-browser">Chrome</span>
                             <span class="info-secondary" id="panel-os">Windows</span>
@@ -316,17 +335,17 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('panel-ip').textContent = '192.168.1.1';
 
             // Set appropriate icon for browser
-            const browserIcon = document.querySelector('.browser-info .info-icon i');
+            const browserIcon = document.querySelector('.browser-info .info-icon');
             if (browserInfo.browser.toLowerCase().includes('chrome')) {
-                browserIcon.className = 'fab fa-chrome';
+                browserIcon.className = 'fab fa-chrome info-icon';
             } else if (browserInfo.browser.toLowerCase().includes('firefox')) {
-                browserIcon.className = 'fab fa-firefox';
+                browserIcon.className = 'fab fa-firefox info-icon';
             } else if (browserInfo.browser.toLowerCase().includes('edge')) {
-                browserIcon.className = 'fab fa-edge';
+                browserIcon.className = 'fab fa-edge info-icon';
             } else if (browserInfo.browser.toLowerCase().includes('safari')) {
-                browserIcon.className = 'fab fa-safari';
+                browserIcon.className = 'fab fa-safari info-icon';
             } else {
-                browserIcon.className = 'fas fa-globe';
+                browserIcon.className = 'fas fa-globe info-icon';
             }
 
             // Show panel and backdrop with animation
@@ -370,10 +389,17 @@ document.addEventListener('DOMContentLoaded', function() {
         return { browser, os };
     }
 
-    // Close panel functionality
+    // Close panel functionality with animation
     const closePanel = function() {
-        logDetailsPanel.classList.remove('show');
+        // Add the closing animation class
+        logDetailsPanel.classList.add('closing');
         logDetailsBackdrop.classList.remove('show');
+
+        // Wait for animation to complete before hiding panel
+        setTimeout(() => {
+            logDetailsPanel.classList.remove('show');
+            logDetailsPanel.classList.remove('closing');
+        }, 300); // Match this to the animation duration
     };
 
     // Add multiple ways to close the panel
@@ -523,7 +549,6 @@ document.addEventListener('DOMContentLoaded', function() {
             this.querySelector('i').className = `fas fa-sort-${newDirection === 'asc' ? 'up' : 'down'}`;
 
             // Here you would actually perform the sorting via AJAX or form submit
-            // For demo purposes we'll just show an alert
             alert(`Sorting by ${sort} (${newDirection})`);
         });
     });
