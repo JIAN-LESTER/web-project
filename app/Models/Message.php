@@ -11,8 +11,9 @@ class Message extends Model
     use HasFactory, Notifiable;
 
     protected $primaryKey = 'messageID';
+    public $timestamp = false;
 
-    protected $filable = [
+    protected $fillable = [
         'userID',
         'kbID',
         'conversationID',
@@ -38,6 +39,10 @@ class Message extends Model
 
     public function logs(){
         return $this->hasMany(Logs::class, 'messageID', 'messageID');
+    }
+
+    public function category(){
+        return $this->belongsTo(Categories::class, 'categoryID', 'categoryID');
     }
 
 }
