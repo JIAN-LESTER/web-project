@@ -136,7 +136,8 @@ document.addEventListener("DOMContentLoaded", function () {
         radio.addEventListener('change', function () {
             const selectedFilter = this.value;
             // Reload the page with the new filter
-            window.location.href = "{{ route('admin.dashboard') }}" + "?filter=" + selectedFilter;
+            window.location.href = "{{ url()->current() }}" + "?filter=" + selectedFilter;
+
         });
     });
 
