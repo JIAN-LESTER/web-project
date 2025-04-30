@@ -214,7 +214,13 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" data-coreui-toggle="dropdown">
               <div class="avatar avatar-md">
-                <img class="avatar-img" src="assets/img/avatars/8.jpg" alt="user@email.com">
+
+              @php
+    $user = Auth::user();
+@endphp
+
+              <img class="avatar-img" src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->email }}">
+
               </div>
             </a>
             <div class="dropdown-menu dropdown-menu-end">

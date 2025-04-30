@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use Http;
 
 class OpenAIService
 {
@@ -19,26 +20,21 @@ class OpenAIService
     // Method to generate embeddings
     public function generateEmbedding($text)
     {
-        try {
-            $response = $this->client->post($this->apiUrl . 'embeddings', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->apiKey,
-                    'Content-Type'  => 'application/json',
-                ],
-                'json' => [
-                    'input' => $text,
-                    'model' => 'text-embedding-ada-002',  // Model for embeddings
-                ],
+        $response = Http::withToken(env('OPENAI_API_KEY'))->post('https://api.openai.com/v1/embeddings', [
+            'input' => $text,
+            'model' => 'text-embedding-ada-002',
+        ]);
+    
+        if (!$response->successful()) {
+            \Log::error('Embedding API failed', [
+                'status' => $response->status(),
+                'body' => $response->body(),
             ]);
-
-            $data = json_decode($response->getBody(), true);
-
-            return $data['data'][0]['embedding'] ?? null;
-        } catch (\Exception $e) {
-            return null;
+            return [];
         }
+    
+        return $response['data'][0]['embedding'] ?? [];
     }
-
     // Method to generate a completion (chat)
     public function generateCompletion($prompt)
     {
@@ -63,4 +59,6 @@ class OpenAIService
             return 'Error: Unable to generate a response.';
         }
     }
+
+
 }

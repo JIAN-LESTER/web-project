@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\KnowledgeBase;
 use App\Models\Logs;
 use App\Models\User;
 use App\Models\Year;
@@ -72,10 +73,12 @@ public function viewDashboard(Request $request)
 
     
 
-    public function viewKB()
-    {
-        return view('admin.knowledge_base');
-    }
+public function viewKB()
+{
+    $documents = KnowledgeBase::with('category')->latest()->paginate(10);
+    return view('admin.knowledge_base', compact('documents'));
+}
+
 
     public function viewReports()
     {

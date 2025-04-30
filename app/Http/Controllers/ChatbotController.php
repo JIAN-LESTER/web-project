@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Conversation;
 use App\Models\KnowledgeBase;
 use App\Models\Message;
+use App\Services\KnowledgeRetrievalService;
 use App\Services\OpenAIService;  // Import the OpenAIService
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,9 +15,13 @@ class ChatbotController extends Controller
     protected $openAI;  // Declare OpenAIService
 
     // Inject the OpenAIService into the controller
-    public function __construct(OpenAIService $openAI)
+    protected $kbRetrieval;
+
+    // In your constructor, initialize it
+    public function __construct(KnowledgeRetrievalService $kbRetrieval, OpenAIService $openAI)
     {
-        $this->openAI = $openAI;  // Initialize the OpenAIService
+        $this->kbRetrieval = $kbRetrieval;
+        $this->openAI = $openAI;
     }
 
     public function handleChat(Request $request)
@@ -58,16 +63,16 @@ class ChatbotController extends Controller
     ]);
 
     // Check Knowledge Base for an answer
-    $kbEntry = KnowledgeBase::where('question', 'LIKE', '%' . $userQuery . '%')->first();
+    $kbEntry = $this->kbRetrieval->retrieveRelevant($userQuery);
 
-    if ($kbEntry) {
-        $kbID = $kbEntry->kbID;
-        $responseText = $kbEntry->answer;
-    } else {
-        // If no answer is found in KB, use OpenAI API to generate a response
-        $responseText = $this->openAI->generateCompletion($userQuery);  // Using OpenAI to generate a response
-        $kbID = null; // No KB entry was used
-    }
+if ($kbEntry && $kbEntry->content) {
+    $kbID = $kbEntry->kbID;
+    $context = $kbEntry->content;
+    $responseText = $this->openAI->generateCompletion("Context:\n$context\n\nQuestion:\n$userQuery");
+} else {
+    $responseText = $this->openAI->generateCompletion($userQuery);
+    $kbID = null;
+}
 
     // Save bot response
     Message::create([

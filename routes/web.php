@@ -2,7 +2,9 @@
 
 
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\KBController;
 use App\Livewire\Chatbot;
+use App\Models\KnowledgeBase;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
@@ -47,7 +49,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 Route::get('/dashboard', [AdminController::class, 'viewDashboard'])->name('admin.dashboard');
-Route::get('/knowledge-base', [AdminController::class, 'viewKB'])->name('admin.knowledge_base');
 Route::get('/reports-analytics', [AdminController::class, 'viewReports'])->name('admin.reports_analytics');
 Route::get('/logs', [AdminController::class, 'viewLogs'])->name('admin.logs');
 Route::get('/user-management', [AdminController::class, 'viewUsers'])->name('admin.user_management');
@@ -64,6 +65,14 @@ Route::prefix('admin/user_crud')->name('admin.')->group(function () {
     Route::delete('/destroy/{id}', [UserManagementController::class, 'destroy'])->name('destroy');
 });
 
+
+Route::prefix('admin/kb')->middleware(['auth'])->group(function () {
+    Route::get('/', [AdminController::class, 'viewKB'])->name('admin.knowledge_base');
+    Route::get('/upload', [KBController::class, 'create'])->name('kb.upload');
+    Route::post('/store', [KBController::class, 'store'])->name('kb.store');
+    Route::get('/view/{id}', [KBController::class, 'view'])->name('kb.view');
+    Route::get('/search', [KBController::class, 'search'])->name('kb.search');
+});
 
 
 
