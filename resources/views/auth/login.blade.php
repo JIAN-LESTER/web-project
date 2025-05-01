@@ -271,13 +271,13 @@
                     </div>
                 </div>
 
-                <div class="remember-me-container">
+                {{-- <div class="remember-me-container">
                     <label class="remember-me-label">
                         <input type="checkbox" name="remember" id="remember">
                         <span class="checkbox-custom"></span>
                         Remember me
                     </label>
-                </div>
+                </div> --}}
 
                 <button type="submit" class="login-button">
                     Sign In

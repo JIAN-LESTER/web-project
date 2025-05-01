@@ -1,0 +1,182 @@
+/*
+ * Knowledge Base Styles
+ * Enhanced modern UI for document management
+ */
+
+/* Icon for Knowledge Base title */
+.kb-icon {
+    color: #4361ee;
+    margin-right: 8px;
+  }
+
+  /* Search functionality */
+  .search-container {
+    position: relative;
+    display: flex;
+    margin-bottom: 1.5rem;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    z-index: 3;
+  }
+
+  .search-input {
+    padding-left: 40px;
+    border-radius: 6px 0 0 6px;
+    flex-grow: 1;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: #4361ee;
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.2);
+  }
+
+  .search-button {
+    border-radius: 0 6px 6px 0;
+    background-color: #4361ee;
+    color: white;
+    border: none;
+  }
+
+  .search-button:hover {
+    background-color: #3a56d4;
+  }
+
+  /* Document title styling */
+  .document-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4361ee;
+    font-weight: 500;
+  }
+
+  .file-icon {
+    flex-shrink: 0;
+    color: #4361ee;
+  }
+
+  /* Category tags */
+  .category-tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .category-technical {
+    background-color: #e9f2fe;
+    color: #3a56d4;
+  }
+
+  .category-business {
+    background-color: #eef9f8;
+    color: #0ca789;
+  }
+
+  .category-legal {
+    background-color: #fff4e6;
+    color: #ff9800;
+  }
+
+  .category-marketing {
+    background-color: #fdf2e9;
+    color: #ff7849;
+  }
+
+  .category-default {
+    background-color: #f8f9fa;
+    color: #6c757d;
+  }
+
+  /* Empty state */
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .empty-icon {
+    color: #adb5bd;
+  }
+
+  /* Table styling enhancements */
+  .table {
+    margin-bottom: 0;
+  }
+
+  .table th {
+    font-weight: 600;
+    color: #495057;
+  }
+
+  .table-bordered td,
+  .table-bordered th {
+    border-color: #e9ecef;
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+  }
+
+  /* Make view button more prominent */
+  .btn-info {
+    background-color: #4cc9f0;
+    border-color: #4cc9f0;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .btn-info:hover {
+    background-color: #3ab7e0;
+    border-color: #3ab7e0;
+    color: white;
+  }
+
+  /* Card styling */
+  .card {
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .card-header {
+    background-color: white;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 1rem 1.5rem;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .search-container {
+      flex-direction: column;
+    }
+
+    .search-input {
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+    }
+
+    .search-button {
+      border-radius: 6px;
+      width: 100%;
+    }
+  }
