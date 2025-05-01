@@ -37,7 +37,7 @@ class PasswordResetController extends Controller
                 ]);
             }
 
-            return back()->with('success', 'Password reset link sent to your email.');
+            return redirect()->route('reset-password.success')->with('success', 'Password reset link sent to your email.');
         }
 
         return back()->withErrors(['email' => 'Failed to send reset link.']);
