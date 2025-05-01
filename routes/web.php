@@ -44,6 +44,23 @@ Route::get('/chatbot', [UserController::class, 'index'])->name('chatbot');
 Route::post('/chatbot/message', [ChatbotController::class, 'handleChat'])->name('chatbot.handle');
 
 
+Route::get('/2fa', function () {
+    return view('auth.two-factor');
+})->name('dashboard');
+
+Route::get('/reset', function () {
+    return view('auth.reset-password');
+})->name('dashboard');
+
+Route::get('/dashboard', function () {
+    return view('admin.dashboard');
+})->name('dashboard');
+
+
+
+
+
+
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 

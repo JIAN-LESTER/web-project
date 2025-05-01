@@ -95,22 +95,18 @@
 
     /* Large screen behavior (≥992px) */
     @media (min-width: 992px) {
-    @auth
-      @if(auth()->user()->role == 'admin')
-        .wrapper {
-          margin-left: 240px;
-        }
+      .wrapper {
+        margin-left: 240px;
+      }
 
-        body.sidebar-hidden .wrapper {
-          margin-left: 0;
-        }
+      body.sidebar-hidden .wrapper {
+        margin-left: 0;
+      }
 
-        body.sidebar-hidden #sidebar {
-          transform: translateX(-100%);
-        }
-      @endif
-    @endauth
-  }
+      body.sidebar-hidden #sidebar {
+        transform: translateX(-100%);
+      }
+    }
 
     /* Small screen behavior (<992px) */
     @media (max-width: 991.98px) {
@@ -158,35 +154,29 @@
 <body>
   @if (!request()->routeIs('login') && !request()->routeIs('home') && !request()->routeIs('register') && !request()->routeIs('password.request') && !request()->routeIs('password.update') && !request()->routeIs('password.reset') && !request()->routeIs('2fa.verify.form'))
 
-  @if(auth()->user() && auth()->user()->role == 'admin')  
   <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
     @include('partials.menu') <!-- Loads sidebar menu content -->
   </div>
+
+  <!-- Backdrop overlay for small screen sidebar -->
   <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
-  @endif
-
-
-
- 
 
   <!-- Main Page Wrapper -->
-  <div class="wrapper d-flex flex-column min-vh-100 {{ auth()->check() && auth()->user()->role == 'admin' ? 'with-sidebar' : '' }}">
-
+  <div class="wrapper d-flex flex-column min-vh-100">
 
     <!-- Header/Navbar -->
     <header class="header header-sticky p-0 mb-4 bg-white shadow-sm">
       <div class="container-fluid border-bottom px-4 d-flex align-items-center justify-content-between">
 
-      @auth
-  @if(auth()->user()->role === 'admin')
-    <!-- MENU ICON (BURGER ICON) for admin only -->
-    <button class="header-toggler" type="button" onclick="toggleSidebar()" style="margin-inline-start: -14px;">
-      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg" viewBox="0 0 24 24" fill="black">
-        <path d="M4 6h16M4 12h16M4 18h16" stroke="black" stroke-width="2" stroke-linecap="round" />
-      </svg>
-    </button>
-  @endif
-@endauth
+        <!--  MENU ICON (BURGER ICON) -->
+        <!-- This button toggles the sidebar on both desktop and mobile -->
+        <!-- The SVG below is the visible black burger icon -->
+        <button class="header-toggler" type="button" onclick="toggleSidebar()" style="margin-inline-start: -14px;">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg" viewBox="0 0 24 24" fill="black">
+            <path d="M4 6h16M4 12h16M4 18h16" stroke="black" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        <!-- END MENU ICON -->
 
         <!-- Header right-side icons (notifications, profile, etc.) -->
         <ul class="header-nav ms-auto d-flex align-items-center">
