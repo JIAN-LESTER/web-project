@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Categories;
 use App\Models\KnowledgeBase;
+use App\Services\CohereService;
 use App\Services\OpenAIService;
 use Dotenv\Parser\Parser;
 use Smalot\PdfParser\Parser as PdfParser;
@@ -15,22 +16,24 @@ class KBController extends Controller
 
 
 
-    protected $openAI;
+
     protected $kbRetrieval;
 
-    public function __construct(OpenAIService $openAI, KnowledgeRetrievalService $kbRetrieval)
-    {
-        $this->openAI = $openAI;
-        $this->kbRetrieval = $kbRetrieval;
-    }
+   
+protected $cohere;
 
+public function __construct(CohereService $cohere, KnowledgeRetrievalService $kbRetrieval)
+{
+    $this->cohere = $cohere;
+    $this->kbRetrieval = $kbRetrieval;
+}
     public function create()
     {
         $categories = Categories::all();
         return view('admin.docs_crud.upload_docs', compact('categories'));
     }
 
-    public function store(Request $request, OpenAIService $openAI)
+    public function store(Request $request)
     {
         $request->validate([
             'kb_title' => 'required|string',
@@ -54,7 +57,8 @@ class KBController extends Controller
         $maxLength = 2000; 
 $cleanedText = substr($text, 0, $maxLength);
 
-$embedding = $openAI->generateEmbedding($cleanedText);
+$embedding = $this->cohere->generateEmbedding($cleanedText);
+
 
         if (empty($embedding)) {
             return back()->with('error', 'Failed to generate embedding. Please check if the document is too large or malformed.');

@@ -8,20 +8,18 @@ use App\Models\Message;
 use App\Services\KnowledgeRetrievalService;
 use App\Services\OpenAIService;  // Import the OpenAIService
 use Illuminate\Http\Request;
+use App\Services\CohereService; 
 use Illuminate\Support\Facades\Auth;
 
 class ChatbotController extends Controller
 {
-    protected $openAI;  // Declare OpenAIService
-
-    // Inject the OpenAIService into the controller
+    protected $llm;
     protected $kbRetrieval;
 
-    // In your constructor, initialize it
-    public function __construct(KnowledgeRetrievalService $kbRetrieval, OpenAIService $openAI)
+    public function __construct(KnowledgeRetrievalService $kbRetrieval, CohereService $llm)
     {
         $this->kbRetrieval = $kbRetrieval;
-        $this->openAI = $openAI;
+        $this->llm = $llm;
     }
 
     public function handleChat(Request $request)
@@ -66,13 +64,14 @@ class ChatbotController extends Controller
     $kbEntry = $this->kbRetrieval->retrieveRelevant($userQuery);
 
 if ($kbEntry && $kbEntry->content) {
-    $kbID = $kbEntry->kbID;
+            $kbID = $kbEntry->kbID;
     $context = $kbEntry->content;
-    $responseText = $this->openAI->generateCompletion("Context:\n$context\n\nQuestion:\n$userQuery");
+    $responseText = $this->llm->generateCompletion("Context:\n$context\n\nQuestion:\n$userQuery");
 } else {
-    $responseText = $this->openAI->generateCompletion($userQuery);
-    $kbID = null;
+    $responseText = $this->llm->generateCompletion($userQuery);
+            $kbID = null;
 }
+
 
     // Save bot response
     Message::create([
