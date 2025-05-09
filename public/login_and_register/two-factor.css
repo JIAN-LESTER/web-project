@@ -1,67 +1,60 @@
 /*
- * Enhanced Two-Factor Authentication Page Styles
- * For GuideBot app
+ * Two-Factor Authentication Page Styles - Dark Green Theme
+ * Matching the login, register, and success pages
  */
 
  :root {
-    --primary-color: #5A3092;
-    --primary-gradient: linear-gradient(135deg, #5A3092, #6941C6);
-    --light-primary: #8B68C1;
-    --accent-color: #FF9800;
-    --success-color: #28a745;
-    --danger-color: #dc3545;
-    --text-color: #333;
-    --bg-light: #f8f9fa;
-    --white: #ffffff;
-    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 6px 15px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --color-primary: #0D6832;        /* Dark green */
+    --color-primary-light: #12823e;  /* Lighter green */
+    --color-primary-dark: #094e26;   /* Darker green */
+    --color-accent: #4ADE80;         /* Light green accent */
+    --color-secondary: #134E4A;      /* Teal shade */
+    --color-background: #0F172A;     /* Dark blue-black background */
+    --color-surface: #1E293B;        /* Slate surface color */
+    --color-error: #ef4444;          /* Error red */
+    --color-success: #22c55e;        /* Success green */
+    --color-warning: #f59e0b;        /* Warning yellow */
+    --color-text: #f8fafc;           /* Light text */
+    --color-text-secondary: #cbd5e1; /* Secondary text */
+    --transition-default: all 0.3s ease;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
     min-height: 100vh;
-    width: 100%;
-    background: var(--primary-gradient);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow-x: hidden;
 }
 
 .container {
+    position: relative;
     width: 100%;
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    position: relative;
-    padding: 20px;
+    justify-content: center;
+    overflow: hidden;
 }
 
-/* Enhanced background elements */
-.background-pattern {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image:
-        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 1%, transparent 3%),
-        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 1%, transparent 3%),
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 2%, transparent 5%);
-    background-size: 100px 100px;
-    z-index: 0;
-    opacity: 0.6;
-    animation: patternFloat 60s linear infinite;
-}
-
-/* Floating shapes animation */
-.floating-shapes {
+/* Background Animation */
+.background-shapes {
     position: fixed;
     top: 0;
     left: 0;
@@ -75,157 +68,136 @@ body {
     position: absolute;
     border-radius: 50%;
     opacity: 0.2;
-    filter: blur(40px);
+    filter: blur(60px);
 }
 
 .shape-1 {
-    bottom: 10%;
-    left: 10%;
-    width: 300px;
-    height: 300px;
-    background: rgba(255, 255, 255, 0.2);
-    animation: float1 15s ease-in-out infinite alternate;
+    top: -150px;
+    left: -100px;
+    width: 500px;
+    height: 500px;
+    background: var(--color-primary);
+    animation: float 15s ease-in-out infinite;
 }
 
 .shape-2 {
-    top: 15%;
-    right: 15%;
-    width: 200px;
-    height: 200px;
-    background: rgba(255, 255, 255, 0.15);
-    animation: float2 20s ease-in-out infinite alternate;
+    bottom: -150px;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    background: var(--color-secondary);
+    animation: float 20s ease-in-out infinite reverse;
 }
 
 .shape-3 {
-    top: 45%;
-    left: 30%;
-    width: 150px;
-    height: 150px;
-    background: rgba(255, 152, 0, 0.1);
-    animation: float3 18s ease-in-out infinite alternate;
+    top: 50%;
+    left: 20%;
+    width: 300px;
+    height: 300px;
+    background: var(--color-accent);
+    animation: float 18s ease-in-out infinite 2s;
 }
 
 .shape-4 {
-    bottom: 30%;
+    bottom: 20%;
     right: 25%;
-    width: 180px;
-    height: 180px;
-    background: rgba(255, 255, 255, 0.1);
-    animation: float4 12s ease-in-out infinite alternate;
+    width: 250px;
+    height: 250px;
+    background: var(--color-primary-light);
+    animation: float 12s ease-in-out infinite 1s;
 }
 
-@keyframes float1 {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    100% { transform: translate(40px, -40px) rotate(10deg); }
+@keyframes float {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(40px, 40px) scale(1.05);
+    }
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
 }
 
-@keyframes float2 {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    100% { transform: translate(-50px, 30px) rotate(-15deg); }
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
-@keyframes float3 {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    100% { transform: translate(30px, 50px) rotate(5deg); }
+.logo i {
+    font-size: 1.5rem;
+    color: var(--color-accent);
+    margin-right: 8px;
 }
 
-@keyframes float4 {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    100% { transform: translate(-40px, -30px) rotate(-8deg); }
+.logo span {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: 1px;
 }
 
 .auth-card {
-    background: var(--white);
-    width: 450px;
-    max-width: 100%;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
+    width: 500px;
+    max-width: 90%;
     padding: 40px;
-    border-radius: 24px;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(90, 48, 146, 0.15);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-lg);
     text-align: center;
     position: relative;
     overflow: hidden;
     z-index: 1;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-}
-
-.auth-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 150px;
-    height: 150px;
-    background: linear-gradient(135deg, var(--light-primary) 0%, transparent 70%);
-    border-radius: 0 0 0 100%;
-    opacity: 0.2;
-    z-index: 0;
-}
-
-.auth-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 120px;
-    height: 120px;
-    background: linear-gradient(315deg, var(--light-primary) 0%, transparent 70%);
-    border-radius: 0 100% 0 0;
-    opacity: 0.2;
-    z-index: 0;
 }
 
 .auth-icon-container {
     width: 100px;
     height: 100px;
     margin: 0 auto 30px;
-    background: linear-gradient(to bottom right, rgba(90, 48, 146, 0.1), rgba(105, 65, 198, 0.15));
+    background-color: rgba(74, 222, 128, 0.1);
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     position: relative;
-    z-index: 1;
-    box-shadow: 0 5px 15px rgba(90, 48, 146, 0.15);
+    animation: pulse 2s infinite;
 }
 
 .shield-icon {
     width: 50px;
     height: 50px;
-    fill: var(--primary-color);
-    animation: pulse 2s ease-in-out infinite;
+    fill: var(--color-accent);
 }
 
 .lock-path {
-    fill: var(--accent-color);
+    fill: var(--color-primary);
 }
 
 .auth-heading {
-    color: var(--text-color);
+    color: var(--color-text);
     font-size: 28px;
     font-weight: 700;
     margin-bottom: 15px;
-    position: relative;
-    z-index: 1;
 }
 
 .auth-message {
-    color: #666;
+    color: var(--color-text-secondary);
     font-size: 16px;
     margin-bottom: 30px;
     line-height: 1.5;
-    position: relative;
-    z-index: 1;
 }
 
-/* Enhanced alert boxes */
+/* Alert Boxes */
 .alert-box {
     padding: 16px;
     margin-bottom: 24px;
-    border-radius: 12px;
+    border-radius: var(--border-radius-md);
     font-size: 14px;
     position: relative;
-    z-index: 2;
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -243,15 +215,15 @@ body {
 }
 
 .alert-danger {
-    background-color: rgba(220, 53, 69, 0.1);
-    border-left: 4px solid var(--danger-color);
-    color: var(--danger-color);
+    background-color: rgba(239, 68, 68, 0.1);
+    border-left: 4px solid var(--color-error);
+    color: var(--color-error);
 }
 
 .alert-success {
-    background-color: rgba(40, 167, 69, 0.1);
-    border-left: 4px solid var(--success-color);
-    color: var(--success-color);
+    background-color: rgba(34, 197, 94, 0.1);
+    border-left: 4px solid var(--color-success);
+    color: var(--color-success);
 }
 
 .alert-box ul {
@@ -280,7 +252,6 @@ body {
 
 .auth-form {
     position: relative;
-    z-index: 1;
 }
 
 .form-group {
@@ -292,11 +263,11 @@ body {
     display: block;
     font-weight: 600;
     margin-bottom: 12px;
-    color: var(--text-color);
+    color: var(--color-text);
     font-size: 16px;
 }
 
-/* Enhanced code input styling */
+/* Code Input Styling */
 .code-input-container {
     position: relative;
     margin-bottom: 5px;
@@ -305,8 +276,8 @@ body {
 .code-input-wrapper {
     position: relative;
     width: 100%;
-    transition: all 0.3s ease;
-    border-radius: 12px;
+    transition: var(--transition-default);
+    border-radius: var(--border-radius-md);
 }
 
 .code-input {
@@ -323,7 +294,7 @@ body {
     background: transparent;
     letter-spacing: 8px;
     color: transparent;
-    caret-color: var(--primary-color);
+    caret-color: var(--color-accent);
 }
 
 .code-input:focus {
@@ -339,29 +310,29 @@ body {
 
 .digit-box {
     flex: 1;
-    background-color: var(--bg-light);
-    border: 2px solid rgba(90, 48, 146, 0.3);
-    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.5);
+    border: 2px solid rgba(74, 222, 128, 0.3);
+    border-radius: var(--border-radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 24px;
     font-weight: 700;
-    color: var(--primary-color);
-    transition: all 0.3s ease;
+    color: var(--color-text);
+    transition: var(--transition-default);
     position: relative;
     overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .digit-box.filled {
-    border-color: var(--primary-color);
-    background-color: rgba(90, 48, 146, 0.05);
-    box-shadow: 0 0 0 2px rgba(90, 48, 146, 0.1);
+    border-color: var(--color-accent);
+    background-color: rgba(74, 222, 128, 0.1);
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.1);
 }
 
 .code-input-wrapper.pulse .digit-box:not(.filled):first-of-type {
-    box-shadow: 0 0 0 2px rgba(90, 48, 146, 0.2);
+    box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2);
     animation: pulseBorder 1.5s infinite;
 }
 
@@ -370,17 +341,17 @@ body {
 }
 
 .code-input-wrapper.complete .digit-box {
-    background-color: rgba(40, 167, 69, 0.1);
-    border-color: var(--success-color);
-    color: var(--success-color);
-    transition: all 0.3s ease;
+    background-color: rgba(34, 197, 94, 0.1);
+    border-color: var(--color-success);
+    color: var(--color-success);
+    transition: var(--transition-default);
 }
 
 .digit-box.pop {
     animation: popIn 0.3s ease forwards;
 }
 
-/* Enhanced timer styling */
+/* Timer Styling */
 .code-expire-timer {
     display: flex;
     align-items: center;
@@ -388,7 +359,7 @@ body {
     margin-top: 24px;
     gap: 12px;
     padding: 8px 16px;
-    background-color: rgba(90, 48, 146, 0.05);
+    background-color: rgba(15, 23, 42, 0.5);
     border-radius: 30px;
     width: fit-content;
     margin-left: auto;
@@ -409,13 +380,13 @@ body {
 
 .timer-bg {
     fill: none;
-    stroke: #e9e9e9;
+    stroke: rgba(203, 213, 225, 0.2);
     stroke-width: 3;
 }
 
 .timer-fill {
     fill: none;
-    stroke: var(--primary-color);
+    stroke: var(--color-accent);
     stroke-width: 3;
     stroke-linecap: round;
     stroke-dasharray: 100;
@@ -430,48 +401,48 @@ body {
     transform: translate(-50%, -50%);
     font-size: 12px;
     font-weight: 600;
-    color: var(--primary-color);
+    color: var(--color-accent);
 }
 
 .timer-label {
     font-size: 14px;
-    color: #666;
+    color: var(--color-text-secondary);
     font-weight: 500;
 }
 
-/* Enhanced resend section */
+/* Resend Section */
 .resend-container {
     margin-top: 24px;
     text-align: center;
     padding: 16px;
-    background-color: #f9f9f9;
-    border-radius: 12px;
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: var(--border-radius-md);
 }
 
 .resend-text {
     font-size: 14px;
-    color: #666;
+    color: var(--color-text-secondary);
     margin-bottom: 8px;
 }
 
 .resend-link {
-    color: var(--primary-color);
+    color: var(--color-accent);
     font-size: 15px;
     text-decoration: none;
     font-weight: 500;
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s ease;
+    transition: var(--transition-default);
     cursor: pointer;
     padding: 8px 16px;
     border-radius: 20px;
-    background-color: rgba(90, 48, 146, 0.05);
+    background-color: rgba(74, 222, 128, 0.1);
 }
 
 .resend-link:hover {
-    color: #4a2882;
-    background-color: rgba(90, 48, 146, 0.1);
+    color: var(--color-text);
+    background-color: rgba(74, 222, 128, 0.2);
 }
 
 .resend-icon {
@@ -479,13 +450,13 @@ body {
 }
 
 .resend-link.disabled {
-    color: #aaa;
-    background-color: #f1f1f1;
+    color: rgba(203, 213, 225, 0.5);
+    background-color: rgba(15, 23, 42, 0.3);
     cursor: not-allowed;
     pointer-events: none;
 }
 
-/* Enhanced buttons */
+/* Buttons */
 .buttons-container {
     margin-top: 30px;
 }
@@ -493,11 +464,11 @@ body {
 .primary-button, .secondary-button {
     width: 100%;
     padding: 16px 25px;
-    border-radius: 12px;
+    border-radius: var(--border-radius-md);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: var(--transition-default);
     text-decoration: none;
     display: inline-flex;
     justify-content: center;
@@ -507,14 +478,32 @@ body {
 }
 
 .primary-button {
-    background: var(--primary-gradient);
+    background: linear-gradient(to right, var(--color-primary), var(--color-primary-light));
     color: white;
-    box-shadow: 0 4px 15px rgba(90, 48, 146, 0.3);
+    box-shadow: 0 4px 10px rgba(13, 104, 50, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.primary-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
 }
 
 .primary-button:hover {
-    box-shadow: 0 8px 20px rgba(90, 48, 146, 0.4);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 7px 14px rgba(13, 104, 50, 0.4);
+    background: linear-gradient(to right, var(--color-primary-light), var(--color-primary));
+}
+
+.primary-button:hover::before {
+    left: 100%;
 }
 
 .primary-button:active {
@@ -522,17 +511,16 @@ body {
 }
 
 .primary-button:disabled {
-    background: linear-gradient(to right, #a3a3a3, #b8b8b8);
+    background: linear-gradient(to right, #4b5563, #6b7280);
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
 }
 
-/* Enhanced divider */
+/* Divider */
 .secondary-options {
     margin-top: 30px;
     position: relative;
-    z-index: 1;
 }
 
 .divider {
@@ -549,7 +537,7 @@ body {
     left: 0;
     right: 0;
     height: 1px;
-    background-color: #e0e0e0;
+    background-color: rgba(203, 213, 225, 0.2);
 }
 
 .divider-text {
@@ -557,21 +545,20 @@ body {
     position: relative;
     padding: 0 15px;
     font-size: 14px;
-    color: #888;
-    background-color: white;
+    color: var(--color-text-secondary);
+    background-color: rgba(30, 41, 59, 0.7);
 }
 
 .secondary-button {
-    background-color: var(--bg-light);
-    color: var(--text-color);
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    background-color: rgba(15, 23, 42, 0.5);
+    color: var(--color-text);
+    border: 1px solid rgba(203, 213, 225, 0.2);
 }
 
 .secondary-button:hover {
-    background-color: #ececec;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background-color: rgba(15, 23, 42, 0.7);
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .button-icon {
@@ -609,13 +596,13 @@ body {
 
 @keyframes pulseBorder {
     0% {
-        box-shadow: 0 0 0 0 rgba(90, 48, 146, 0.5);
+        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.5);
     }
     70% {
-        box-shadow: 0 0 0 6px rgba(90, 48, 146, 0);
+        box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(90, 48, 146, 0);
+        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
     }
 }
 
@@ -646,15 +633,6 @@ body {
     }
 }
 
-@keyframes patternFloat {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 100px 100px;
-    }
-}
-
 .timer-pulse {
     animation: timerPulse 1s infinite;
 }
@@ -673,16 +651,16 @@ body {
 
 /* Expired card state */
 .auth-card.expired {
-    border: 1px solid var(--danger-color);
-    box-shadow: 0 10px 30px rgba(220, 53, 69, 0.1);
+    border: 1px solid var(--color-error);
+    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.1);
 }
 
 .auth-card.expired .auth-icon-container {
-    background: rgba(220, 53, 69, 0.1);
+    background: rgba(239, 68, 68, 0.1);
 }
 
 .auth-card.expired .shield-icon {
-    fill: var(--danger-color);
+    fill: var(--color-error);
 }
 
 /* Responsive styles */
@@ -715,6 +693,7 @@ body {
 
     .code-digits {
         gap: 6px;
+        height: 50px;
     }
 
     .digit-box {

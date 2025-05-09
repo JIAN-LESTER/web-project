@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Two-Factor Authentication - GuideBot</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('login_and_register/two-factor.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
-        <div class="background-pattern"></div>
-        <div class="floating-shapes">
+        <!-- Background animation elements -->
+        <div class="background-shapes">
             <div class="shape shape-1"></div>
             <div class="shape shape-2"></div>
             <div class="shape shape-3"></div>
@@ -21,6 +21,11 @@
         </div>
 
         <div class="auth-card">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <span>GuideBot</span>
+            </div>
+
             <div class="auth-icon-container">
                 <svg class="shield-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
@@ -188,8 +193,8 @@
 
                 // Change color when time is running out
                 if (totalSeconds <= 60) {
-                    timerFill.style.stroke = '#dc3545';
-                    timerText.style.color = '#dc3545';
+                    timerFill.style.stroke = '#ef4444';
+                    timerText.style.color = '#ef4444';
 
                     if (!document.querySelector('.timer-pulse')) {
                         timerText.classList.add('timer-pulse');

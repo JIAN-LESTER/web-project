@@ -1,73 +1,164 @@
 /*
- * Registration Success Page Styles
- * For GuideBot app
+ * Registration Success Page Styles - Dark Green Theme
+ * Matching the login and register pages
  */
 
  :root {
-    --primary-color: #5A3092;
-    --light-primary: #8B68C1;
-    --text-color: #333;
-    --success-green: #28a745;
-    --light-green: #d4edda;
+    --color-primary: #0D6832;        /* Dark green */
+    --color-primary-light: #12823e;  /* Lighter green */
+    --color-primary-dark: #094e26;   /* Darker green */
+    --color-accent: #4ADE80;         /* Light green accent */
+    --color-secondary: #134E4A;      /* Teal shade */
+    --color-background: #0F172A;     /* Dark blue-black background */
+    --color-surface: #1E293B;        /* Slate surface color */
+    --color-error: #ef4444;          /* Error red */
+    --color-success: #22c55e;        /* Success green */
+    --color-warning: #f59e0b;        /* Warning yellow */
+    --color-text: #f8fafc;           /* Light text */
+    --color-text-secondary: #cbd5e1; /* Secondary text */
+    --transition-default: all 0.3s ease;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --border-radius-sm: 4px;
+    --border-radius-md: 8px;
+    --border-radius-lg: 12px;
+    --border-radius-xl: 16px;
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-    height: 100vh;
-    width: 100vw;
-    overflow: hidden;
-    background-color: #5A3092; /* Changed from #f8f9fa to #5A3092 */
+    min-height: 100vh;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
 }
 
 .container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-.background-pattern {
+/* Background Animation */
+.background-shapes {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-image:
-        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.1) 1%, transparent 3%),
-        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 1%, transparent 3%),
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 2%, transparent 5%);
-    background-size: 100px 100px;
-    z-index: -1;
-    opacity: 0.6;
-    animation: patternFloat 60s linear infinite;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.2;
+    filter: blur(60px);
+}
+
+.shape-1 {
+    top: -150px;
+    left: -100px;
+    width: 500px;
+    height: 500px;
+    background: var(--color-primary);
+    animation: float 15s ease-in-out infinite;
+}
+
+.shape-2 {
+    bottom: -150px;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    background: var(--color-secondary);
+    animation: float 20s ease-in-out infinite reverse;
+}
+
+.shape-3 {
+    top: 50%;
+    left: 20%;
+    width: 300px;
+    height: 300px;
+    background: var(--color-accent);
+    animation: float 18s ease-in-out infinite 2s;
+}
+
+.shape-4 {
+    bottom: 20%;
+    right: 25%;
+    width: 250px;
+    height: 250px;
+    background: var(--color-primary-light);
+    animation: float 12s ease-in-out infinite 1s;
+}
+
+@keyframes float {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(40px, 40px) scale(1.05);
+    }
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+}
+
+/* Logo */
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.logo i {
+    font-size: 1.5rem;
+    color: var(--color-accent);
+    margin-right: 8px;
+}
+
+.logo span {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-text);
+    letter-spacing: 1px;
 }
 
 .success-card {
-    background: white;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
     width: 600px;
     max-width: 90%;
-    padding: 50px;
-    border-radius: 25px;
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-lg);
     text-align: center;
     position: relative;
     overflow: hidden;
+    z-index: 1;
 }
 
 .success-icon-container {
     width: 120px;
     height: 120px;
     margin: 0 auto 30px;
-    background-color: var(--light-green);
+    background-color: rgba(34, 197, 94, 0.1);
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -76,18 +167,13 @@ body {
     animation: pulse 2s infinite;
 }
 
-.success-icon {
-    font-size: 60px;
-    color: var(--success-green);
-}
-
 .checkmark {
     width: 60px;
     height: 60px;
     border-radius: 50%;
     display: block;
     stroke-width: 5;
-    stroke: var(--success-green);
+    stroke: var(--color-accent);
     stroke-miterlimit: 10;
     animation: fill .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
 }
@@ -97,7 +183,7 @@ body {
     stroke-dashoffset: 166;
     stroke-width: 5;
     stroke-miterlimit: 10;
-    stroke: var(--success-green);
+    stroke: var(--color-accent);
     fill: none;
     animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
@@ -110,22 +196,22 @@ body {
 }
 
 .success-heading {
-    color: var(--text-color);
-    font-size: 32px;
+    color: var(--color-text);
+    font-size: 28px;
     font-weight: 700;
     margin-bottom: 15px;
 }
 
 .success-message {
-    color: #666;
-    font-size: 18px;
+    color: var(--color-text-secondary);
+    font-size: 16px;
     margin-bottom: 30px;
     padding: 0 20px;
     line-height: 1.6;
 }
 
 .highlight {
-    color: var(--primary-color);
+    color: var(--color-accent);
     font-weight: 600;
 }
 
@@ -134,9 +220,9 @@ body {
     max-width: 450px;
     margin: 0 auto 30px;
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    border-left: 4px solid var(--light-primary);
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: var(--border-radius-md);
+    border-left: 4px solid var(--color-primary-light);
 }
 
 .step {
@@ -150,7 +236,7 @@ body {
 }
 
 .step-number {
-    background-color: var(--light-primary);
+    background-color: var(--color-primary);
     color: white;
     width: 24px;
     height: 24px;
@@ -165,8 +251,8 @@ body {
 }
 
 .step-text {
-    font-size: 16px;
-    color: #555;
+    font-size: 15px;
+    color: var(--color-text-secondary);
     line-height: 1.5;
 }
 
@@ -179,35 +265,53 @@ body {
 
 .primary-button, .secondary-button {
     padding: 15px 30px;
-    border-radius: 8px;
+    border-radius: var(--border-radius-md);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: var(--transition-default);
     text-decoration: none;
 }
 
 .primary-button {
-    background-color: var(--primary-color);
+    background: linear-gradient(to right, var(--color-primary), var(--color-primary-light));
     color: white;
     border: none;
+    box-shadow: 0 4px 6px rgba(19, 78, 74, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.primary-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
 }
 
 .primary-button:hover {
-    background-color: #4a2882;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(90, 48, 146, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 7px 14px rgba(19, 78, 74, 0.3);
+    background: linear-gradient(to right, var(--color-primary-light), var(--color-primary));
+}
+
+.primary-button:hover::before {
+    left: 100%;
 }
 
 .secondary-button {
     background-color: transparent;
-    color: var(--primary-color);
-    border: 2px solid var(--primary-color);
+    color: var(--color-accent);
+    border: 2px solid var(--color-accent);
 }
 
 .secondary-button:hover {
-    background-color: rgba(90, 48, 146, 0.05);
-    transform: translateY(-2px);
+    background-color: rgba(74, 222, 128, 0.1);
+    transform: translateY(-3px);
 }
 
 .confetti {
@@ -216,18 +320,19 @@ body {
     height: 10px;
     background-color: #f0f;
     opacity: 0;
+    z-index: 0;
 }
 
 /* Animations */
 @keyframes pulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);
+        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4);
     }
     70% {
-        box-shadow: 0 0 0 15px rgba(40, 167, 69, 0);
+        box-shadow: 0 0 0 15px rgba(74, 222, 128, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
     }
 }
 
@@ -248,16 +353,7 @@ body {
 
 @keyframes fill {
     100% {
-        box-shadow: inset 0px 0px 0px 30px var(--light-green);
-    }
-}
-
-@keyframes patternFloat {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 100px 100px;
+        box-shadow: inset 0px 0px 0px 30px rgba(34, 197, 94, 0.1);
     }
 }
 
@@ -269,11 +365,11 @@ body {
     }
 
     .success-heading {
-        font-size: 28px;
+        font-size: 24px;
     }
 
     .success-message {
-        font-size: 16px;
+        font-size: 15px;
     }
 
     .buttons-container {
@@ -298,7 +394,7 @@ body {
     }
 
     .success-heading {
-        font-size: 24px;
+        font-size: 22px;
     }
 
     .success-steps {
