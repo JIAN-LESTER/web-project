@@ -19,9 +19,15 @@
   <!-- CoreUI CSS -->
 
   <style>
-    /* Reset margin */
-    body {
+    /* Reset margin and overflow */
+    html, body {
       margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    body {
+      overflow-y: auto;
     }
 
     .swal2-container {
@@ -73,11 +79,12 @@
     }
 
     /* Sidebar styling */
-    /* Sidebar styling */
     #sidebar {
       width: 240px;
       background-color: #1e1e2d;
       color: white;
+      padding: 0;
+      margin: 0;
     }
 
     /* Fixed sidebar for large screens */
@@ -92,17 +99,25 @@
 
     /* Content wrapper for push layout */
     .wrapper {
-      transition: margin-left 0.3s ease;
+      transition: margin-left 0.3s ease, width 0.3s ease;
+      margin: 0;
+      padding: 0;
+      max-width: 100%;
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-bottom: 50px; /* Add margin at the bottom */
     }
 
     /* Large screen behavior (≥992px) */
     @media (min-width: 992px) {
       .wrapper {
         margin-left: 240px;
+        width: calc(100% - 240px);
       }
 
       body.sidebar-hidden .wrapper {
         margin-left: 0;
+        width: 100%;
       }
 
       body.sidebar-hidden #sidebar {
@@ -124,6 +139,7 @@
 
       .wrapper {
         margin-left: 0 !important;
+        width: 100%;
       }
 
       .sidebar-backdrop {
@@ -140,15 +156,135 @@
       }
     }
 
-    /* Offset for sticky header */
-    .body {
-      margin-top: 70px;
+    /* Navbar styling fixes */
+    .header {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow: visible !important; /* Changed from hidden to visible */
+      position: fixed !important; /* Changed to fixed so it stays at the top */
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      z-index: 1500 !important; /* Extra high z-index for the navbar */
+      transition: left 0.3s ease, width 0.3s ease; /* Smooth transition */
     }
 
-    /* Icon size */
-    .icon-lg {
-      width: 24px;
-      height: 24px;
+    .header .container-fluid {
+      margin: 0 !important;
+      padding: 0 !important;
+      border: none !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      overflow: visible !important; /* Added overflow visible */
+      position: relative;
+      z-index: 1500 !important; /* Matching z-index */
+    }
+
+    .header-nav {
+      margin: 0 !important;
+      padding: 0 !important;
+      position: relative;
+      z-index: 1500 !important; /* Matching z-index */
+    }
+
+    .mb-4 {
+      margin-bottom: 0 !important;
+    }
+
+    /* Container width fix */
+    .container {
+      max-width: 100%;
+      padding: 1rem;
+      margin: 0;
+      padding-top: 56px; /* Add padding for fixed header */
+      margin-bottom: 50px; /* Add bottom margin */
+    }
+
+    /* Dropdown styling to match screenshot, with higher z-index */
+    .dropdown-menu {
+      z-index: 2000 !important; /* Higher than the header */
+      min-width: 10rem;
+      padding: 0.5rem 0;
+      border: 1px solid rgba(0,0,0,.15);
+      border-radius: 0.25rem;
+      margin-top: 0.125rem;
+      box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15);
+      background-color: #fff;
+      position: absolute !important;
+    }
+
+    /* Ensure the dropdown always appears on top */
+    /* This is crucial for compatibility with user management styles */
+    .header .dropdown-menu {
+      position: absolute !important;
+      z-index: 2000 !important; /* Much higher than any table z-index */
+    }
+
+    /* Also ensure the dropdown-toggle button is properly visible */
+    .header .nav-link {
+      position: relative;
+      z-index: 1500 !important; /* Matching navbar z-index */
+    }
+
+    .dropdown-item {
+      display: block;
+      width: 100%;
+      padding: 0.25rem 1.5rem;
+      clear: both;
+      color: #212529;
+      text-align: inherit;
+      white-space: nowrap;
+      background-color: transparent;
+      border: 0;
+      font-size: 0.9rem;
+    }
+
+    .dropdown-divider {
+      height: 0;
+      margin: 0.5rem 0;
+      overflow: hidden;
+      border-top: 1px solid #e9ecef;
+    }
+
+    /* Reset all specific filter-menu z-index */
+    .filter-menu,
+    .users-table thead th,
+    .users-table tbody td,
+    .user-row,
+    .table-responsive {
+      /* Ensure these don't interfere with our dropdown */
+      z-index: auto !important;
+    }
+
+    /* Make sure form button for logout looks like regular menu item */
+    button.dropdown-item {
+      text-align: left;
+      background: none;
+      border: none;
+      width: 100%;
+      font-size: 0.9rem;
+      padding: 0.25rem 1.5rem;
+    }
+
+    /* Additional fixes to prevent scrolling */
+    .min-vh-100 {
+      min-height: 100vh !important;
+      overflow-x: hidden !important;
+    }
+
+    /* Adjust header position based on sidebar state */
+    @media (min-width: 992px) {
+      .header {
+        left: 240px !important;
+        width: calc(100% - 240px) !important;
+      }
+
+      body.sidebar-hidden .header {
+        left: 0 !important;
+        width: 100% !important;
+      }
     }
   </style>
 </head>
@@ -157,7 +293,7 @@
   @if (!request()->routeIs('login') && !request()->routeIs('home') && !request()->routeIs('register') && !request()->routeIs('password.request') && !request()->routeIs('password.update') && !request()->routeIs('password.reset') && !request()->routeIs('2fa.verify.form'))
     @php
     $user = Auth::user();
-  @endphp
+    @endphp
     <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
     @include('partials.menu') <!-- Loads sidebar menu content -->
     </div>
@@ -169,73 +305,38 @@
     <div class="wrapper d-flex flex-column min-vh-100">
 
     <!-- Header/Navbar -->
-    <header class="header header-sticky p-0 mb-4 bg-white shadow-sm">
-      <div class="container-fluid border-bottom px-4 d-flex align-items-center justify-content-between">
-
-      <!--  MENU ICON (BURGER ICON) -->
-      <!-- This button toggles the sidebar on both desktop and mobile -->
-      <!-- The SVG below is the visible black burger icon -->
-      <button class="header-toggler" type="button" onclick="toggleSidebar()" style="margin-inline-start: -14px;">
-        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg" viewBox="0 0 24 24" fill="black">
-        <path d="M4 6h16M4 12h16M4 18h16" stroke="black" stroke-width="2" stroke-linecap="round" />
-        </svg>
-      </button>
-      <!-- END MENU ICON -->
-       @if ($user->role === 'user')
-       <a href="{{ route('chat.new') }}" class="btn btn-sm btn-success ms-3 d-none d-lg-inline-flex">
-        + New Chat
-      </a>
-       @endif
-    
-
-      <!-- Header right-side icons (notifications, profile, etc.) -->
-      <ul class="header-nav ms-auto d-flex align-items-center">
-        <li class="nav-item">
-        <a class="nav-link" href="#">
-          <svg class="icon icon-lg">
-          <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-bell"></use>
+    <header class="header header-sticky bg-white shadow-sm border-bottom">
+      <div class="container-fluid d-flex align-items-center justify-content-between" style="height: 56px;">
+        <!-- Left side with toggle button -->
+        <button class="header-toggler" type="button" onclick="toggleSidebar()" style="margin: 0; padding-left: 12px;">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg" viewBox="0 0 24 24" fill="black">
+          <path d="M4 6h16M4 12h16M4 18h16" stroke="black" stroke-width="2" stroke-linecap="round" />
           </svg>
+        </button>
+
+        @if ($user->role === 'user')
+        <a href="{{ route('chat.new') }}" class="btn btn-sm btn-success ms-3 d-none d-lg-inline-flex">
+          + New Chat
         </a>
-        </li>
-        <li class="nav-item">
-        <a class="nav-link" href="#">
-          <svg class="icon icon-lg">
-          <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-list-rich"></use>
-          </svg>
-        </a>
-        </li>
-        <li class="nav-item">
-        <a class="nav-link" href="#">
-          <svg class="icon icon-lg">
-          <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-envelope-open"></use>
-          </svg>
-        </a>
-        </li>
-        <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" data-coreui-toggle="dropdown">
-          <div class="avatar avatar-md">
+        @endif
 
-
-
-          <img class="avatar-img" src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->email }}">
-
+        <!-- Right side with avatar/dropdown -->
+        <div class="ms-auto" style="position: relative; z-index: 2000;">
+          <div class="dropdown">
+            <a href="#" class="nav-link p-0 me-3" data-coreui-toggle="dropdown" aria-expanded="false" style="position: relative; z-index: 2000;">
+              <img src="{{ asset('storage/' . $user->avatar) }}" class="rounded-circle border" width="32" height="32" alt="{{ $user->email }}">
+            </a>
+            <div class="dropdown-menu dropdown-menu-end" style="position: absolute; z-index: 2000;">
+              <a class="dropdown-item" href="#">Profile</a>
+              <a class="dropdown-item" href="#">Settings</a>
+              <div class="dropdown-divider"></div>
+              <form action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="dropdown-item">Logout</button>
+              </form>
+            </div>
           </div>
-        </a>
-        <div class="dropdown-menu dropdown-menu-end">
-          <a class="dropdown-item" href="#">Profile</a>
-          <a class="dropdown-item" href="#">Settings</a>
-          <div class="dropdown-divider"></div>
-          <form action="{{ route('logout') }}" method="POST" class="dropdown-item p-0">
-          @csrf
-          <button type="submit" class="dropdown-item"
-            style="background:none; border:none; width:100%; text-align:left;">
-            Logout
-          </button>
-          </form>
         </div>
-
-        </li>
-      </ul>
       </div>
     </header>
 @endif
@@ -244,15 +345,11 @@
     @php
     $route = Route::currentRouteName();
     $containerClass = in_array($route, ['login', 'register']) ? 'container-real' : 'container';
-  @endphp
+    @endphp
 
     <div class="{{ $containerClass }}" style="position: relative; z-index: 1;">
       @yield('content')
     </div>
-
-
-
-
 
     <!-- CoreUI Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/js/coreui.bundle.min.js"
@@ -273,14 +370,70 @@
         }
       }
 
+      // Handle sidebar close button
+      document.addEventListener('DOMContentLoaded', function() {
+        const closeBtn = document.querySelector('.btn-close');
+        if (closeBtn) {
+          closeBtn.onclick = function(e) {
+            e.preventDefault();
+            toggleSidebar();
+          };
+        }
+
+        // Fix z-index for all dropdown menus and ensure navbar is on top
+        document.addEventListener('shown.coreui.dropdown', function(event) {
+          // Find the dropdown menu
+          const dropdown = event.target.nextElementSibling;
+          if (dropdown && dropdown.classList.contains('dropdown-menu')) {
+            // Force z-index to be extremely high
+            dropdown.style.zIndex = '2000';
+            dropdown.style.position = 'absolute';
+          }
+        });
+
+        // Ensure the navbar has highest z-index and fixed position
+        const header = document.querySelector('.header');
+        if (header) {
+          header.style.zIndex = '1500';
+          header.style.position = 'fixed';
+          header.style.top = '0';
+
+          // Set initial position based on screen size
+          if (window.innerWidth >= 992 && !document.body.classList.contains('sidebar-hidden')) {
+            header.style.left = '240px';
+            header.style.width = 'calc(100% - 240px)';
+          } else {
+            header.style.left = '0';
+            header.style.width = '100%';
+          }
+        }
+      });
+
       // Automatically hide mobile sidebar on resize to desktop
       window.addEventListener('resize', () => {
         const sidebar = document.getElementById('sidebar');
         const backdrop = document.getElementById('sidebar-backdrop');
+        const header = document.querySelector('.header');
 
         if (window.innerWidth >= 992) {
           sidebar.classList.remove('show');
           backdrop.classList.remove('show');
+
+          // Update header position on resize
+          if (header) {
+            if (document.body.classList.contains('sidebar-hidden')) {
+              header.style.left = '0';
+              header.style.width = '100%';
+            } else {
+              header.style.left = '240px';
+              header.style.width = 'calc(100% - 240px)';
+            }
+          }
+        } else {
+          if (header) {
+            header.style.left = '0';
+            header.style.width = '100%';
+          }
         }
       });
     </script>

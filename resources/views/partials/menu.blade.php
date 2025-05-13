@@ -2,41 +2,41 @@
 <div class="sidebar-header border-bottom d-flex align-items-center justify-content-between px-3 py-2">
   <div class="d-flex align-items-center gap-2">
     <!-- Logo -->
-    <svg class="sidebar-brand-full" width="88" height="40" alt="CoreUI Logo">
-      <use xlink:href="assets/brand/coreui.svg#full"></use>
-    </svg>
-    <span class="fw-bold text-white" style="font-size: 1rem;">Acad Bot</span>
+    <span class="fw-bold text-white" style="font-size: 1rem; height:40px;">Acad Bot</span>
   </div>
 
   @php
     $user = Auth::user();
   @endphp
 
-  <!-- Close Button (on small screens) -->
-  <button class="btn-close d-lg-none" type="button" aria-label="Close"
-    onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).hide()">
+  <!-- Close Button (on small screens) - Updated to use toggleSidebar -->
+  <button class="btn-close d-lg-none" type="button" aria-label="Close" onclick="toggleSidebar()">
   </button>
 </div>
 
 <!-- Sidebar Navigation -->
 <ul class="sidebar-nav" data-coreui="navigation" data-simplebar>
-  
+
   @if ($user->role === 'admin')
     <!-- Admin Navigation -->
     <li class="nav-title">Quick Access</li>
 
     <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" 
+      <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
          href="{{ route('admin.dashboard') }}"
          aria-current="{{ request()->routeIs('admin.dashboard') ? 'page' : '' }}">
-        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-speedometer.svg" alt="Dashboard" />
+        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-speedometer.svg') }}" alt="Dashboard"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        />
         Dashboard
       </a>
 
       <a class="nav-link {{ request()->routeIs('admin.knowledge_base') ? 'active' : '' }}"
          href="{{ route('admin.knowledge_base') }}"
          aria-current="{{ request()->routeIs('admin.knowledge_base') ? 'page' : '' }}">
-        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-drop.svg" alt="Knowledge Base" />
+        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-book.svg') }}" alt="Knowledge Base"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 448 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M448 360V24c0-13.3-10.7-24-24-24H96C43 0 0 43 0 96v320c0 53 43 96 96 96h328c13.3 0 24-10.7 24-24v-16c0-7.5-3.5-14.3-8.9-18.7-4.2-15.4-4.2-59.3 0-74.7 5.4-4.3 8.9-11.1 8.9-18.6zM128 134c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm0 64c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm253.4 250H96c-17.7 0-32-14.3-32-32 0-17.6 14.4-32 32-32h285.4c-1.9 17.1-1.9 46.9 0 64z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        />
         Knowledge Base
       </a>
     </li>
@@ -45,7 +45,9 @@
       <a class="nav-link {{ request()->routeIs('admin.reports_analytics') ? 'active' : '' }}"
          href="{{ route('admin.reports_analytics') }}"
          aria-current="{{ request()->routeIs('admin.reports_analytics') ? 'page' : '' }}">
-        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-notes.svg" alt="Reports" />
+        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-chart.svg') }}" alt="Reports"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M332.8 320h38.4c6.4 0 12.8-6.4 12.8-12.8V172.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v134.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h38.4c6.4 0 12.8-6.4 12.8-12.8V76.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v230.4c0 6.4 6.4 12.8 12.8 12.8zm-288 0h38.4c6.4 0 12.8-6.4 12.8-12.8v-70.4c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v70.4c0 6.4 6.4 12.8 12.8 12.8zm96 0h38.4c6.4 0 12.8-6.4 12.8-12.8V108.8c0-6.4-6.4-12.8-12.8-12.8h-38.4c-6.4 0-12.8 6.4-12.8 12.8v198.4c0 6.4 6.4 12.8 12.8 12.8zM496 384H64V80c0-8.84-7.16-16-16-16H16C7.16 64 0 71.16 0 80v336c0 17.67 14.33 32 32 32h464c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        />
         Reports
       </a>
     </li>
@@ -54,7 +56,9 @@
       <a class="nav-link {{ request()->routeIs('admin.user_management') ? 'active' : '' }}"
          href="{{ route('admin.user_management') }}"
          aria-current="{{ request()->routeIs('admin.user_management') ? 'page' : '' }}">
-        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-user.svg" alt="Users" />
+        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-user.svg') }}" alt="Users"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 448 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        />
         Users
       </a>
     </li>
@@ -66,7 +70,9 @@
       <a class="nav-link {{ request()->routeIs('admin.logs') ? 'active' : '' }}"
          href="{{ route('admin.logs') }}"
          aria-current="{{ request()->routeIs('admin.logs') ? 'page' : '' }}">
-        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-history.svg" alt="Logs" />
+        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-history.svg') }}" alt="Logs"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M504 255.531c.253 136.64-111.18 248.372-247.82 248.468-59.015.042-113.223-20.53-155.822-54.911-11.077-8.94-11.905-25.541-1.839-35.607l11.267-11.267c8.609-8.609 22.353-9.551 31.891-1.984C173.062 425.135 212.781 440 256 440c101.705 0 184-82.311 184-184 0-101.705-82.311-184-184-184-48.814 0-93.149 18.969-126.068 49.932l50.754 50.754c10.08 10.08 2.941 27.314-11.313 27.314H24c-8.837 0-16-7.163-16-16V38.627c0-14.254 17.234-21.393 27.314-11.314l49.372 49.372C129.209 34.136 189.552 8 256 8c136.81 0 247.747 110.78 248 247.531zm-180.912 78.784l9.823-12.63c8.138-10.463 6.253-25.542-4.21-33.679L288 256.349V152c0-13.255-10.745-24-24-24h-16c-13.255 0-24 10.745-24 24v135.651l65.409 50.874c10.463 8.137 25.541 6.253 33.679-4.21z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        />
         Logs
       </a>
     </li>
@@ -75,7 +81,9 @@
       <a class="nav-link {{ request()->routeIs('admin.charts') ? 'active' : '' }}"
          href="{{ route('admin.charts') }}"
          aria-current="{{ request()->routeIs('admin.charts') ? 'page' : '' }}">
-        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-chart-pie.svg" alt="Charts" />
+        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-chart-pie.svg') }}" alt="Charts"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 544 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M527.79 288H290.5l158.03 158.03c6.04 6.04 15.98 6.53 22.19.68 38.7-36.46 65.32-85.61 73.13-140.86 1.34-9.46-6.51-17.85-16.06-17.85zm-15.83-64.8C503.72 103.74 408.26 8.28 288.8.04 279.68-.59 272 7.1 272 16.24V240h223.77c9.14 0 16.82-7.68 16.19-16.8zM224 288V50.71c0-9.55-8.39-17.4-17.84-16.06C86.99 51.49-4.1 155.6.14 280.37 4.5 408.51 114.83 513.59 243.03 511.98c50.4-.63 96.97-16.87 135.26-44.03 7.9-5.6 8.42-17.23 1.57-24.08L224 288z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        />
         Charts
       </a>
     </li>
@@ -84,7 +92,9 @@
       <a class="nav-link {{ request()->routeIs('admin.forms') ? 'active' : '' }}"
          href="{{ route('admin.forms') }}"
          aria-current="{{ request()->routeIs('admin.forms') ? 'page' : '' }}">
-        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-notes.svg" alt="Forms" />
+        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-notes.svg') }}" alt="Forms"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M312 320h136V56c0-13.3-10.7-24-24-24H24C10.7 32 0 42.7 0 56v400c0 13.3 10.7 24 24 24h264V344c0-13.2 10.8-24 24-24zm-24 96H24V56h400v256H320c-17.7 0-32 14.3-32 32v72zm176-8V80c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v328c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16zm-192 0V192c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v216c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16zm-96 0V192c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v216c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16zm-96 0V192c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v216c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        />
         Forms
       </a>
     </li>
@@ -94,7 +104,6 @@
     <li class="nav-title">Chat History</li>
     @php
       $conversations = \App\Models\Conversation::where('userID', $user->userID)
-                        
                         ->latest('updated_at')
                         ->take(10)
                         ->orderByDesc('conversationID')
@@ -106,6 +115,9 @@
       <a href="#"
    class="nav-link load-conversation flex-column align-items-start"
    data-id="{{ $conversation->conversationID }}">
+     <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-comment-square.svg') }}" alt="Conversation"
+          onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        />
   <small class="text-muted">Conversation #{{ $conversation->conversationID }}</small>
   <span>{{ Str::limit($conversation->conversation_title, 50) }}</span>
 </a>
