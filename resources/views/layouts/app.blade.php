@@ -222,7 +222,7 @@
           </div>
         </a>
         <div class="dropdown-menu dropdown-menu-end">
-          <a class="dropdown-item" href="#">Profile</a>
+          <a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a>
           <a class="dropdown-item" href="#">Settings</a>
           <div class="dropdown-divider"></div>
           <form action="{{ route('logout') }}" method="POST" class="dropdown-item p-0">
