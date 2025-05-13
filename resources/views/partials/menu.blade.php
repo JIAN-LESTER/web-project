@@ -8,6 +8,10 @@
     <span class="fw-bold text-white" style="font-size: 1rem;">Acad Bot</span>
   </div>
 
+  @php
+    $user = Auth::user();
+  @endphp
+
   <!-- Close Button (on small screens) -->
   <button class="btn-close d-lg-none" type="button" aria-label="Close"
     onclick="coreui.Sidebar.getInstance(document.querySelector('#sidebar')).hide()">
@@ -16,71 +20,103 @@
 
 <!-- Sidebar Navigation -->
 <ul class="sidebar-nav" data-coreui="navigation" data-simplebar>
-  <!-- Quick Access -->
-  <li class="nav-title">Quick Access</li>
+  
+  @if ($user->role === 'admin')
+    <!-- Admin Navigation -->
+    <li class="nav-title">Quick Access</li>
 
-  <li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" 
-       href="{{ route('admin.dashboard') }}"
-       aria-current="{{ request()->routeIs('admin.dashboard') ? 'page' : '' }}">
-      <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-speedometer.svg" alt="Dashboard" />
-      Dashboard
-    </a>
-    <a class="nav-link {{ request()->routeIs('admin.knowledge_base') ? 'active' : '' }}"
-       href="{{ route('admin.knowledge_base') }}"
-       aria-current="{{ request()->routeIs('admin.knowledge_base') ? 'page' : '' }}">
-      <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-drop.svg" alt="Knowledge Base" />
-      Knowledge Base
-    </a>
-  </li>
+    <li class="nav-item">
+      <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}" 
+         href="{{ route('admin.dashboard') }}"
+         aria-current="{{ request()->routeIs('admin.dashboard') ? 'page' : '' }}">
+        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-speedometer.svg" alt="Dashboard" />
+        Dashboard
+      </a>
 
-  <li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('admin.reports_analytics') ? 'active' : '' }}"
-       href="{{ route('admin.reports_analytics') }}"
-       aria-current="{{ request()->routeIs('admin.reports_analytics') ? 'page' : '' }}">
-      <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-notes.svg" alt="Reports" />
-      Reports
-    </a>
-  </li>
+      <a class="nav-link {{ request()->routeIs('admin.knowledge_base') ? 'active' : '' }}"
+         href="{{ route('admin.knowledge_base') }}"
+         aria-current="{{ request()->routeIs('admin.knowledge_base') ? 'page' : '' }}">
+        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-drop.svg" alt="Knowledge Base" />
+        Knowledge Base
+      </a>
+    </li>
 
-  <li class="nav-group">
-    <a class="nav-link {{ request()->routeIs('admin.user_management') ? 'active' : '' }}"
-       href="{{ route('admin.user_management') }}"
-       aria-current="{{ request()->routeIs('admin.user_management') ? 'page' : '' }}">
-      <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-user.svg" alt="Users" />
-      Users
-    </a>
-  </li>
+    <li class="nav-item">
+      <a class="nav-link {{ request()->routeIs('admin.reports_analytics') ? 'active' : '' }}"
+         href="{{ route('admin.reports_analytics') }}"
+         aria-current="{{ request()->routeIs('admin.reports_analytics') ? 'page' : '' }}">
+        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-notes.svg" alt="Reports" />
+        Reports
+      </a>
+    </li>
 
-  <!-- Preferences -->
-  <li class="nav-title">Preferences</li>
+    <li class="nav-group">
+      <a class="nav-link {{ request()->routeIs('admin.user_management') ? 'active' : '' }}"
+         href="{{ route('admin.user_management') }}"
+         aria-current="{{ request()->routeIs('admin.user_management') ? 'page' : '' }}">
+        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-user.svg" alt="Users" />
+        Users
+      </a>
+    </li>
 
-  <li class="nav-group">
-    <a class="nav-link {{ request()->routeIs('admin.logs') ? 'active' : '' }}"
-       href="{{ route('admin.logs') }}"
-       aria-current="{{ request()->routeIs('admin.logs') ? 'page' : '' }}">
-      <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-history.svg" alt="Logs" />
-      Logs
-    </a>
-  </li>
+    <!-- Preferences -->
+    <li class="nav-title">Preferences</li>
 
-  <li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('admin.charts') ? 'active' : '' }}"
-       href="{{ route('admin.charts') }}"
-       aria-current="{{ request()->routeIs('admin.charts') ? 'page' : '' }}">
-      <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-chart-pie.svg" alt="Charts" />
-      Charts
-    </a>
-  </li>
+    <li class="nav-group">
+      <a class="nav-link {{ request()->routeIs('admin.logs') ? 'active' : '' }}"
+         href="{{ route('admin.logs') }}"
+         aria-current="{{ request()->routeIs('admin.logs') ? 'page' : '' }}">
+        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-history.svg" alt="Logs" />
+        Logs
+      </a>
+    </li>
 
-  <li class="nav-group">
-    <a class="nav-link {{ request()->routeIs('admin.forms') ? 'active' : '' }}"
-       href="{{ route('admin.forms') }}"
-       aria-current="{{ request()->routeIs('admin.forms') ? 'page' : '' }}">
-      <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-notes.svg" alt="Forms" />
-      Forms
-    </a>
-  </li>
+    <li class="nav-item">
+      <a class="nav-link {{ request()->routeIs('admin.charts') ? 'active' : '' }}"
+         href="{{ route('admin.charts') }}"
+         aria-current="{{ request()->routeIs('admin.charts') ? 'page' : '' }}">
+        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-chart-pie.svg" alt="Charts" />
+        Charts
+      </a>
+    </li>
+
+    <li class="nav-group">
+      <a class="nav-link {{ request()->routeIs('admin.forms') ? 'active' : '' }}"
+         href="{{ route('admin.forms') }}"
+         aria-current="{{ request()->routeIs('admin.forms') ? 'page' : '' }}">
+        <img class="nav-icon" src="vendors/@coreui/icons/svg/free/cil-notes.svg" alt="Forms" />
+        Forms
+      </a>
+    </li>
+
+  @else
+    <!-- User Navigation -->
+    <li class="nav-title">Chat History</li>
+    @php
+      $conversations = \App\Models\Conversation::where('userID', $user->userID)
+                        
+                        ->latest('updated_at')
+                        ->take(10)
+                        ->orderByDesc('conversationID')
+                        ->get();
+    @endphp
+
+    @forelse ($conversations as $conversation)
+      <li class="nav-item">
+      <a href="#"
+   class="nav-link load-conversation flex-column align-items-start"
+   data-id="{{ $conversation->conversationID }}">
+  <small class="text-muted">Conversation #{{ $conversation->conversationID }}</small>
+  <span>{{ Str::limit($conversation->conversation_title, 50) }}</span>
+</a>
+      </li>
+    @empty
+      <li class="nav-item">
+        <span class="nav-link text-muted">No conversations yet</span>
+      </li>
+    @endforelse
+  @endif
+
 </ul>
 
 <!-- Sidebar Styling -->

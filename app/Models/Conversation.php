@@ -13,8 +13,14 @@ class Conversation extends Model
     protected $primaryKey = 'conversationID';
     public $timestamp = false;
 
+    
+    protected $casts = [
+        'sent_at' => 'datetime',
+    ];
+
     protected $fillable = [
         'userID',
+        'conversation_title',
         'conversation_status',
         'sent_at'
     ];

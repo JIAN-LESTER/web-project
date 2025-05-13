@@ -40,8 +40,13 @@ Route::get('/2fa/resend', 'Auth\YourAuthController@resendTwoFactorCode')->name('
 
 Route::get('/chatbot', [UserController::class, 'index'])->name('chatbot');
 
-// For AJAX POST
+
 Route::post('/chatbot/message', [ChatbotController::class, 'handleChat'])->name('chatbot.handle');
+Route::get('/chat/conversation/{conversationID}', [ChatbotController::class, 'showConversation'])->name('chat.conversation');
+Route::get('/chatbot/new', [ChatbotController::class, 'newChat'])->name('chat.new');
+
+Route::get('/chat/conversation/{conversationID}/messages', [ChatbotController::class, 'fetchMessages']);
+
 
 
 Route::get('/2fa', function () {
@@ -65,7 +70,7 @@ Route::get('/dashboard', function () {
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
-Route::get('/dashboard', [AdminController::class, 'viewDashboard'])->name('admin.dashboard');
+Route::get('/dashboard', [AdminController::class, 'viewDashboard', ])->name('admin.dashboard');
 Route::get('/reports-analytics', [AdminController::class, 'viewReports'])->name('admin.reports_analytics');
 Route::get('/logs', [AdminController::class, 'viewLogs'])->name('admin.logs');
 Route::get('/user-management', [AdminController::class, 'viewUsers'])->name('admin.user_management');

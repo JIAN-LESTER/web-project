@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+<link rel="stylesheet" href="{{ asset('admin/knowledge-base.css') }}">
 <div class="container mt-4">
   <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -20,7 +21,7 @@
     </div>
 
     <div class="card-body">
-      <!-- Search bar -->
+
       <form action="{{ route('kb.search') }}" method="GET" class="mb-3">
         <div class="search-container">
           <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -32,7 +33,7 @@
         </div>
       </form>
 
-      <!-- Documents table -->
+
       <div class="table-responsive">
         <table class="table table-bordered table-hover">
           <thead class="table-light">
@@ -129,8 +130,6 @@
   </div>
 </div>
 
-@push('styles')
-<link rel="stylesheet" href="{{ asset('admin/knowledge-base.css') }}">
-@endpush
+
 
 @endsection

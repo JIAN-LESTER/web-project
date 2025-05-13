@@ -168,6 +168,13 @@ class AuthController extends Controller
             ]);
         }
 
+        $conversationID = session('current_conversation_id');
+        if ($conversationID) {
+            \App\Models\Conversation::where('conversationID', $conversationID)->update(['conversation_status' => 'ended']);
+        }
+        
+        Session::forget('current_conversation_id');
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

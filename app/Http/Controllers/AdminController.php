@@ -7,6 +7,7 @@ use App\Models\KnowledgeBase;
 use App\Models\Logs;
 use App\Models\User;
 use App\Models\Year;
+use Auth;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -16,6 +17,7 @@ class AdminController extends Controller
 
 public function viewDashboard(Request $request)
 {
+        $user = Auth::user();
     $filter = $request->query('filter', 'day'); // default is 'day'
     
     $labels = collect();
@@ -68,6 +70,7 @@ public function viewDashboard(Request $request)
         'labels' => $labels,
         'counts' => $counts,
         'filter' => $filter,
+        'user' => $user
     ]);
 }
 

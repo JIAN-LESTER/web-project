@@ -6,12 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>OASP Assist</title>
   <link rel="stylesheet" href="{{ asset('login_and_register/login.css') }}">
+
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/css/coreui.min.css" rel="stylesheet" integrity="sha384-PDUiPu3vDllMfrUHnurV430Qg8chPZTNhY8RUpq89lq22R3PzypXQifBpcpE1eoB" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/css/coreui.min.css" rel="stylesheet"
+    integrity="sha384-PDUiPu3vDllMfrUHnurV430Qg8chPZTNhY8RUpq89lq22R3PzypXQifBpcpE1eoB" crossorigin="anonymous">
 
 
   <!-- CoreUI CSS -->
@@ -153,128 +155,135 @@
 
 <body>
   @if (!request()->routeIs('login') && !request()->routeIs('home') && !request()->routeIs('register') && !request()->routeIs('password.request') && !request()->routeIs('password.update') && !request()->routeIs('password.reset') && !request()->routeIs('2fa.verify.form'))
-
-  <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
+    @php
+    $user = Auth::user();
+  @endphp
+    <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
     @include('partials.menu') <!-- Loads sidebar menu content -->
-  </div>
+    </div>
 
-  <!-- Backdrop overlay for small screen sidebar -->
-  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    <!-- Backdrop overlay for small screen sidebar -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 
-  <!-- Main Page Wrapper -->
-  <div class="wrapper d-flex flex-column min-vh-100">
+    <!-- Main Page Wrapper -->
+    <div class="wrapper d-flex flex-column min-vh-100">
 
     <!-- Header/Navbar -->
     <header class="header header-sticky p-0 mb-4 bg-white shadow-sm">
       <div class="container-fluid border-bottom px-4 d-flex align-items-center justify-content-between">
 
-        <!--  MENU ICON (BURGER ICON) -->
-        <!-- This button toggles the sidebar on both desktop and mobile -->
-        <!-- The SVG below is the visible black burger icon -->
-        <button class="header-toggler" type="button" onclick="toggleSidebar()" style="margin-inline-start: -14px;">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg" viewBox="0 0 24 24" fill="black">
-            <path d="M4 6h16M4 12h16M4 18h16" stroke="black" stroke-width="2" stroke-linecap="round" />
+      <!--  MENU ICON (BURGER ICON) -->
+      <!-- This button toggles the sidebar on both desktop and mobile -->
+      <!-- The SVG below is the visible black burger icon -->
+      <button class="header-toggler" type="button" onclick="toggleSidebar()" style="margin-inline-start: -14px;">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg" viewBox="0 0 24 24" fill="black">
+        <path d="M4 6h16M4 12h16M4 18h16" stroke="black" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </button>
+      <!-- END MENU ICON -->
+       @if ($user->role === 'user')
+       <a href="{{ route('chat.new') }}" class="btn btn-sm btn-success ms-3 d-none d-lg-inline-flex">
+        + New Chat
+      </a>
+       @endif
+    
+
+      <!-- Header right-side icons (notifications, profile, etc.) -->
+      <ul class="header-nav ms-auto d-flex align-items-center">
+        <li class="nav-item">
+        <a class="nav-link" href="#">
+          <svg class="icon icon-lg">
+          <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-bell"></use>
           </svg>
-        </button>
-        <!-- END MENU ICON -->
+        </a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="#">
+          <svg class="icon icon-lg">
+          <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-list-rich"></use>
+          </svg>
+        </a>
+        </li>
+        <li class="nav-item">
+        <a class="nav-link" href="#">
+          <svg class="icon icon-lg">
+          <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-envelope-open"></use>
+          </svg>
+        </a>
+        </li>
+        <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" data-coreui-toggle="dropdown">
+          <div class="avatar avatar-md">
 
-        <!-- Header right-side icons (notifications, profile, etc.) -->
-        <ul class="header-nav ms-auto d-flex align-items-center">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <svg class="icon icon-lg">
-                <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-bell"></use>
-              </svg>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <svg class="icon icon-lg">
-                <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-list-rich"></use>
-              </svg>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <svg class="icon icon-lg">
-                <use xlink:href="vendors/@coreui/icons/svg/free.svg#cil-envelope-open"></use>
-              </svg>
-            </a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" data-coreui-toggle="dropdown">
-              <div class="avatar avatar-md">
 
-              @php
-    $user = Auth::user();
-@endphp
 
-              <img class="avatar-img" src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->email }}">
+          <img class="avatar-img" src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->email }}">
 
-              </div>
-            </a>
-            <div class="dropdown-menu dropdown-menu-end">
-              <a class="dropdown-item" href="#">Profile</a>
-              <a class="dropdown-item" href="#">Settings</a>
-              <div class="dropdown-divider"></div>
-              <form action="{{ route('logout') }}" method="POST" class="dropdown-item p-0">
-                @csrf
-                <button type="submit" class="dropdown-item" style="background:none; border:none; width:100%; text-align:left;">
-                    Logout
-                </button>
-            </form>
-            </div>
+          </div>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end">
+          <a class="dropdown-item" href="#">Profile</a>
+          <a class="dropdown-item" href="#">Settings</a>
+          <div class="dropdown-divider"></div>
+          <form action="{{ route('logout') }}" method="POST" class="dropdown-item p-0">
+          @csrf
+          <button type="submit" class="dropdown-item"
+            style="background:none; border:none; width:100%; text-align:left;">
+            Logout
+          </button>
+          </form>
+        </div>
 
-          </li>
-        </ul>
+        </li>
+      </ul>
       </div>
     </header>
-  @endif
+@endif
 
-  <!-- Main Page Content -->
-  @php
-  $route = Route::currentRouteName();
-  $containerClass = in_array($route, ['login', 'register']) ? 'container-real' : 'container';
-@endphp
+    <!-- Main Page Content -->
+    @php
+    $route = Route::currentRouteName();
+    $containerClass = in_array($route, ['login', 'register']) ? 'container-real' : 'container';
+  @endphp
 
-  <div class="{{ $containerClass }}" style="position: relative; z-index: 1;">
-    @yield('content')
-  </div>
-
-
+    <div class="{{ $containerClass }}" style="position: relative; z-index: 1;">
+      @yield('content')
+    </div>
 
 
 
-  <!-- CoreUI Bundle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/js/coreui.bundle.min.js"
-    crossorigin="anonymous"></script>
 
-  <!-- Sidebar Toggle Script -->
-  <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const backdrop = document.getElementById('sidebar-backdrop');
-      const isLarge = window.innerWidth >= 992;
 
-      if (isLarge) {
-        document.body.classList.toggle('sidebar-hidden');
-      } else {
-        sidebar.classList.toggle('show');
-        backdrop.classList.toggle('show');
+    <!-- CoreUI Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/js/coreui.bundle.min.js"
+      crossorigin="anonymous"></script>
+
+    <!-- Sidebar Toggle Script -->
+    <script>
+      function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        const isLarge = window.innerWidth >= 992;
+
+        if (isLarge) {
+          document.body.classList.toggle('sidebar-hidden');
+        } else {
+          sidebar.classList.toggle('show');
+          backdrop.classList.toggle('show');
+        }
       }
-    }
 
-    // Automatically hide mobile sidebar on resize to desktop
-    window.addEventListener('resize', () => {
-      const sidebar = document.getElementById('sidebar');
-      const backdrop = document.getElementById('sidebar-backdrop');
+      // Automatically hide mobile sidebar on resize to desktop
+      window.addEventListener('resize', () => {
+        const sidebar = document.getElementById('sidebar');
+        const backdrop = document.getElementById('sidebar-backdrop');
 
-      if (window.innerWidth >= 992) {
-        sidebar.classList.remove('show');
-        backdrop.classList.remove('show');
-      }
-    });
-  </script>
+        if (window.innerWidth >= 992) {
+          sidebar.classList.remove('show');
+          backdrop.classList.remove('show');
+        }
+      });
+    </script>
 </body>
 
 </html>

@@ -4,7 +4,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div class="container my-4">
-<div class="row g-4 mb-4">
+<div class="card shadow-sm mb-4 p-4">
+  <h4 class="mb-0">Welcome back, {{ $user->name }}!</h4>
+  <p class="text-muted mt-1">Here’s a quick overview of the latest student queries.</p>
+</div>
+<!-- <div class="row g-4 mb-4">
             <div class="col-sm-6 col-xl-3">
               <div class="card text-white bg-primary">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
@@ -29,7 +33,7 @@
                 </div>
               </div>
             </div>
-            <!-- /.col-->
+      
             <div class="col-sm-6 col-xl-3">
               <div class="card text-white bg-info">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
@@ -54,7 +58,7 @@
                 <div class="chartjs-tooltip" style="opacity: 0; left: 106.333px; top: 132.625px;"><table style="margin: 0px;"><thead class="chartjs-tooltip-header"><tr class="chartjs-tooltip-header-item" style="border-width: 0px;"><th style="border-width: 0px;">March</th></tr></thead><tbody class="chartjs-tooltip-body"><tr class="chartjs-tooltip-body-item"><td style="border-width: 0px;"><span style="background: rgb(51, 153, 255); border-color: rgba(255, 255, 255, 0.55); border-width: 2px; margin-right: 10px; height: 10px; width: 10px; display: inline-block;"></span>My First dataset: 9</td></tr></tbody></table></div></div>
               </div>
             </div>
-            <!-- /.col-->
+          
             <div class="col-sm-6 col-xl-3">
               <div class="card text-white bg-warning">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
@@ -79,7 +83,7 @@
                 </div>
               </div>
             </div>
-            <!-- /.col-->
+       
             <div class="col-sm-6 col-xl-3">
               <div class="card text-white bg-danger">
                 <div class="card-body pb-0 d-flex justify-content-between align-items-start">
@@ -104,11 +108,11 @@
                 </div>
               </div>
             </div>
-            <!-- /.col-->
-          </div>
-    <div class="card shadow-sm rounded">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Queries Overview</h5>
+      
+          </div> -->
+          <div class="card shadow-sm rounded">
+  <div class="card-header d-flex justify-content-between align-items-center bg-light">
+    <h5 class="mb-0 text-primary fw-bold">Queries Overview</h5>
 
             <div class="btn-group" role="group" aria-label="Time Range">
                 <input type="radio" class="btn-check" name="timeFilter" id="day" value="day" autocomplete="off" {{ $filter == 'day' ? 'checked' : '' }}>
@@ -122,7 +126,7 @@
             </div>
         </div>
 
-        <div class="card-body" style="height: 400px;"> <!-- Added fixed height -->
+        <div class="card-body" style="height: 400px;"> 
             <canvas id="queriesChart"></canvas>
         </div>
     </div>
@@ -135,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
     radios.forEach(radio => {
         radio.addEventListener('change', function () {
             const selectedFilter = this.value;
-            // Reload the page with the new filter
+            
             window.location.href = "{{ route('admin.dashboard') }}" + "?filter=" + selectedFilter;
         });
     });
