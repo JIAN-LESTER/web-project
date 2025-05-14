@@ -514,7 +514,6 @@
 
     <!-- Sidebar Toggle Script -->
     <script>
-    <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Detect if we're on the profile page and close the sidebar
         if (window.location.href.includes("user/profile")) {
@@ -568,7 +567,6 @@
             }
         @endif
     });
-    });
 
     // Sidebar Toggle Function
     function toggleSidebar() {
@@ -595,7 +593,7 @@
 
     // Handle sidebar close button
     document.addEventListener('DOMContentLoaded', function() {
-        const closeBtn = document.querySelector('.btn-close');
+        const closeBtn = document.querySelector('.sidebar .btn-close');
         if (closeBtn) {
             closeBtn.onclick = function(e) {
                 e.preventDefault();
@@ -648,7 +646,7 @@
             }
         }
     });
-</script>
+    </script>
 
 </body>
 
