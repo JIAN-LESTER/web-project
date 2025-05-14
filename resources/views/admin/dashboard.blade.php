@@ -3,7 +3,7 @@
 @section('content')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<div class="container my-4">
+<div class="container-fluid mt-4">
 <div class="card shadow-sm mb-4 p-4">
   <h4 class="mb-0">Welcome back, {{ $user->name }}!</h4>
   <p class="text-muted mt-1">Here’s a quick overview of the latest student queries.</p>

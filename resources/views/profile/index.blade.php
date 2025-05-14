@@ -1,41 +1,61 @@
-<!-- resources/views/profile.blade.php -->
 @extends('layouts.app')
 
 @section('content')
-<div class="max-w-3xl mx-auto p-4">
-    <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-4">Profile</h2>
 
-        <div class="space-y-4">
-            <div>
-                <strong class="text-gray-700">Name:</strong>
-                <p class="text-gray-900">{{ $user->name }}</p>
-            </div>
+<div>
+    <div class="text-center mb-4">
+        <h1 class="fw-bold">Profile</h1>
+    </div>
 
-            <div>
-                <strong class="text-gray-700">Email:</strong>
-                <p class="text-gray-900">{{ $user->email }}</p>
-            </div>
+    <div class="card mx-auto shadow-sm" style="max-width: 700px;">
+        <div class="card-body text-center">
+            <img src="{{ asset('storage/' . ($user->avatar ?? 'avatars/default.png')) }}"
+                alt="User Avatar"
+                class="rounded-circle mb-3"
+                width="150" height="150">
 
-            <div>
-                <strong class="text-gray-700">Joined On:</strong>
-                <p class="text-gray-900">{{ $user->created_at->format('F j, Y') }}</p>
-            </div>
+            <h5 class="mb-2"><strong>Name:</strong> {{ $user->name }}</h5>
+            <h5 class="mb-2"><strong>Email:</strong> {{ $user->email }}</h5>
+            @if ($user->role === 'user')
+            <h5 class="mb-2"><strong>Year:</strong> {{ $user->year->year_level }}</h5>
+            <h5 class="mb-2"><strong>Course:</strong> {{ $user->course->course_name }}</h5>
+            @endif
 
-            <div>
-                <strong class="text-gray-700">Phone:</strong>
-                <p class="text-gray-900">{{ $user->phone ?? 'Not Provided' }}</p>
-            </div>
-
-            <div>
-                <strong class="text-gray-700">Address:</strong>
-                <p class="text-gray-900">{{ $user->address ?? 'Not Provided' }}</p>
-            </div>
-        </div>
-
-        <div class="mt-6">
-            <a href="{{ route('profile.edit') }}" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Edit Profile</a>
+            <h5 class="mb-0"><strong>Joined:</strong> {{ $user->created_at->format('F d, Y') }}</h5>
         </div>
     </div>
+
+    <div class="text-center mt-3">
+        <a href="{{ route('profile.edit', $user->userID) }}" class="btn btn-primary px-4">
+            Edit Profile
+        </a>
+    </div>
+
+    <?php
+    $user = Auth::user();
+    
+    ?>
+
+    <div class="text-center mt-2">
+        @if ($user->role === 'user')
+        <a href="{{ route('chatbot') }}" class="btn btn-secondary px-4">
+        @else
+        <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary px-4">
+        @endif
+      
+            Back
+        </a>
+    </div>
 </div>
+
+@if(session('success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: '{{ session('success') }}'
+    });
+</script>
+@endif
+
 @endsection

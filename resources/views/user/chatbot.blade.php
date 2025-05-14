@@ -20,7 +20,8 @@
     }
 </style>
 
-<div class="container py-5">
+<div class="container-fluid py-5">
+
     <!-- Welcome Section -->
     <div id="welcome-section" class="text-center mb-4 {{ isset($messages) && $messages->count() > 0 ? 'd-none' : '' }}">
         <?php $user = Auth::user(); ?>
@@ -34,7 +35,8 @@
     </div>
 
     <!-- Chat UI -->
-    <div id="chat-container" class="card d-none shadow-sm">
+    <div id="chat-container" class="card d-none shadow-sm w-100">
+
         <div class="card-header text-center bg-white">
             <h5 class="mb-0 fw-semibold">OASP Assist Chat</h5>
         </div>
@@ -53,7 +55,7 @@
                     </div>
                 @endforeach
             @else
-                <p class="text-muted">No previous messages</p>
+                
             @endisset
         </div>
 

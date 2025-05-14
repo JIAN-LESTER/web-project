@@ -288,70 +288,74 @@
     }
   </style>
 </head>
-
-<body>
-  @if (!request()->routeIs('login') && !request()->routeIs('home') && !request()->routeIs('register') && !request()->routeIs('password.request') && !request()->routeIs('password.update') && !request()->routeIs('password.reset') && !request()->routeIs('2fa.verify.form'))
+@if (!request()->routeIs('login') && !request()->routeIs('home') && !request()->routeIs('register') && !request()->routeIs('password.request') && !request()->routeIs('password.update') && !request()->routeIs('password.reset') && !request()->routeIs('2fa.verify.form'))
     @php
     $user = Auth::user();
     @endphp
+
+    @if (!request()->routeIs('profile') && !request()->routeIs('profile.edit'))
     <div class="sidebar sidebar-dark sidebar-fixed" id="sidebar">
-    @include('partials.menu') <!-- Loads sidebar menu content -->
+        @include('partials.menu') <!-- Loads sidebar menu content -->
     </div>
 
     <!-- Backdrop overlay for small screen sidebar -->
     <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
+    @endif
 
     <!-- Main Page Wrapper -->
     <div class="wrapper d-flex flex-column min-vh-100">
 
-    <!-- Header/Navbar -->
-    <header class="header header-sticky bg-white shadow-sm border-bottom">
-      <div class="container-fluid d-flex align-items-center justify-content-between" style="height: 56px;">
-        <!-- Left side with toggle button -->
-        <button class="header-toggler" type="button" onclick="toggleSidebar()" style="margin: 0; padding-left: 12px;">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg" viewBox="0 0 24 24" fill="black">
-          <path d="M4 6h16M4 12h16M4 18h16" stroke="black" stroke-width="2" stroke-linecap="round" />
-          </svg>
-        </button>
+        <!-- Header/Navbar -->
+        <header class="header header-sticky bg-white shadow-sm border-bottom" id="header">
+            <div class="container-fluid d-flex align-items-center justify-content-between" style="height: 56px;">
+                <!-- Left side with toggle button -->
+                <button class="header-toggler" type="button" onclick="toggleSidebar()" style="margin: 0; padding-left: 12px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg" viewBox="0 0 24 24" fill="black">
+                        <path d="M4 6h16M4 12h16M4 18h16" stroke="black" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
 
-        @if ($user->role === 'user')
-        <a href="{{ route('chat.new') }}" class="btn btn-sm btn-success ms-3 d-none d-lg-inline-flex">
-          + New Chat
-        </a>
-        @endif
+                @if ($user->role === 'user' && (!request()->routeIs('profile') && !request()->routeIs('profile.edit')))
+                <a href="{{ route('chat.new') }}"
+                   class="btn btn-outline-primary d-none d-lg-inline-flex align-items-center gap-2 rounded-pill shadow-sm px-3 py-2"
+                   style="transition: background-color 0.2s ease, box-shadow 0.2s ease;"
+                   data-bs-toggle="tooltip" data-bs-placement="bottom" title="Start a new conversation">
+                    <i class="bi bi-chat-dots-fill"></i>
+                    <span class="fw-medium">New Chat</span>
+                </a>
+                @endif
 
-        <!-- Right side with avatar/dropdown -->
-        <div class="ms-auto" style="position: relative; z-index: 2000;">
-          <div class="dropdown">
-            <a href="#" class="nav-link p-0 me-3" data-coreui-toggle="dropdown" aria-expanded="false" style="position: relative; z-index: 2000;">
-              <img src="{{ asset('storage/' . $user->avatar) }}" class="rounded-circle border" width="32" height="32" alt="{{ $user->email }}">
-            </a>
-            <div class="dropdown-menu dropdown-menu-end" style="position: absolute; z-index: 2000;">
-              <a class="dropdown-item" href="#">Profile</a>
-              <a class="dropdown-item" href="#">Settings</a>
-              <div class="dropdown-divider"></div>
-              <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="dropdown-item">Logout</button>
-              </form>
+                <!-- Right side with avatar and logout -->
+                <div class="ms-auto d-flex align-items-center" style="z-index: 2000; gap: 1rem; padding-right: 1rem;">
+                    <!-- Avatar links to Profile -->
+                    <a href="{{ route('profile') }}" class="d-flex align-items-center" title="Profile"
+                       style="text-decoration: none;">
+                        <img src="{{ asset('storage/' . $user->avatar) }}"
+                             class="rounded-circle border"
+                             width="36" height="36"
+                             alt="{{ $user->email }}">
+                    </a>
+
+                    <!-- Logout icon button -->
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
+                        @csrf
+                        <button type="submit" title="Logout"
+                                class="btn btn-outline-danger d-flex align-items-center justify-content-center"
+                                style="width: 36px; height: 36px; border-radius: 50%; padding: 0;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                                 class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd"
+                                      d="M6 3a.5.5 0 0 0 0 1h5.293L9.146 6.146a.5.5 0 1 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L11.293 3H6z"/>
+                                <path fill-rule="evenodd"
+                                      d="M13 8a.5.5 0 0 1-.5.5H1.5A.5.5 0 0 1 1 8v6a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V9a.5.5 0 0 1 1 0v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8a1 1 0 0 1 1-1h11.5a.5.5 0 0 1 .5.5z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+
             </div>
-          </div>
-        </a>
-        <div class="dropdown-menu dropdown-menu-end">
-          <a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a>
-          <a class="dropdown-item" href="#">Settings</a>
-          <div class="dropdown-divider"></div>
-          <form action="{{ route('logout') }}" method="POST" class="dropdown-item p-0">
-          @csrf
-          <button type="submit" class="dropdown-item"
-            style="background:none; border:none; width:100%; text-align:left;">
-            Logout
-          </button>
-          </form>
-        </div>
-      </div>
-    </header>
-@endif
+        </header>
+    @endif
 
     <!-- Main Page Content -->
     @php
@@ -360,95 +364,113 @@
     @endphp
 
     <div class="{{ $containerClass }}" style="position: relative; z-index: 1;">
-      @yield('content')
+        @yield('content')
     </div>
 
     <!-- CoreUI Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/@coreui/coreui@5.3.1/dist/js/coreui.bundle.min.js"
-      crossorigin="anonymous"></script>
+            crossorigin="anonymous"></script>
 
     <!-- Sidebar Toggle Script -->
     <script>
-      function toggleSidebar() {
+    document.addEventListener('DOMContentLoaded', function() {
+        // Detect if we're on the profile page and close the sidebar
+        if (window.location.href.includes("user/profile")) {
+            // Close sidebar if the route is 'profile'
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            const header = document.getElementById('header');
+
+            // Hide the sidebar and remove backdrop
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
+            if (header) {
+                header.style.left = '0';
+                header.style.width = '100%';
+            }
+        }
+    });
+
+    // Sidebar Toggle Function
+    function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const backdrop = document.getElementById('sidebar-backdrop');
+        const header = document.getElementById('header');
         const isLarge = window.innerWidth >= 992;
 
         if (isLarge) {
-          document.body.classList.toggle('sidebar-hidden');
+            document.body.classList.toggle('sidebar-hidden');
+            if (document.body.classList.contains('sidebar-hidden')) {
+                // Adjust the header and content width when sidebar is hidden
+                header.style.left = '0';
+                header.style.width = '100%';
+            } else {
+                header.style.left = '240px';
+                header.style.width = 'calc(100% - 240px)';
+            }
         } else {
-          sidebar.classList.toggle('show');
-          backdrop.classList.toggle('show');
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
         }
-      }
+    }
 
-      // Handle sidebar close button
-      document.addEventListener('DOMContentLoaded', function() {
+    // Handle sidebar close button
+    document.addEventListener('DOMContentLoaded', function() {
         const closeBtn = document.querySelector('.btn-close');
         if (closeBtn) {
-          closeBtn.onclick = function(e) {
-            e.preventDefault();
-            toggleSidebar();
-          };
+            closeBtn.onclick = function(e) {
+                e.preventDefault();
+                toggleSidebar();
+            };
         }
-
-        // Fix z-index for all dropdown menus and ensure navbar is on top
-        document.addEventListener('shown.coreui.dropdown', function(event) {
-          // Find the dropdown menu
-          const dropdown = event.target.nextElementSibling;
-          if (dropdown && dropdown.classList.contains('dropdown-menu')) {
-            // Force z-index to be extremely high
-            dropdown.style.zIndex = '2000';
-            dropdown.style.position = 'absolute';
-          }
-        });
 
         // Ensure the navbar has highest z-index and fixed position
         const header = document.querySelector('.header');
         if (header) {
-          header.style.zIndex = '1500';
-          header.style.position = 'fixed';
-          header.style.top = '0';
+            header.style.zIndex = '1500';
+            header.style.position = 'fixed';
+            header.style.top = '0';
 
-          // Set initial position based on screen size
-          if (window.innerWidth >= 992 && !document.body.classList.contains('sidebar-hidden')) {
-            header.style.left = '240px';
-            header.style.width = 'calc(100% - 240px)';
-          } else {
-            header.style.left = '0';
-            header.style.width = '100%';
-          }
+            // Set initial position based on screen size
+            if (window.innerWidth >= 992 && !document.body.classList.contains('sidebar-hidden')) {
+                header.style.left = '240px';
+                header.style.width = 'calc(100% - 240px)';
+            } else {
+                header.style.left = '0';
+                header.style.width = '100%';
+            }
         }
-      });
+    });
 
-      // Automatically hide mobile sidebar on resize to desktop
-      window.addEventListener('resize', () => {
+    // Automatically hide mobile sidebar on resize to desktop
+    window.addEventListener('resize', () => {
         const sidebar = document.getElementById('sidebar');
         const backdrop = document.getElementById('sidebar-backdrop');
         const header = document.querySelector('.header');
 
         if (window.innerWidth >= 992) {
-          sidebar.classList.remove('show');
-          backdrop.classList.remove('show');
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
 
-          // Update header position on resize
-          if (header) {
-            if (document.body.classList.contains('sidebar-hidden')) {
-              header.style.left = '0';
-              header.style.width = '100%';
-            } else {
-              header.style.left = '240px';
-              header.style.width = 'calc(100% - 240px)';
+            // Update header position on resize
+            if (header) {
+                if (document.body.classList.contains('sidebar-hidden')) {
+                    header.style.left = '0';
+                    header.style.width = '100%';
+                } else {
+                    header.style.left = '240px';
+                    header.style.width = 'calc(100% - 240px)';
+                }
             }
-          }
         } else {
-          if (header) {
-            header.style.left = '0';
-            header.style.width = '100%';
-          }
+            if (header) {
+                header.style.left = '0';
+                header.style.width = '100%';
+            }
         }
-      });
-    </script>
+    });
+</script>
+
 </body>
 
 </html>

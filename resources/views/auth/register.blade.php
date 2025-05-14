@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GuideBot Register</title>
+    <title>OASP Assist Register</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
@@ -26,8 +26,8 @@
             <!-- Left panel (green) -->
             <div class="form-panel left-panel">
                 <div class="content">
-                    <h1>Join GuideBot</h1>
-                    <p>Create an account to start your journey with GuideBot and access personalized resources.</p>
+                    <h1>Join OASP Assist</h1>
+                    <p>Create an account to start your journey with OASP Assist and access personalized resources.</p>
                     <img src="{{ asset('assets/images/group105.png') }}" alt="Register illustration" class="panel-image">
                 </div>
             </div>
@@ -36,7 +36,7 @@
             <div class="form-panel right-panel">
                 <div class="logo">
                     <i class="fas fa-robot"></i>
-                    <span>GuideBot</span>
+                    <span>OASP Assist</span>
                 </div>
 
                 <div class="form-header">

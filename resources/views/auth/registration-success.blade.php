@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Successful - GuideBot</title>
+    <title>Registration Successful - OASP Assist</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
@@ -24,7 +24,7 @@
         <div class="success-card">
             <div class="logo">
                 <i class="fas fa-robot"></i>
-                <span>GuideBot</span>
+                <span>OASP Assist</span>
             </div>
 
             <div class="success-icon-container">
@@ -36,7 +36,7 @@
 
             <h1 class="success-heading">Registration Successful!</h1>
             <p class="success-message">
-                Welcome to <span class="highlight">GuideBot</span>! Your account has been created successfully.
+                Welcome to <span class="highlight">OASP Assist</span>! Your account has been created successfully.
             </p>
 
             <div class="success-steps">
@@ -50,7 +50,7 @@
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
-                    <div class="step-text">Once verified, you can sign in and start using GuideBot's features.</div>
+                    <div class="step-text">Once verified, you can sign in and start using OASP Assist's features.</div>
                 </div>
             </div>
 

@@ -180,7 +180,10 @@ class UserManagementController extends Controller
 
     public function editProfile(string $id)
     {
-        return view('profile.edit_profile', ['user' => Auth::user()]);
+        $user = Auth::user();  
+        $years = Year::all();    
+        $courses = Course::all();
+        return view('profile.edit_profile', compact('user', 'years', 'courses'));
     }
 
     public function updateProfile(Request $request)
@@ -226,7 +229,7 @@ class UserManagementController extends Controller
         ]);
 
 
-        return redirect()->route('profile.edit_profile')->with('success', 'User profile updated successfully.');
+        return redirect()->route('profile')->with('success', 'User profile updated successfully.');
 
 
     }
@@ -234,7 +237,9 @@ class UserManagementController extends Controller
     public function profile(Request $request)
     {
         $user = auth()->user();
-        return view('profile.index', compact('user'));
+        $year = Year::all();
+        $course = Course::all();
+        return view('profile.index', compact('user','year', 'course'));
 
     }
 }

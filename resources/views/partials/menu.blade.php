@@ -2,7 +2,7 @@
 <div class="sidebar-header border-bottom d-flex align-items-center justify-content-between px-3 py-2">
   <div class="d-flex align-items-center gap-2">
     <!-- Logo -->
-    <span class="fw-bold text-white" style="font-size: 1rem; height:40px;">Acad Bot</span>
+    <span class="fw-bold text-white" style="font-size: 1rem; height:40px;">OASP Assist</span>
   </div>
 
   @php
@@ -115,11 +115,12 @@
       <a href="#"
    class="nav-link load-conversation flex-column align-items-start"
    data-id="{{ $conversation->conversationID }}">
-     <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-comment-square.svg') }}" alt="Conversation"
-          onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
-        />
+     
   <small class="text-muted">Conversation #{{ $conversation->conversationID }}</small>
-  <span>{{ Str::limit($conversation->conversation_title, 50) }}</span>
+  <span style="display:block; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;">
+    {{ Str::limit($conversation->conversation_title, 50) }}
+</span>
+
 </a>
       </li>
     @empty

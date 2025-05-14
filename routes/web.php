@@ -65,11 +65,10 @@ Route::get('/dashboard', function () {
 
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-});
+Route::get('user/profile', [UserManagementController::class, 'profile'])->name('profile');
+Route::put('user/updateProfile', [UserManagementController::class, 'updateProfile'])->name('profile.update');
+Route::get('/user/{id}/profile', [UserManagementController::class, 'editProfile'])->name('profile.edit');
+
 
 
 

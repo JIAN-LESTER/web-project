@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GuideBot - Forgot Password</title>
+    <title>OASP Assist - Forgot Password</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
@@ -36,7 +36,7 @@
             <div class="form-panel right-panel">
                 <div class="logo">
                     <i class="fas fa-robot"></i>
-                    <span>GuideBot</span>
+                    <span>OASP Assist</span>
                 </div>
 
                 <div class="form-header">

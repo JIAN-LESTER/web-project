@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GuideBot Login</title>
+    <title>OASP Assist Login</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
@@ -27,7 +27,7 @@
             <div class="form-panel left-panel">
                 <div class="content">
                     <h1>Welcome Back!</h1>
-                    <p>Sign in to continue your journey with GuideBot and access all your personalized content.</p>
+                    <p>Sign in to continue your journey with OASP Assist and access all your personalized content.</p>
                     <img src="{{ asset('assets/images/group101.png') }}" alt="Login illustration" class="panel-image">
                 </div>
             </div>
@@ -36,7 +36,7 @@
             <div class="form-panel right-panel">
                 <div class="logo">
                     <i class="fas fa-robot"></i>
-                    <span>GuideBot</span>
+                    <span>OASP Assist</span>
                 </div>
 
                 <div class="form-header">
@@ -240,7 +240,7 @@
                             <p><strong>Why verify your email?</strong></p>
                             <ul>
                                 <li>Secure your account</li>
-                                <li>Access all GuideBot features</li>
+                                <li>Access all OASP Assist features</li>
                                 <li>Receive important notifications</li>
                             </ul>
                         </div>
