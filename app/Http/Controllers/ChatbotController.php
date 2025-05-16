@@ -26,22 +26,22 @@ class ChatbotController extends Controller
         $request->validate([
             'message' => 'required|string',
         ]);
-    
+
         $user = Auth::user();
         $userQuery = $request->input('message');
-    
+
         // Check for active conversation
         $conversation = Conversation::where('userID', $user->userID)
             ->where('conversation_status', 'active')
             ->latest()
             ->first();
-    
+
         // End previous conversation if idle for more than 5 minutes
         if ($conversation && $conversation->sent_at->diffInMinutes(now()) >= 5) {
             $conversation->update(['conversation_status' => 'ended', 'sent_at' => now()]);
             $conversation = null;
         }
-    
+
         // Create new conversation if none exists or update title if needed
         if (!$conversation) {
             $conversation = Conversation::create([
@@ -54,10 +54,13 @@ class ChatbotController extends Controller
             // If title is still null, set it as the first message
             $conversation->update(['conversation_title' => $userQuery]);
         }
-    
+
         // Detect the category (using a classification model, etc.)
         $category = $this->detectCategory($userQuery);
-    
+        if (!$category || !\App\Models\Categories::find($category)) {
+            $category = 4; // Default to 'General'
+        }
+
         // Save user message
         Message::create([
             'userID' => $user->userID,
@@ -69,10 +72,10 @@ class ChatbotController extends Controller
             'message_type' => 'text',
             'sent_at' => now(),
         ]);
-    
+
         // Retrieve knowledge base response or use LLM (language model) response
         $kbEntry = $this->kbRetrieval->retrieveRelevant($userQuery);
-    
+
         if ($kbEntry && $kbEntry->content) {
             $kbID = $kbEntry->kbID;
             $context = $kbEntry->content;
@@ -81,53 +84,80 @@ class ChatbotController extends Controller
             $responseText = $this->llm->generateCompletion($userQuery);
             $kbID = null;
         }
-    
+
+        if (empty($responseText) || $responseText === '[NO_ANSWER]' || str_contains($responseText, 'error')) {
+            $responseText = "I'm sorry, I couldn't find a relevant answer to your question.";
+            
+            // Optional: set a flag that the bot didn't find an answer
+            $noAnswer = true;
+        } else {
+            $noAnswer = false;
+        }
+
         // Save bot response message
-        Message::create([
+       $botMessage = Message::create([
             'userID' => $user->userID,
             'kbID' => $kbID,
             'conversationID' => $conversation->conversationID,
             'content' => $responseText,
             'categoryID' => $category,
             'sender' => 'bot',
-            'message_status' => 'responded',
+            'message_status' => $noAnswer ? 'no_answer' : 'responded',
             'message_type' => 'text',
             'sent_at' => now(),
-            'responded_at' => now(),
+
         ]);
-    
+
+        // Update the latest user message's responded_at field
+        if (!$noAnswer) {
+            $latestUserMessage = Message::where('conversationID', $conversation->conversationID)
+                ->where('sender', 'user')
+                ->latest('sent_at')
+                ->first();
+        
+            if ($latestUserMessage) {
+                $latestUserMessage->update(['responded_at' => $botMessage->sent_at]);
+            }
+        }
         return response()->json([
             'message' => $responseText,
         ]);
     }
 
     public function detectCategory($userQuery)
-    {
-        $llmResponse = trim($this->llm->generateCompletion($this->getCategoryPrompt($userQuery)));
-    
-        // Log the exact raw response including spaces or newlines
-        \Log::info("LLM Category Raw (trimmed): '" . $llmResponse . "'");
-    
-        // Regex to extract numbers (ignores extra text like "Category: 1")
-        if (preg_match('/\b[1-4]\b/', $llmResponse, $matches)) {
-            return (int) $matches[0];
-        }
-    
-        // Fallback to manual keyword-based classification
-        $userQuery = strtolower($userQuery);
-    
-        if (str_contains($userQuery, 'enroll') || str_contains($userQuery, 'admission')) return 1;
-        if (str_contains($userQuery, 'scholarship')) return 2;
-        if (str_contains($userQuery, 'job') || str_contains($userQuery, 'placement')) return 3;
-    
-        return 4;
-    }
-    
-    
-
-private function getCategoryPrompt(string $query): string
 {
-    return <<<EOT
+    $llmResponse = trim($this->llm->generateCompletion($this->getCategoryPrompt($userQuery)));
+
+    // Log the exact raw response including spaces or newlines
+    \Log::info("LLM Category Raw (trimmed): '" . $llmResponse . "'");
+
+    // Regex to extract numbers (ignores extra text like "Category: 1")
+    if (preg_match('/\b[1-4]\b/', $llmResponse, $matches)) {
+        // Ensure the category exists
+        $categoryId = (int) $matches[0];
+        if (\App\Models\Categories::find($categoryId)) {
+            return $categoryId; // Return valid category ID
+        }
+    }
+
+    // Fallback to manual keyword-based classification
+    $userQuery = strtolower($userQuery);
+
+    if (str_contains($userQuery, 'enroll') || str_contains($userQuery, 'admission'))
+        return 1;
+    if (str_contains($userQuery, 'scholarship'))
+        return 2;
+    if (str_contains($userQuery, 'job') || str_contains($userQuery, 'placement'))
+        return 3;
+
+    return 4; // Default to 'General' if nothing matches
+}
+
+
+
+    private function getCategoryPrompt(string $query): string
+    {
+        return <<<EOT
 Classify the message below into one of these categories (return the number only):
 
 1 - Admissions  
@@ -139,10 +169,10 @@ Message: "$query"
 
 Just return the number only (1-4).
 EOT;
-}
+    }
 
 
-    
+
 
     public function showConversation($conversationID)
     {
@@ -189,7 +219,7 @@ EOT;
             ->where('conversation_status', 'active')
             ->latest()
             ->first();
-        
+
         if ($activeConversation) {
             // End the active conversation
             $activeConversation->update([
@@ -199,7 +229,7 @@ EOT;
         }
 
         // Create a new conversation
-        $userQuery = $request->input('message'); 
+        $userQuery = $request->input('message');
 
         $conversation = Conversation::create([
             'userID' => $user->userID,
