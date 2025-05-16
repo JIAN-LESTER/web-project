@@ -325,34 +325,43 @@
                 </a>
                 @endif
 
-                <!-- Right side with avatar and logout -->
+                <!-- Right side with avatar dropdown -->
                 <div class="ms-auto d-flex align-items-center" style="z-index: 2000; gap: 1rem; padding-right: 1rem;">
-                    <!-- Avatar links to Profile -->
-                    <a href="{{ route('profile') }}" class="d-flex align-items-center" title="Profile"
-                       style="text-decoration: none;">
-                        <img src="{{ asset('storage/' . $user->avatar) }}"
-                             class="rounded-circle border"
-                             width="36" height="36"
-                             alt="{{ $user->email }}">
-                    </a>
+                    <!-- User dropdown menu -->
+                    <div class="dropdown">
+                        <a href="#" class="dropdown-toggle d-flex align-items-center text-decoration-none"
+                           id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="{{ asset('storage/' . $user->avatar) }}"
+                                 class="rounded-circle border"
+                                 width="36" height="36"
+                                 alt="{{ $user->email }}">
+                        </a>
 
-                    <!-- Logout icon button -->
-                    <form action="{{ route('logout') }}" method="POST" class="m-0">
-                        @csrf
-                        <button type="submit" title="Logout"
-                                class="btn btn-outline-danger d-flex align-items-center justify-content-center"
-                                style="width: 36px; height: 36px; border-radius: 50%; padding: 0;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                 class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                                <path fill-rule="evenodd"
-                                      d="M6 3a.5.5 0 0 0 0 1h5.293L9.146 6.146a.5.5 0 1 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L11.293 3H6z"/>
-                                <path fill-rule="evenodd"
-                                      d="M13 8a.5.5 0 0 1-.5.5H1.5A.5.5 0 0 1 1 8v6a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V9a.5.5 0 0 1 1 0v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8a1 1 0 0 1 1-1h11.5a.5.5 0 0 1 .5.5z"/>
-                            </svg>
-                        </button>
-                    </form>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#profileModal">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person me-2" viewBox="0 0 16 16">
+                                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664z"/>
+                                    </svg>
+                                    Profile
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST" class="m-0">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right me-2" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                                            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                                        </svg>
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-
             </div>
         </header>
     @endif
@@ -365,6 +374,138 @@
 
     <div class="{{ $containerClass }}" style="position: relative; z-index: 1;">
         @yield('content')
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="profileModalLabel">User Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <img src="{{ asset('storage/' . $user->avatar) }}" class="rounded-circle img-thumbnail" width="120" height="120" alt="{{ $user->email }}">
+                        <h4 class="mt-2">{{ $user->name }}</h4>
+                        <p class="text-muted">{{ $user->email }}</p>
+                        <span class="badge bg-{{ $user->role === 'admin' ? 'danger' : 'primary' }}">{{ ucfirst($user->role) }}</span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted">User ID</h6>
+                            <p>{{ $user->userID }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted">Created On</h6>
+                            <p>{{ $user->created_at->format('M d, Y') }}</p>
+                        </div>
+                        @if ($user->role === 'user')
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted">Year Level</h6>
+                            <p>{{ $user->year ? $user->year->year_level : 'Not set' }}</p>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-muted">Course</h6>
+                            <p>{{ $user->course ? $user->course->course_name : 'Not set' }}</p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editProfileModal" data-bs-dismiss="modal">Edit Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm" action="{{ route('profile.update', $user->userID) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="mb-3 text-center">
+                            <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : asset('images/default-avatar.png') }}"
+                                alt="User Avatar" class="rounded-circle mb-3 border" width="120" height="120">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="avatar" class="form-label">Upload Avatar</label>
+                            <input type="file" name="avatar" id="avatar" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" name="name" id="name" class="form-control" value="{{ $user->name }}" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" name="email" id="email" class="form-control" value="{{ $user->email }}" required>
+                        </div>
+
+                        @if ($user->role === 'user')
+                        <div class="mb-3">
+                            <label for="year" class="form-label">Year</label>
+                            <select name="year_id" id="year" class="form-select">
+                                <option value="">Select Year</option>
+                                @foreach ($years ?? [] as $year)
+                                    <option value="{{ $year->yearID }}" {{ $user->yearID == $year->yearID ? 'selected' : '' }}>
+                                        {{ $year->year_level }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="course" class="form-label">Course</label>
+                            <select name="course_id" id="course" class="form-select">
+                                <option value="">Select Course</option>
+                                @foreach ($courses ?? [] as $course)
+                                    <option value="{{ $course->courseID }}" {{ $user->courseID == $course->courseID ? 'selected' : '' }}>
+                                        {{ $course->course_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+
+                        <hr>
+                        <h5>Change Password (Optional)</h5>
+
+                        <div class="mb-3">
+                            <label for="old_password" class="form-label">Current Password</label>
+                            <input type="password" name="old_password" id="old_password" class="form-control">
+                            <div class="invalid-feedback" id="old-password-error"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="new_password" class="form-label">New Password</label>
+                            <input type="password" name="new_password" id="new_password" class="form-control">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="new_password_confirmation" class="form-label">Confirm New Password</label>
+                            <input type="password" name="new_password_confirmation" id="new_password_confirmation" class="form-control">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="document.getElementById('editProfileForm').submit()">Update Profile</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- CoreUI Bundle JS -->
@@ -389,6 +530,42 @@
                 header.style.width = '100%';
             }
         }
+
+        // Initialize Bootstrap tooltips and dropdowns
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+        var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+            return new bootstrap.Dropdown(dropdownToggleEl)
+        });
+
+        // Handle success messages with SweetAlert
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}'
+            });
+        @endif
+
+        // Handle validation errors for the profile form
+        @if($errors->any())
+            // If the errors are likely for the profile form, show the edit profile modal
+            if ({{ $errors->has('name') || $errors->has('email') || $errors->has('avatar') ||
+                  $errors->has('old_password') || $errors->has('new_password') ? 'true' : 'false' }}) {
+                var editProfileModal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+                editProfileModal.show();
+
+                // Display validation errors
+                @foreach($errors->all() as $error)
+                    // You could add code here to highlight the specific fields with errors
+                    console.error('Validation error: {{ $error }}');
+                @endforeach
+            }
+        @endif
     });
 
     // Sidebar Toggle Function
@@ -416,7 +593,7 @@
 
     // Handle sidebar close button
     document.addEventListener('DOMContentLoaded', function() {
-        const closeBtn = document.querySelector('.btn-close');
+        const closeBtn = document.querySelector('.sidebar .btn-close');
         if (closeBtn) {
             closeBtn.onclick = function(e) {
                 e.preventDefault();
@@ -469,7 +646,7 @@
             }
         }
     });
-</script>
+    </script>
 
 </body>
 
