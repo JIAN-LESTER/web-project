@@ -74,8 +74,10 @@ class UserManagementController extends Controller
     {
 
         $user = User::findOrFail(($id));
+        $courses = Course::all();
+        $years = Year::all();
         
-        return view('admin.user_crud.show_user', compact('user'));
+        return view('admin.user_crud.show_user', compact('user', 'years', 'courses'));
     }
 
     public function edit(string $id)

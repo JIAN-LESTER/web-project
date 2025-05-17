@@ -26,22 +26,23 @@ class ChatbotController extends Controller
         $request->validate([
             'message' => 'required|string',
         ]);
-
+    
         $user = Auth::user();
         $userQuery = $request->input('message');
-
+        $startTime = microtime(true); // Start timing
+    
         // Check for active conversation
         $conversation = Conversation::where('userID', $user->userID)
             ->where('conversation_status', 'active')
             ->latest()
             ->first();
-
+    
         // End previous conversation if idle for more than 5 minutes
         if ($conversation && $conversation->sent_at->diffInMinutes(now()) >= 5) {
             $conversation->update(['conversation_status' => 'ended', 'sent_at' => now()]);
             $conversation = null;
         }
-
+    
         // Create new conversation if none exists or update title if needed
         if (!$conversation) {
             $conversation = Conversation::create([
@@ -51,17 +52,16 @@ class ChatbotController extends Controller
                 'sent_at' => now(),
             ]);
         } elseif ($conversation->conversation_title === null) {
-            // If title is still null, set it as the first message
             $conversation->update(['conversation_title' => $userQuery]);
         }
-
-        // Detect the category (using a classification model, etc.)
+    
+        // Detect the category
         $category = $this->detectCategory($userQuery);
         if (!$category || !\App\Models\Categories::find($category)) {
             $category = 4; // Default to 'General'
         }
-
-        // Save user message
+    
+        // Save user message (no response_time yet)
         Message::create([
             'userID' => $user->userID,
             'conversationID' => $conversation->conversationID,
@@ -72,10 +72,10 @@ class ChatbotController extends Controller
             'message_type' => 'text',
             'sent_at' => now(),
         ]);
-
-        // Retrieve knowledge base response or use LLM (language model) response
+    
+        // Retrieve response from KB or LLM
         $kbEntry = $this->kbRetrieval->retrieveRelevant($userQuery);
-
+    
         if ($kbEntry && $kbEntry->content) {
             $kbID = $kbEntry->kbID;
             $context = $kbEntry->content;
@@ -84,18 +84,19 @@ class ChatbotController extends Controller
             $responseText = $this->llm->generateCompletion($userQuery);
             $kbID = null;
         }
-
+    
         if (empty($responseText) || $responseText === '[NO_ANSWER]' || str_contains($responseText, 'error')) {
             $responseText = "I'm sorry, I couldn't find a relevant answer to your question.";
-            
-            // Optional: set a flag that the bot didn't find an answer
             $noAnswer = true;
         } else {
             $noAnswer = false;
         }
-
-        // Save bot response message
-       $botMessage = Message::create([
+    
+        $endTime = microtime(true); // End timing
+        $responseTime = round($endTime - $startTime, 4);
+    
+        // Save bot message with response time
+        $botMessage = Message::create([
             'userID' => $user->userID,
             'kbID' => $kbID,
             'conversationID' => $conversation->conversationID,
@@ -105,24 +106,27 @@ class ChatbotController extends Controller
             'message_status' => $noAnswer ? 'no_answer' : 'responded',
             'message_type' => 'text',
             'sent_at' => now(),
-
+            'response_time' => $responseTime, // Saved here
         ]);
-
-        // Update the latest user message's responded_at field
+    
+        // Update responded_at on the latest user message
         if (!$noAnswer) {
             $latestUserMessage = Message::where('conversationID', $conversation->conversationID)
                 ->where('sender', 'user')
                 ->latest('sent_at')
                 ->first();
-        
+    
             if ($latestUserMessage) {
                 $latestUserMessage->update(['responded_at' => $botMessage->sent_at]);
             }
         }
+    
         return response()->json([
             'message' => $responseText,
+            'response_time' => $responseTime, // Also return to frontend
         ]);
     }
+    
 
     public function detectCategory($userQuery)
 {

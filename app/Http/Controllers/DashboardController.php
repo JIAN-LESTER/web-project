@@ -22,11 +22,13 @@ class DashboardController extends Controller
         ->first();
     }
 
-    // public function answeredMessages(){
-    //     $answeredMessages = Message::where()
-    // }
+    public function answeredMessages(){
+        $answeredMessages = Message::whereNotNull('responded_at')->count();
+        return view('admin.dashboard', compact('answeredMessages'));
+    }
 
     public function unAnsweredMessages(){
-        
+        $unAnsweredMessages = Message::whereNull('responded_at')->count();
+        return view('admin.dashboard', compact('unAnsweredMessages'));
     }
 }

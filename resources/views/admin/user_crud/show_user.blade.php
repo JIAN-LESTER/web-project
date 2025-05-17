@@ -16,7 +16,7 @@
             <h2 class="card-subtitle text-muted mb-3">Email: {{ $user->email }}</h2>
             <h2 class="card-subtitle text-muted mb-3">Role: <span style="text-transform:uppercase;">{{ $user->role }}</span></h2>
             <h2 class="card-subtitle text-muted mb-3">Year: {{ $user->year->year_level }}</h2>
-            <h2 class="card-subtitle text-muted mb-3">Course: {{ $user->course->course_level }}</h2>
+            <h2 class="card-subtitle text-muted mb-3">Course: {{ $user->course->course_name }}</h2>
 
 
         </div>

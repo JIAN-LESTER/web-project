@@ -31,17 +31,8 @@
         Dashboard
       </a>
 
-      <a class="nav-link {{ request()->routeIs('admin.knowledge_base') ? 'active' : '' }}"
-         href="{{ route('admin.knowledge_base') }}"
-         aria-current="{{ request()->routeIs('admin.knowledge_base') ? 'page' : '' }}">
-        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-book.svg') }}" alt="Knowledge Base"
-             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 448 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M448 360V24c0-13.3-10.7-24-24-24H96C43 0 0 43 0 96v320c0 53 43 96 96 96h328c13.3 0 24-10.7 24-24v-16c0-7.5-3.5-14.3-8.9-18.7-4.2-15.4-4.2-59.3 0-74.7 5.4-4.3 8.9-11.1 8.9-18.6zM128 134c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm0 64c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm253.4 250H96c-17.7 0-32-14.3-32-32 0-17.6 14.4-32 32-32h285.4c-1.9 17.1-1.9 46.9 0 64z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
-        />
-        Knowledge Base
-      </a>
-    </li>
+    
 
-    <li class="nav-item">
       <a class="nav-link {{ request()->routeIs('admin.reports_analytics') ? 'active' : '' }}"
          href="{{ route('admin.reports_analytics') }}"
          aria-current="{{ request()->routeIs('admin.reports_analytics') ? 'page' : '' }}">
@@ -51,8 +42,18 @@
         Reports
       </a>
     </li>
+    <li class="nav-title">Management</li>
 
-    <li class="nav-group">
+    <li class="nav-item">
+    <a class="nav-link {{ request()->routeIs('admin.knowledge_base') ? 'active' : '' }}"
+         href="{{ route('admin.knowledge_base') }}"
+         aria-current="{{ request()->routeIs('admin.knowledge_base') ? 'page' : '' }}">
+        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-book.svg') }}" alt="Knowledge Base"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 448 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M448 360V24c0-13.3-10.7-24-24-24H96C43 0 0 43 0 96v320c0 53 43 96 96 96h328c13.3 0 24-10.7 24-24v-16c0-7.5-3.5-14.3-8.9-18.7-4.2-15.4-4.2-59.3 0-74.7 5.4-4.3 8.9-11.1 8.9-18.6zM128 134c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm0 64c0-3.3 2.7-6 6-6h212c3.3 0 6 2.7 6 6v20c0 3.3-2.7 6-6 6H134c-3.3 0-6-2.7-6-6v-20zm253.4 250H96c-17.7 0-32-14.3-32-32 0-17.6 14.4-32 32-32h285.4c-1.9 17.1-1.9 46.9 0 64z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        />
+        Knowledge Base
+      </a>
+
       <a class="nav-link {{ request()->routeIs('admin.user_management') ? 'active' : '' }}"
          href="{{ route('admin.user_management') }}"
          aria-current="{{ request()->routeIs('admin.user_management') ? 'page' : '' }}">
@@ -64,7 +65,7 @@
     </li>
 
     <!-- Preferences -->
-    <li class="nav-title">Preferences</li>
+    <li class="nav-title">System</li>
 
     <li class="nav-group">
       <a class="nav-link {{ request()->routeIs('admin.logs') ? 'active' : '' }}"
@@ -77,27 +78,7 @@
       </a>
     </li>
 
-    <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('admin.charts') ? 'active' : '' }}"
-         href="{{ route('admin.charts') }}"
-         aria-current="{{ request()->routeIs('admin.charts') ? 'page' : '' }}">
-        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-chart-pie.svg') }}" alt="Charts"
-             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 544 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M527.79 288H290.5l158.03 158.03c6.04 6.04 15.98 6.53 22.19.68 38.7-36.46 65.32-85.61 73.13-140.86 1.34-9.46-6.51-17.85-16.06-17.85zm-15.83-64.8C503.72 103.74 408.26 8.28 288.8.04 279.68-.59 272 7.1 272 16.24V240h223.77c9.14 0 16.82-7.68 16.19-16.8zM224 288V50.71c0-9.55-8.39-17.4-17.84-16.06C86.99 51.49-4.1 155.6.14 280.37 4.5 408.51 114.83 513.59 243.03 511.98c50.4-.63 96.97-16.87 135.26-44.03 7.9-5.6 8.42-17.23 1.57-24.08L224 288z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
-        />
-        Charts
-      </a>
-    </li>
-
-    <li class="nav-group">
-      <a class="nav-link {{ request()->routeIs('admin.forms') ? 'active' : '' }}"
-         href="{{ route('admin.forms') }}"
-         aria-current="{{ request()->routeIs('admin.forms') ? 'page' : '' }}">
-        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-notes.svg') }}" alt="Forms"
-             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M312 320h136V56c0-13.3-10.7-24-24-24H24C10.7 32 0 42.7 0 56v400c0 13.3 10.7 24 24 24h264V344c0-13.2 10.8-24 24-24zm-24 96H24V56h400v256H320c-17.7 0-32 14.3-32 32v72zm176-8V80c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v328c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16zm-192 0V192c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v216c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16zm-96 0V192c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v216c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16zm-96 0V192c0-8.84-7.16-16-16-16h-16c-8.84 0-16 7.16-16 16v216c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
-        />
-        Forms
-      </a>
-    </li>
+    
 
   @else
     <!-- User Navigation -->

@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\KBController;
+use App\Http\Controllers\ReportsController;
 use App\Livewire\Chatbot;
 use App\Models\KnowledgeBase;
 use Illuminate\Support\Facades\Route;
@@ -18,6 +19,7 @@ use App\Http\Controllers\TwoFactorAuthController;
 
 
 use App\Http\Controllers\PasswordResetController;
+use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
@@ -80,7 +82,15 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 Route::get('/dashboard', [AdminController::class, 'viewDashboard', ])->name('admin.dashboard');
-Route::get('/reports-analytics', [AdminController::class, 'viewReports'])->name('admin.reports_analytics');
+Route::get('/reports-analytics', [ReportsController::class, 'viewReports'])->name('admin.reports_analytics');
+Route::get('/reports-analytics/export', [ReportsController::class, 'exportReports'])->name('admin.reports_analytics.exports');
+Route::get('/admin/reports/export-csv', [ReportsController::class, 'exportCsv'])->name('admin.reports_export_csv');
+Route::get('/reports/ajax-data', [ReportsController::class, 'ajaxReportData'])->name('reports.ajax');
+
+
+
+
+
 Route::get('/logs', [AdminController::class, 'viewLogs'])->name('admin.logs');
 Route::get('/user-management', [AdminController::class, 'viewUsers'])->name('admin.user_management');
 Route::get('/charts', [AdminController::class, 'viewCharts'])->name('admin.charts');

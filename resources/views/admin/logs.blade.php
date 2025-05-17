@@ -98,11 +98,7 @@
                                     User <i class="fas fa-sort"></i>
                                 </div>
                             </th>
-                            <th class="sortable col-message" data-sort="messageId">
-                                <div class="sort-header">
-                                    Message ID <i class="fas fa-sort"></i>
-                                </div>
-                            </th>
+                          
                             <th class="sortable col-action" data-sort="action">
                                 <div class="sort-header">
                                     Action <i class="fas fa-sort"></i>
@@ -130,13 +126,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="log-message">
-                                    @if ($log->messageID == null)
-                                        <span class="na-badge">N/A</span>
-                                    @else
-                                        <span class="message-badge">{{ $log->messageID }}</span>
-                                    @endif
-                                </td>
+                                
                                 <td class="log-action">
                                     @php
                                         $actionClass = '';
@@ -248,10 +238,6 @@
             <div class="log-detail-item">
                 <span class="detail-label">Email:</span>
                 <span class="detail-value" id="panel-email"></span>
-            </div>
-            <div class="log-detail-item">
-                <span class="detail-label">Message ID:</span>
-                <span class="detail-value" id="panel-message-id"></span>
             </div>
         </div>
 
