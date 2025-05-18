@@ -12,26 +12,25 @@ class KnowledgeRetrievalService
         $this->openAI = $openAI;
     }
 
-    public function retrieveRelevant($query)
-    {
-        $queryEmbedding = $this->openAI->generateEmbedding($query);
-        $kbItems = KnowledgeBase::all();
+    public function retrieveRelevant($query, $topK = 5)
+{
+    $queryEmbedding = $this->openAI->generateEmbedding($query);
+    $kbItems = KnowledgeBase::all();
 
-        $topKb = null;
-        $topScore = -1;
+    $similarities = [];
 
-        foreach ($kbItems as $kb) {
-            $kbEmbedding = json_decode($kb->embedding, true);
-            $similarity = $this->cosineSimilarity($queryEmbedding, $kbEmbedding);
-
-            if ($similarity > $topScore) {
-                $topScore = $similarity;
-                $topKb = $kb;
-            }
-        }
-
-        return $topKb;
+    foreach ($kbItems as $kb) {
+        $kbEmbedding = json_decode($kb->embedding, true);
+        $similarity = $this->cosineSimilarity($queryEmbedding, $kbEmbedding);
+        $similarities[] = ['kb' => $kb, 'score' => $similarity];
     }
+
+    // Sort by highest similarity
+    usort($similarities, fn($a, $b) => $b['score'] <=> $a['score']);
+
+    // Get top K relevant documents
+    return collect($similarities)->take($topK)->pluck('kb')->toArray();
+}
 
     private function cosineSimilarity($vecA, $vecB)
     {
