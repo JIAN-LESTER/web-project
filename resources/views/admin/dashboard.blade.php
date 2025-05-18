@@ -203,7 +203,7 @@
     <!-- Total Messages Card -->
     <div class="col-sm-6 col-xl-3" style="--i: 1">
       <div class="card border-primary rounded-3 mb-3 stat-card">
-        <div class="card-body d-flex align-items-center p-4">
+        <div class="card-body d-flex align-items-center p-3">
           <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
             <i class="bi bi-chat-left-dots-fill fs-2 text-primary"></i>
           </div>
@@ -218,7 +218,7 @@
     <!-- Answered Messages Card -->
     <div class="col-sm-6 col-xl-3" style="--i: 2">
       <div class="card border-success rounded-3 mb-3 stat-card">
-        <div class="card-body d-flex align-items-center p-4">
+        <div class="card-body d-flex align-items-center p-3">
           <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
             <i class="bi bi-check-circle-fill fs-2 text-success"></i>
           </div>
@@ -233,7 +233,7 @@
     <!-- Total Users Card -->
     <div class="col-sm-6 col-xl-3" style="--i: 3">
       <div class="card border-danger rounded-3 mb-3 stat-card">
-        <div class="card-body d-flex align-items-center p-4">
+        <div class="card-body d-flex align-items-center p-3">
           <div class="rounded-circle bg-danger bg-opacity-10 p-3 me-3">
             <i class="bi bi-people-fill fs-2 text-danger"></i>
           </div>
@@ -248,7 +248,7 @@
     <!-- Most Frequent Category Card -->
     <div class="col-sm-6 col-xl-3" style="--i: 4">
       <div class="card border-warning rounded-3 mb-3 stat-card">
-        <div class="card-body d-flex align-items-center p-4">
+        <div class="card-body d-flex align-items-center p-3">
           <div class="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
             <i class="bi bi-tags-fill fs-2 text-warning"></i>
           </div>
