@@ -16,43 +16,49 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class ReportsController extends Controller
 {
     private function getDateRange(Request $request)
-{
-    $filter = $request->query('filter', 'day');
-
-    $startDate = $request->query('start_date');
-    $endDate = $request->query('end_date');
-    $startTime = $request->query('start_time');
-    $endTime = $request->query('end_time');
-
-    if ($filter === 'all') {
-        $first = Message::where('sender', 'user')->orderBy('created_at')->first();
-        $last = Message::where('sender', 'user')->orderByDesc('created_at')->first();
+    {
+        $filter = $request->query('filter', 'day');
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+        $startTime = $request->query('start_time');
+        $endTime = $request->query('end_time');
     
-        $start = $first ? Carbon::parse($first->created_at)->startOfDay() : null;
-        $end = $last ? Carbon::parse($last->created_at)->endOfDay() : null;
+        $appTz = 'Asia/Manila';
+        $dbTz = 'UTC';
+    
+        if ($filter === 'all') {
+            $first = Message::where('sender', 'user')->orderBy('created_at')->first();
+            $last = Message::where('sender', 'user')->orderByDesc('created_at')->first();
+    
+            $start = $first ? Carbon::parse($first->created_at)->setTimezone($dbTz)->startOfDay() : null;
+            $end   = $last  ? Carbon::parse($last->created_at)->setTimezone($dbTz)->endOfDay()   : null;
+    
+            return [$start, $end];
+        }
+    
+        if ($startDate && $endDate) {
+            $start = Carbon::parse("{$startDate} " . ($startTime ?? '00:00:00'), $appTz)->timezone($dbTz);
+            $end   = Carbon::parse("{$endDate} " . ($endTime ?? '23:59:59'), $appTz)->timezone($dbTz);
+        } else {
+            switch ($filter) {
+                case 'week':
+                    $start = Carbon::now($appTz)->startOfWeek()->timezone($dbTz);
+                    $end   = Carbon::now($appTz)->endOfWeek()->timezone($dbTz);
+                    break;
+                case 'month':
+                    $start = Carbon::now($appTz)->startOfMonth()->timezone($dbTz);
+                    $end   = Carbon::now($appTz)->endOfMonth()->timezone($dbTz);
+                    break;
+                case 'day':
+                default:
+                    $start = Carbon::today($appTz)->timezone($dbTz);
+                    $end   = Carbon::today($appTz)->endOfDay()->timezone($dbTz);
+                    break;
+            }
+        }
     
         return [$start, $end];
     }
-
-    if ($startDate && $endDate) {
-        $start = Carbon::parse($startDate . ' ' . ($startTime ?? '00:00:00'));
-        $end = Carbon::parse($endDate . ' ' . ($endTime ?? '23:59:59'));
-    } else {
-        if ($filter === 'week') {
-            $start = Carbon::now()->startOfWeek();
-            $end = Carbon::now()->endOfWeek();
-        } elseif ($filter === 'month') {
-            $start = Carbon::now()->startOfMonth();
-            $end = Carbon::now()->endOfMonth();
-        } else {
-            $start = Carbon::today();
-            $end = Carbon::today()->endOfDay();
-        }
-    }
-
-    return [$start, $end];
-}
-
 
     private function getMessageStats($start, $end)
     {
@@ -95,61 +101,84 @@ class ReportsController extends Controller
     }
 
     private function getChartData($filter, $start, $end)
-{
-    $labels = collect();
-    $counts = collect();
-
-    if ($filter === 'all' || (!$start && !$end)) {
-        $firstMessage = Message::where('sender', 'user')->orderBy('created_at')->first();
+    {
+        $appTz = 'Asia/Manila';
+        $dbTz = 'UTC';
     
-        if ($firstMessage) {
-            $start = Carbon::parse($firstMessage->created_at)->startOfMonth();
-            $end = now()->endOfMonth();
-            $monthsToShow = $start->diffInMonths($end) + 1;
+        $labels = collect();
+        $counts = collect();
+    
+        if ($filter === 'all' || (!$start && !$end)) {
+            $firstMessage = Message::where('sender', 'user')->orderBy('created_at')->first();
+    
+            if ($firstMessage) {
+                $start = Carbon::parse($firstMessage->created_at)->startOfMonth();
+                $end = now()->endOfMonth();
+                $monthsToShow = $start->diffInMonths($end) + 1;
+    
+                for ($i = 0; $i < $monthsToShow; $i++) {
+                    $monthStart = $start->copy()->addMonths($i)->startOfMonth();
+                    $monthEnd = $monthStart->copy()->endOfMonth();
+                    $labels->push($monthStart->setTimezone($appTz)->format('M Y'));
+                    $counts->push(
+                        Message::where('sender', 'user')->whereBetween('created_at', [$monthStart, $monthEnd])->count()
+                    );
+                }
+            }
+        } elseif ($filter === 'day') {
+            for ($i = 0; $i < 24; $i++) {
+                // Build start and end time in app timezone (Asia/Manila)
+                $hourStartAppTz = $start->copy()->setTimezone($appTz)->setTime($i, 0, 0);
+                $hourEndAppTz = $hourStartAppTz->copy()->endOfHour();
+            
+                // Convert those to UTC for DB querying
+                $hourStartUtc = $hourStartAppTz->copy()->setTimezone($dbTz);
+                $hourEndUtc = $hourEndAppTz->copy()->setTimezone($dbTz);
+            
+                $labels->push($hourStartAppTz->format('H:00'));
+            
+                $counts->push(
+                    Message::where('sender', 'user')->whereBetween('created_at', [$hourStartUtc, $hourEndUtc])->count()
+                );
+            }
+        } elseif ($filter === 'custom' && $start && $end && $start->toDateString() !== $end->toDateString()) {
+            for ($i = 0; $i <= $start->diffInDays($end); $i++) {
+                $dayStart = $start->copy()->addDays($i)->startOfDay();
+                $dayEnd = $dayStart->copy()->endOfDay();
+    
+                $labels->push($dayStart->setTimezone($appTz)->format('M d'));
+                $counts->push(
+                    Message::where('sender', 'user')->whereBetween('created_at', [$dayStart, $dayEnd])->count()
+                );
+            }
+        } elseif ($filter === 'week') {
+            for ($i = 0; $i < 7; $i++) {
+                $dayStart = $start->copy()->addDays($i)->startOfDay();
+                $dayEnd = $dayStart->copy()->endOfDay();
+    
+                $labels->push($dayStart->setTimezone($appTz)->format('M d'));
+                $counts->push(
+                    Message::where('sender', 'user')->whereBetween('created_at', [$dayStart, $dayEnd])->count()
+                );
+            }
+        } elseif ($filter === 'month') {
+            $monthsToShow = 6;
+            $start = $start ?: Carbon::now($dbTz)->subMonths($monthsToShow - 1)->startOfMonth();
     
             for ($i = 0; $i < $monthsToShow; $i++) {
                 $monthStart = $start->copy()->addMonths($i)->startOfMonth();
                 $monthEnd = $monthStart->copy()->endOfMonth();
-                $labels->push($monthStart->format('M Y'));
+    
+                $labels->push($monthStart->setTimezone($appTz)->format('M Y'));
                 $counts->push(
                     Message::where('sender', 'user')->whereBetween('created_at', [$monthStart, $monthEnd])->count()
                 );
             }
         }
-    }
     
-    elseif ($filter === 'day') {
-        for ($i = 0; $i < 24; $i++) {
-            $hourStart = $start->copy()->setTime($i, 0, 0);
-            $hourEnd = $hourStart->copy()->endOfHour();
-            $labels->push($hourStart->format('H:00'));
-            $counts->push(Message::where('sender', 'user')->whereBetween('created_at', [$hourStart, $hourEnd])->count());
-        }
-    } elseif ($filter === 'custom' && $start && $end && $start->toDateString() !== $end->toDateString()) {
-        for ($i = 0; $i <= $start->diffInDays($end); $i++) {
-            $day = $start->copy()->addDays($i);
-            $labels->push($day->format('M d'));
-            $counts->push(Message::where('sender', 'user')->whereDate('created_at', $day)->count());
-        }
-    } elseif ($filter === 'week') {
-        for ($i = 0; $i < 7; $i++) {
-            $day = $start->copy()->addDays($i);
-            $labels->push($day->format('M d'));
-            $counts->push(Message::where('sender', 'user')->whereDate('created_at', $day)->count());
-        }
-    } elseif ($filter === 'month') {
-        $monthsToShow = 6;
-        $start = $start ?: Carbon::now()->subMonths($monthsToShow - 1)->startOfMonth();
-        for ($i = 0; $i < $monthsToShow; $i++) {
-            $monthStart = $start->copy()->addMonths($i)->startOfMonth();
-            $monthEnd = $monthStart->copy()->endOfMonth();
-            $labels->push($monthStart->format('M Y'));
-            $counts->push(Message::where('sender', 'user')->whereBetween('created_at', [$monthStart, $monthEnd])->count());
-        }
+        return ['labels' => $labels, 'counts' => $counts];
     }
 
-    return ['labels' => $labels, 'counts' => $counts];
-}
 private function getCategoryPieData($start, $end)
 {
     $categoryData = Message::where('sender', 'user')
@@ -214,29 +243,34 @@ private function getCategoryPieData($start, $end)
 
     private function getPeakInsights()
     {
+        $timezoneFrom = '+00:00'; // DB timezone (UTC)
+        $timezoneTo = '+08:00';   // Asia/Manila timezone offset
+    
+        // Peak hour with timezone conversion
         $rawPeakHour = DB::table('messages')
-        ->selectRaw('HOUR(created_at) as hour, COUNT(*) as count')
-        ->where('sender', 'user')
-        ->groupBy('hour')
-        ->pluck('count', 'hour');
-
+            ->selectRaw("HOUR(CONVERT_TZ(created_at, '{$timezoneFrom}', '{$timezoneTo}')) as hour, COUNT(*) as count")
+            ->where('sender', 'user')
+            ->groupBy('hour')
+            ->pluck('count', 'hour');
+    
         $peakHour = collect(range(0, 23))->map(function ($hour) use ($rawPeakHour) {
-    return [
-        'hour' => date('g A', mktime($hour)), // 1 AM, 2 AM, ..., 11 PM
-        'count' => $rawPeakHour[$hour] ?? 0
-    ];
-});
-
-$peakDay = Message::where('sender', 'user')
-->selectRaw('DATE(created_at) as day, COUNT(*) as count')
-->groupBy('day')
-->orderByDesc('count')
-->get()
-->map(function ($item) {
-    $item->day = Carbon::parse($item->day)->format('M d');
-    return $item;
-});
-
+            return [
+                'hour' => date('g A', mktime($hour)), // e.g. 1 AM, 2 PM
+                'count' => $rawPeakHour[$hour] ?? 0,
+            ];
+        });
+    
+        // Peak day with timezone conversion
+        $peakDay = Message::where('sender', 'user')
+            ->selectRaw("DATE(CONVERT_TZ(created_at, '{$timezoneFrom}', '{$timezoneTo}')) as day, COUNT(*) as count")
+            ->groupBy('day')
+            ->orderByDesc('count')
+            ->get()
+            ->map(function ($item) {
+                $item->day = Carbon::parse($item->day)->format('M d');
+                return $item;
+            });
+    
         return compact('peakHour', 'peakDay');
     }
 
@@ -328,7 +362,7 @@ public function exportReports(Request $request)
     $pieData = $this->getCategoryPieData($start, $end); // Add this line
     $userInsights = $this->getUserInsights();
     $peakInsights = $this->getPeakInsights();
-    $recentLogs = Logs::with('user')->latest('timestamp')->take(5)->get();
+
 
     $pdf = Pdf::loadView('admin.pdfReport', array_merge(
         compact('filter', 'recentLogs', 'avgPerDay'),

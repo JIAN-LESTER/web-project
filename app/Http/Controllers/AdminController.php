@@ -18,171 +18,197 @@ class AdminController extends Controller
 {
 
     public function viewDashboard(Request $request)
-    {
-        $user = Auth::user();
-        $filter = $request->query('filter', 'day');
-    
-        // Default to null for all-time (no date filtering)
-        $start = null;
-        $end = null;
-    
-        if ($filter === 'day') {
-            $start = Carbon::today();
-            $end = Carbon::today()->endOfDay();
-        } elseif ($filter === 'week') {
-            $start = Carbon::now()->startOfWeek();
-            $end = Carbon::now()->endOfWeek();
-        } elseif ($filter === 'month') {
-            $start = Carbon::now()->startOfMonth();
-            $end = Carbon::now()->endOfMonth();
-        } elseif ($filter === 'all') {
-            // No date filtering, so start and end remain null
+{
+    $user   = Auth::user();
+    $filter = $request->query('filter', 'day');
+
+    // ------------------------------------------------------------------
+    // 1️⃣  Time-zone setup
+    // ------------------------------------------------------------------
+    $appTz = 'Asia/Manila';          // local timezone for labels
+    $dbTz  = 'UTC';                  // timestamps in DB are stored in UTC
+
+    // ------------------------------------------------------------------
+    // 2️⃣  Date-range definitions (all in local tz first)
+    // ------------------------------------------------------------------
+    $start = $end = null;
+
+    switch ($filter) {
+        case 'day':
+            $start = Carbon::today($appTz);
+            $end   = $start->copy()->endOfDay();
+            break;
+        case 'week':
+            $start = Carbon::now($appTz)->startOfWeek();
+            $end   = Carbon::now($appTz)->endOfWeek();
+            break;
+        case 'month':
+            $start = Carbon::now($appTz)->startOfMonth();
+            $end   = Carbon::now($appTz)->endOfMonth();
+            break;
+        case 'all':
+        default:
+            // $start and $end stay null (no filtering)
+            break;
+    }
+
+    // Convert to UTC for DB queries
+    $startUtc = $start ? $start->copy()->timezone($dbTz) : null;
+    $endUtc   = $end   ? $end->copy()->timezone($dbTz)   : null;
+
+    // ------------------------------------------------------------------
+    // 3️⃣  Helper closure to apply date filter + sender restriction
+    // ------------------------------------------------------------------
+    $applyDateFilter = function ($query) use ($startUtc, $endUtc) {
+        $query->where('sender', 'user');
+        if ($startUtc && $endUtc) {
+            $query->whereBetween('created_at', [$startUtc, $endUtc]);
         }
-    
-        // Helper to add date filtering if $start and $end exist, and also filter sender = user
-        $applyDateFilter = function ($query) use ($start, $end) {
-            $query->where('sender', 'user');
-            if ($start && $end) {
-                $query->whereBetween('created_at', [$start, $end]);
-            }
-            return $query;
-        };
-    
-        // Stats Cards (Filtered, sender = user)
-        $totalMessages = $applyDateFilter(
-            Message::query()
-        )->count();
-    
-        $answeredMessages = $applyDateFilter(
-            Message::whereNotNull('responded_at')
-        )->count();
-    
-        $totalUsers = User::where('role', 'user')->count();
-    
-        // Category counts (Filtered, sender = user)
-        $admissionMessages = $applyDateFilter(
-            Message::where('categoryID', 1)
-        )->count();
-    
-        $scholarshipMessages = $applyDateFilter(
-            Message::where('categoryID', 2)
-        )->count();
-    
-        $placementMessages = $applyDateFilter(
-            Message::where('categoryID', 3)
-        )->count();
-    
-        $generalMessages = $applyDateFilter(
-            Message::where('categoryID', 4)
-        )->count();
-    
-        // Most frequent category (Filtered, sender = user)
-        $mostCategory = $applyDateFilter(
-            Message::whereNotNull('categoryID')
-        )
+        return $query;
+    };
+
+    // ------------------------------------------------------------------
+    // 4️⃣  Stats cards
+    // ------------------------------------------------------------------
+    $totalMessages     = $applyDateFilter(Message::query())->count();
+    $answeredMessages  = $applyDateFilter(Message::whereNotNull('responded_at'))->count();
+    $totalUsers        = User::where('role', 'user')->count();
+
+    $admissionMessages   = $applyDateFilter(Message::where('categoryID', 1))->count();
+    $scholarshipMessages = $applyDateFilter(Message::where('categoryID', 2))->count();
+    $placementMessages   = $applyDateFilter(Message::where('categoryID', 3))->count();
+    $generalMessages     = $applyDateFilter(Message::where('categoryID', 4))->count();
+
+    $mostCategory = $applyDateFilter(
+        Message::whereNotNull('categoryID')
+    )
+    ->select('categoryID', DB::raw('COUNT(*) as total'))
+    ->groupBy('categoryID')
+    ->orderByDesc('total')
+    ->limit(1)
+    ->pluck('categoryID')
+    ->first();
+
+    $mostCategoryName = Categories::find($mostCategory)?->category_name ?? 'Unknown';
+
+    // ------------------------------------------------------------------
+    // 5️⃣  Line-chart labels + counts
+    // ------------------------------------------------------------------
+    $labels = collect();
+    $counts = collect();
+
+    if ($filter === 'day') {
+        for ($i = 0; $i < 24; $i++) {
+            $hourStartLocal = Carbon::today($appTz)->addHours($i);
+            $hourEndLocal   = $hourStartLocal->copy()->endOfHour();
+
+            $labels->push($hourStartLocal->format('H:00'));
+
+            $count = Message::whereBetween('created_at', [
+                $hourStartLocal->copy()->timezone($dbTz),
+                $hourEndLocal->copy()->timezone($dbTz)
+            ])->where('sender', 'user')->count();
+
+            $counts->push($count);
+        }
+    } elseif ($filter === 'week') {
+        for ($i = 6; $i >= 0; $i--) {
+            $dateLocal = Carbon::today($appTz)->subDays($i);
+            $labels->push($dateLocal->format('M d'));
+
+            $count = Message::where('sender', 'user')
+                ->whereBetween('created_at', [
+                    $dateLocal->copy()->startOfDay()->timezone($dbTz),
+                    $dateLocal->copy()->endOfDay()->timezone($dbTz)
+                ])->count();
+
+            $counts->push($count);
+        }
+    } elseif ($filter === 'month') {
+        for ($i = 3; $i >= 0; $i--) {
+            $monthStartLocal = Carbon::now($appTz)->subMonths($i)->startOfMonth();
+            $monthEndLocal   = $monthStartLocal->copy()->endOfMonth();
+
+            $labels->push($monthStartLocal->format('M Y'));
+
+            $count = Message::where('sender', 'user')
+                ->whereBetween('created_at', [
+                    $monthStartLocal->copy()->timezone($dbTz),
+                    $monthEndLocal->copy()->timezone($dbTz)
+                ])->count();
+
+            $counts->push($count);
+        }
+    } elseif ($filter === 'all') {
+        $years = Message::where('sender', 'user')
+            ->select(DB::raw('YEAR(created_at) as year'))
+            ->groupBy('year')
+            ->orderBy('year')
+            ->pluck('year');
+
+        foreach ($years as $year) {
+            $labels->push($year);
+
+            $count = Message::where('sender', 'user')
+                ->whereYear('created_at', $year)
+                ->count();
+
+            $counts->push($count);
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // 6️⃣  Pie-chart data
+    // ------------------------------------------------------------------
+    $categoryQuery = Message::where('sender', 'user')
+        ->whereNotNull('categoryID');
+
+    if ($startUtc && $endUtc) {
+        $categoryQuery->whereBetween('created_at', [$startUtc, $endUtc]);
+    }
+
+    $categoryData = $categoryQuery
         ->select('categoryID', DB::raw('COUNT(*) as total'))
         ->groupBy('categoryID')
-        ->orderByDesc('total')
-        ->limit(1)
-        ->pluck('categoryID')
-        ->first();
-    
-        $mostCategoryName = Categories::find($mostCategory)?->category_name ?? 'Unknown';
-    
-        // Line Chart Data (Filtered sender = user)
-        $labels = collect();
-        $counts = collect();
-    
-        if ($filter === 'day') {
-            for ($i = 23; $i >= 0; $i--) {
-                $hourStart = Carbon::today()->addHours($i);
-                $hourEnd = $hourStart->copy()->endOfHour();
-            
-                $labels->push($hourStart->format('H:00'));
-            
-                $count = Message::whereBetween('created_at', [$hourStart, $hourEnd])->count();
-            
-                $counts->push($count);
-            }
-        } elseif ($filter === 'week') {
-            for ($i = 6; $i >= 0; $i--) {
-                $date = Carbon::today()->subDays($i);
-                $labels->push($date->format('M d'));
-    
-                $count = Message::where('sender', 'user')
-                    ->whereDate('created_at', $date)
-                    ->count();
-    
-                $counts->push($count);
-            }
-        } elseif ($filter === 'month') {
-            for ($i = 3; $i >= 0; $i--) {
-                $monthStart = Carbon::now()->subMonths($i)->startOfMonth();
-                $monthEnd = Carbon::now()->subMonths($i)->endOfMonth();
-    
-                $labels->push($monthStart->format('M Y'));
-    
-                $count = Message::where('sender', 'user')
-                    ->whereBetween('created_at', [$monthStart, $monthEnd])
-                    ->count();
-    
-                $counts->push($count);
-            }
-        } elseif ($filter === 'all') {
-            $years = Message::where('sender', 'user')
-                ->select(DB::raw('YEAR(created_at) as year'))
-                ->groupBy('year')
-                ->orderBy('year')
-                ->pluck('year');
-    
-            foreach ($years as $year) {
-                $labels->push($year);
-                $count = Message::where('sender', 'user')
-                    ->whereYear('created_at', $year)
-                    ->count();
-                $counts->push($count);
-            }
-        }
-    
-        // Pie Chart (Filtered sender = user)
-        $categoryDataQuery = Message::where('sender', 'user')->select('categoryID', DB::raw('COUNT(*) as total'))
-            ->whereNotNull('categoryID');
-        if ($start && $end) {
-            $categoryDataQuery->whereBetween('created_at', [$start, $end]);
-        }
-        $categoryData = $categoryDataQuery->groupBy('categoryID')->get();
-    
-        $categoryLabels = collect();
-        $categoryCounts = collect();
-    
-        foreach ($categoryData as $data) {
-            $categoryName = Categories::find($data->categoryID)?->category_name ?? 'Unknown';
-            $categoryLabels->push($categoryName);
-            $categoryCounts->push($data->total);
-        }
-    
-        // Recent Logs (Latest 5)
-        $recentLogs = Logs::with('user')->latest('created_at')->take(5)->get();
-    
-        return view('admin.dashboard', [
-            'user' => $user,
-            'totalMessages' => $totalMessages,
-            'answeredMessages' => $answeredMessages,
-            'totalUsers' => $totalUsers,
-            'mostCategoryName' => $mostCategoryName,
-            'admissionMessages' => $admissionMessages,
-            'scholarshipMessages' => $scholarshipMessages,
-            'placementMessages' => $placementMessages,
-            'generalMessages' => $generalMessages,
-            'labels' => $labels,
-            'counts' => $counts,
-            'filter' => $filter,
-            'categoryLabels' => $categoryLabels,
-            'categoryCounts' => $categoryCounts,
-            'recentLogs' => $recentLogs,
-        ]);
+        ->get();
+
+    $categoryLabels = collect();
+    $categoryCounts = collect();
+    foreach ($categoryData as $data) {
+        $categoryName = Categories::find($data->categoryID)?->category_name ?? 'Unknown';
+        $categoryLabels->push($categoryName);
+        $categoryCounts->push($data->total);
     }
-    
+
+    // ------------------------------------------------------------------
+    // 7️⃣  Recent logs
+    // ------------------------------------------------------------------
+    $recentLogs = Logs::with('user')
+        ->latest('created_at')
+        ->take(5)
+        ->get();
+
+    // ------------------------------------------------------------------
+    // 8️⃣  Render view
+    // ------------------------------------------------------------------
+    return view('admin.dashboard', [
+        'user'               => $user,
+        'totalMessages'      => $totalMessages,
+        'answeredMessages'   => $answeredMessages,
+        'totalUsers'         => $totalUsers,
+        'mostCategoryName'   => $mostCategoryName,
+        'admissionMessages'  => $admissionMessages,
+        'scholarshipMessages'=> $scholarshipMessages,
+        'placementMessages'  => $placementMessages,
+        'generalMessages'    => $generalMessages,
+        'labels'             => $labels,
+        'counts'             => $counts,
+        'filter'             => $filter,
+        'categoryLabels'     => $categoryLabels,
+        'categoryCounts'     => $categoryCounts,
+        'recentLogs'         => $recentLogs,
+    ]);
+}
 
     public function viewKB()
     {
