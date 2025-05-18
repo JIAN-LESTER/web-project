@@ -15,7 +15,7 @@ return new class extends Migration
             $table->enum('conversation_status', ['pending', 'answered', 'not_answered']);
             $table->string('conversation_title')->nullable();
             $table->timestamps();
-            $table->timestamp('sent_at');
+          
         });
     }
 
