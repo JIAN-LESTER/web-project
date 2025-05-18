@@ -38,8 +38,8 @@ class ChatbotController extends Controller
             ->first();
     
         // End previous conversation if idle for more than 5 minutes
-        if ($conversation && $conversation->sent_at->diffInMinutes(now()) >= 5) {
-            $conversation->update(['conversation_status' => 'ended', 'sent_at' => now()]);
+        if ($conversation && $conversation->created_at->diffInMinutes(now()) >= 5) {
+            $conversation->update(['conversation_status' => 'ended', 'created_at' => now()]);
             $conversation = null;
         }
     
@@ -49,7 +49,7 @@ class ChatbotController extends Controller
                 'userID' => $user->userID,
                 'conversation_status' => 'active',
                 'conversation_title' => $userQuery, // Set first message as title
-                'sent_at' => now(),
+                'created_at' => now(),
             ]);
         } elseif ($conversation->conversation_title === null) {
             $conversation->update(['conversation_title' => $userQuery]);
@@ -228,7 +228,7 @@ EOT;
             // End the active conversation
             $activeConversation->update([
                 'conversation_status' => 'ended',
-                'sent_at' => now(),
+                'created_at' => now(),
             ]);
         }
 
@@ -239,7 +239,7 @@ EOT;
             'userID' => $user->userID,
             'conversation_status' => 'active',
             'conversation_title' => $userQuery, // Set first message as title
-            'sent_at' => now(),
+            'created_at' => now(),
         ]);
 
         // Redirect to the new conversation's view

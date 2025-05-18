@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('kbID')->nullable()->references('kbID')->on('knowledge_bases')->onDelete('cascade');
             $table->foreignId('conversationID')->references('conversationID')->on('conversations')->onDelete('cascade');
             $table->text('content');
-            $table->enum('message_status', ['sent', 'delivered', 'read']);
+            $table->enum('message_status', ['sent', 'delivered', 'responded']);
             $table->string('sender');
             $table->string('message_type');
             $table->timestamp('sent_at')->nullable();

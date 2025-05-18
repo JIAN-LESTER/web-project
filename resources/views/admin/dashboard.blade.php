@@ -117,7 +117,7 @@
               <div class="fw-semibold">{{ $log->action_type }}</div>
               <small class="text-secondary">By: {{ $log->user->name ?? 'System' }}</small>
             </div>
-            <small class="text-muted">{{ \Carbon\Carbon::parse($log->timestamp)->format('F j, Y, g:i A') }}</small>
+            <small class="text-muted">{{ \Carbon\Carbon::parse($log->created_at)->format('F j, Y, g:i A') }}</small>
           </li>
         @empty
           <li class="list-group-item text-center text-muted">No recent logs available.</li>
