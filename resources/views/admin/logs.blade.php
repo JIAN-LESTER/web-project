@@ -151,13 +151,13 @@
                                 <td class="log-timestamp">
                                     <div class="timestamp-group">
                                         <div class="log-date">
-                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->timestamp)
+                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->created_at)
                                                 ->subHours(8)
                                                 ->timezone('Asia/Manila')
                                                 ->format('F j, Y') }}
                                         </div>
                                         <div class="log-time">
-                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->timestamp)
+                                            {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->created_at)
                                                 ->subHours(8)
                                                 ->timezone('Asia/Manila')
                                                 ->format('h:i A') }}

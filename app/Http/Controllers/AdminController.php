@@ -162,7 +162,7 @@ class AdminController extends Controller
         }
     
         // Recent Logs (Latest 5)
-        $recentLogs = Logs::with('user')->latest('timestamp')->take(5)->get();
+        $recentLogs = Logs::with('user')->latest('created_at')->take(5)->get();
     
         return view('admin.dashboard', [
             'user' => $user,
@@ -203,8 +203,8 @@ class AdminController extends Controller
                     $q->where('name', 'like', "%{$search}%");
                 })
                     ->orWhere('action_type', 'like', "%{$search}%")
-                    ->orWhere('timestamp', 'like', "%{$search}%");
-            })->orderBy('timestamp', 'desc')
+                    ->orWhere('created_at', 'like', "%{$search}%");
+            })->orderBy('created_at', 'desc')
             ->paginate(12);
 
         return view('admin.logs', compact('logs', 'search'));

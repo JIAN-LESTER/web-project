@@ -253,7 +253,7 @@ $peakDay = Message::where('sender', 'user')
         $pieData = $this->getCategoryPieData($start, $end);
         $userInsights = $this->getUserInsights();
         $peakInsights = $this->getPeakInsights();
-        $recentLogs = Logs::with('user')->latest('timestamp')->take(5)->get();
+        $recentLogs = Logs::with('user')->latest('created_at')->take(5)->get();
         $avgPerDay = $this->getAverageMessagesPerDay($start, $end);
 
         return view('admin.reports_analytics', array_merge(
