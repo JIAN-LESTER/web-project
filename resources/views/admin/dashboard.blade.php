@@ -12,7 +12,10 @@
       <p class="text-muted mb-0">Here’s an overview of recent student inquiries.</p>
     </div>
     <div class="btn-group" role="group" aria-label="Filter Time">
-      @foreach (['day' => 'Day', 'week' => 'Week', 'month' => 'Month'] as $val => $label)
+      @php
+        $filters = ['day' => 'Day', 'week' => 'Week', 'month' => 'Month', 'all' => 'All Time'];
+      @endphp
+      @foreach ($filters as $val => $label)
         <input type="radio" class="btn-check" name="timeFilter" id="{{ $val }}" value="{{ $val }}" autocomplete="off" {{ $filter == $val ? 'checked' : '' }}>
         <label class="btn btn-outline-primary" for="{{ $val }}">{{ $label }}</label>
       @endforeach
@@ -48,7 +51,7 @@
     <div class="col-sm-6 col-xl-3">
       <div class="card border-danger shadow-sm rounded-3 mb-3">
         <div class="card-body d-flex align-items-center">
-          <i class="bi bi-x-circle-fill fs-2 me-3 user-danger"></i>
+          <i class="bi bi-x-circle-fill fs-2 me-3 text-danger"></i>
           <div>
             <h5 class="mb-0 text-danger">{{ $totalUsers }}</h5>
             <small class="text-muted">Total Users</small>
@@ -102,7 +105,7 @@
   </div>
 
   <!-- Recent Logs Section -->
-  <div class="card shadow-sm border-0 rounded-3 mb-4"  style="margin-top: 30px;margin-bottom: 20px;">
+  <div class="card shadow-sm border-0 rounded-3 mb-4" style="margin-top: 30px;margin-bottom: 20px;">
     <div class="card-header bg-white border-bottom">
       <h5 class="mb-0 text-primary fw-bold">Recent System Logs</h5>
     </div>
@@ -115,7 +118,6 @@
               <small class="text-secondary">By: {{ $log->user->name ?? 'System' }}</small>
             </div>
             <small class="text-muted">{{ \Carbon\Carbon::parse($log->timestamp)->format('F j, Y, g:i A') }}</small>
-
           </li>
         @empty
           <li class="list-group-item text-center text-muted">No recent logs available.</li>
@@ -125,8 +127,30 @@
   </div>
 </div>
 
-<!-- Scripts -->
 <script>
+Chart.register({
+  id: 'noDataPlugin',
+  beforeDraw(chart) {
+    const datasets = chart.data.datasets;
+    const hasData = datasets.some(dataset => dataset.data.length > 0 && dataset.data.some(val => val > 0));
+
+    if (!hasData) {
+      const ctx = chart.ctx;
+      const width = chart.width;
+      const height = chart.height;
+
+      chart.clear();
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = '20px sans-serif';
+      ctx.fillStyle = '#666';
+      ctx.fillText('No data for today', width / 2, height / 2);
+      ctx.restore();
+    }
+  }
+});
+
 document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll('input[name="timeFilter"]').forEach(radio => {
     radio.addEventListener('change', function () {
@@ -134,8 +158,15 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  new Chart(document.getElementById('queriesChart'), {
-    type: 'bar',
+  // Determine chart type based on filter
+  const filter = "{{ $filter }}";
+  const isAllTime = filter === 'all';
+  const chartType = isAllTime ? 'bar' : 'bar';
+
+  const ctx = document.getElementById('queriesChart').getContext('2d');
+
+  new Chart(ctx, {
+    type: chartType,
     data: {
       labels: @json($labels),
       datasets: [{
@@ -143,7 +174,11 @@ document.addEventListener("DOMContentLoaded", function () {
         data: @json($counts),
         backgroundColor: 'rgba(54, 162, 235, 0.6)',
         borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
+        borderWidth: 2,
+        fill: false,
+        tension: 0.3, // smooth line for line chart
+        pointRadius: chartType === 'line' ? 4 : 0,
+        pointHoverRadius: chartType === 'line' ? 6 : 0,
       }]
     },
     options: {
@@ -154,17 +189,46 @@ document.addEventListener("DOMContentLoaded", function () {
         easing: 'easeOutQuart'
       },
       plugins: {
-        legend: { display: false }
+        legend: {
+          display: false
+        },
+        noDataPlugin: {} // activate the no data plugin
       },
       scales: {
+        x: {
+    
+          ticks: {
+            maxRotation: 45,
+            minRotation: 30,
+            autoSkip: true,
+            maxTicksLimit: 12,
+            font: { size: 12 }
+          },
+          grid: {
+            display: false
+          }
+        },
         y: {
           beginAtZero: true,
-          ticks: { precision: 0 }
+          title: {
+            display: true,
+            text: 'Number of Inquiries',
+            font: { size: 14, weight: 'bold' }
+          },
+          ticks: {
+            precision: 0,
+            font: { size: 12 }
+          },
+          grid: {
+            color: 'rgba(0,0,0,0.1)',
+            borderDash: [5, 5]
+          }
         }
       }
     }
   });
 
+  // Pie chart remains mostly the same, just add noDataPlugin as well
   new Chart(document.getElementById('categoryPieChart'), {
     type: 'pie',
     data: {
@@ -190,7 +254,8 @@ document.addEventListener("DOMContentLoaded", function () {
       plugins: {
         legend: {
           position: 'bottom'
-        }
+        },
+        noDataPlugin: {}
       }
     }
   });

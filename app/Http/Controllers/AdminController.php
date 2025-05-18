@@ -22,8 +22,9 @@ class AdminController extends Controller
         $user = Auth::user();
         $filter = $request->query('filter', 'day');
     
-        $start = now();
-        $end = now();
+        // Default to null for all-time (no date filtering)
+        $start = null;
+        $end = null;
     
         if ($filter === 'day') {
             $start = Carbon::today();
@@ -34,63 +35,73 @@ class AdminController extends Controller
         } elseif ($filter === 'month') {
             $start = Carbon::now()->startOfMonth();
             $end = Carbon::now()->endOfMonth();
+        } elseif ($filter === 'all') {
+            // No date filtering, so start and end remain null
         }
     
-        // Stats Cards (Filtered)
-        $totalMessages = Message::where('sender', 'user')
-            ->whereBetween('created_at', [$start, $end])
-            ->count();
+        // Helper to add date filtering if $start and $end exist, and also filter sender = user
+        $applyDateFilter = function ($query) use ($start, $end) {
+            $query->where('sender', 'user');
+            if ($start && $end) {
+                $query->whereBetween('created_at', [$start, $end]);
+            }
+            return $query;
+        };
     
-        $answeredMessages = Message::where('sender', 'user')
-            ->whereNotNull('responded_at')
-            ->whereBetween('created_at', [$start, $end])
-            ->count();
-
+        // Stats Cards (Filtered, sender = user)
+        $totalMessages = $applyDateFilter(
+            Message::query()
+        )->count();
+    
+        $answeredMessages = $applyDateFilter(
+            Message::whereNotNull('responded_at')
+        )->count();
+    
         $totalUsers = User::where('role', 'user')->count();
     
-        // Category counts (Filtered)
-        $admissionMessages = Message::where('categoryID', 1)
-            ->whereBetween('created_at', [$start, $end])
-            ->count();
+        // Category counts (Filtered, sender = user)
+        $admissionMessages = $applyDateFilter(
+            Message::where('categoryID', 1)
+        )->count();
     
-        $scholarshipMessages = Message::where('categoryID', 2)
-            ->whereBetween('created_at', [$start, $end])
-            ->count();
+        $scholarshipMessages = $applyDateFilter(
+            Message::where('categoryID', 2)
+        )->count();
     
-        $placementMessages = Message::where('categoryID', 3)
-            ->whereBetween('created_at', [$start, $end])
-            ->count();
+        $placementMessages = $applyDateFilter(
+            Message::where('categoryID', 3)
+        )->count();
     
-        $generalMessages = Message::where('categoryID', 4)
-            ->whereBetween('created_at', [$start, $end])
-            ->count();
+        $generalMessages = $applyDateFilter(
+            Message::where('categoryID', 4)
+        )->count();
     
-        // Most frequent category (Filtered)
-        $mostCategory = Message::whereNotNull('categoryID')
-            ->where('sender', 'user')
-            ->whereBetween('created_at', [$start, $end])
-            ->select('categoryID', DB::raw('COUNT(*) as total'))
-            ->groupBy('categoryID')
-            ->orderByDesc('total')
-            ->limit(1)
-            ->pluck('categoryID')
-            ->first();
+        // Most frequent category (Filtered, sender = user)
+        $mostCategory = $applyDateFilter(
+            Message::whereNotNull('categoryID')
+        )
+        ->select('categoryID', DB::raw('COUNT(*) as total'))
+        ->groupBy('categoryID')
+        ->orderByDesc('total')
+        ->limit(1)
+        ->pluck('categoryID')
+        ->first();
     
         $mostCategoryName = Categories::find($mostCategory)?->category_name ?? 'Unknown';
     
-        // Line Chart Data
+        // Line Chart Data (Filtered sender = user)
         $labels = collect();
         $counts = collect();
     
         if ($filter === 'day') {
             for ($i = 23; $i >= 0; $i--) {
-                $hour = Carbon::now()->subHours($i);
-                $labels->push($hour->format('H:00'));
-    
-                $count = Message::whereDate('created_at', $hour->toDateString())
-                    ->whereRaw('HOUR(created_at) = ?', [$hour->hour])
-                    ->count();
-    
+                $hourStart = Carbon::today()->addHours($i);
+                $hourEnd = $hourStart->copy()->endOfHour();
+            
+                $labels->push($hourStart->format('H:00'));
+            
+                $count = Message::whereBetween('created_at', [$hourStart, $hourEnd])->count();
+            
                 $counts->push($count);
             }
         } elseif ($filter === 'week') {
@@ -98,7 +109,9 @@ class AdminController extends Controller
                 $date = Carbon::today()->subDays($i);
                 $labels->push($date->format('M d'));
     
-                $count = Message::whereDate('created_at', $date)->count();
+                $count = Message::where('sender', 'user')
+                    ->whereDate('created_at', $date)
+                    ->count();
     
                 $counts->push($count);
             }
@@ -109,18 +122,35 @@ class AdminController extends Controller
     
                 $labels->push($monthStart->format('M Y'));
     
-                $count = Message::whereBetween('created_at', [$monthStart, $monthEnd])->count();
+                $count = Message::where('sender', 'user')
+                    ->whereBetween('created_at', [$monthStart, $monthEnd])
+                    ->count();
     
+                $counts->push($count);
+            }
+        } elseif ($filter === 'all') {
+            $years = Message::where('sender', 'user')
+                ->select(DB::raw('YEAR(created_at) as year'))
+                ->groupBy('year')
+                ->orderBy('year')
+                ->pluck('year');
+    
+            foreach ($years as $year) {
+                $labels->push($year);
+                $count = Message::where('sender', 'user')
+                    ->whereYear('created_at', $year)
+                    ->count();
                 $counts->push($count);
             }
         }
     
-        // Pie Chart (Filtered)
-        $categoryData = Message::select('categoryID', DB::raw('COUNT(*) as total'))
-            ->whereNotNull('categoryID')
-            ->whereBetween('created_at', [$start, $end])
-            ->groupBy('categoryID')
-            ->get();
+        // Pie Chart (Filtered sender = user)
+        $categoryDataQuery = Message::where('sender', 'user')->select('categoryID', DB::raw('COUNT(*) as total'))
+            ->whereNotNull('categoryID');
+        if ($start && $end) {
+            $categoryDataQuery->whereBetween('created_at', [$start, $end]);
+        }
+        $categoryData = $categoryDataQuery->groupBy('categoryID')->get();
     
         $categoryLabels = collect();
         $categoryCounts = collect();
@@ -153,8 +183,6 @@ class AdminController extends Controller
         ]);
     }
     
-
-
 
     public function viewKB()
     {
