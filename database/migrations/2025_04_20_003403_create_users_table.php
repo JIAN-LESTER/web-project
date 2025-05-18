@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'user'])->default('user');
-            $table->enum('userStatus', ['active', 'inactive'])->default('active');
+            $table->enum('user_status', ['active', 'inactive'])->default('active');
             $table->foreignId('courseID')->nullable()->references('courseID')->on('courses')->onDelete('cascade');
             $table->foreignId('yearID')->nullable()->references('yearID')->on('years')->onDelete('cascade');
             $table->string('avatar')->nullable(); 

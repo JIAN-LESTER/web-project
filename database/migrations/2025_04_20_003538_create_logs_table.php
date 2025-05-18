@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('logs', function (Blueprint $table) {
             $table->id('logID');
             $table->foreignId('userID')->references('userID')->on('users')->onDelete('cascade');
-            $table->foreignId('messageID')->references('messageID')->on('messages')->onDelete('cascade');
             $table->string('action_type');
             $table->timestamp('created_at');
         });
