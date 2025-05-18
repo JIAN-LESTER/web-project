@@ -365,7 +365,7 @@ public function exportReports(Request $request)
 
 
     $pdf = Pdf::loadView('admin.pdfReport', array_merge(
-        compact('filter', 'recentLogs', 'avgPerDay'),
+        compact('filter',  'avgPerDay'),
         $stats,
         $chartData,
         $pieData,        // Include categoryLabels and categoryCounts
