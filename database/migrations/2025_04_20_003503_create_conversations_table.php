@@ -13,6 +13,8 @@ return new class extends Migration
             $table->id('conversationID');
             $table->foreignId('userID')->references('userID')->on('users')->onDelete('cascade');
             $table->enum('conversation_status', ['pending', 'answered', 'not_answered']);
+            $table->string('conversation_title')->nullable();
+            $table->timestamps();
             $table->timestamp('sent_at');
         });
     }

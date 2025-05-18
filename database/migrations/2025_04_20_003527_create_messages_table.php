@@ -19,8 +19,11 @@ return new class extends Migration
             $table->enum('messageStatus', ['sent', 'delivered', 'read']);
             $table->string('sender');
             $table->string('message_type');
+            $table->float('response_time', 8, 4)->nullable()->after('sent_at'); // e.g. 1.2345 seconds
             $table->timestamp('sent_at')->nullable();
+            $table->foreignId('categoryID')->references('categoryID')->on('categories')->onDelete('cascade');
             $table->timestamp('responded_at')->nullable();
+            $table->timestamps(); // adds created_at and updated_at
         });
     }
 
