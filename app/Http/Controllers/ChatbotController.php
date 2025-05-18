@@ -74,12 +74,14 @@ class ChatbotController extends Controller
         ]);
     
         // Retrieve response from KB or LLM
-        $kbEntry = $this->kbRetrieval->retrieveRelevant($userQuery);
-    
-        if ($kbEntry && $kbEntry->content) {
-            $kbID = $kbEntry->kbID;
-            $context = $kbEntry->content;
+        $kbEntries = $this->kbRetrieval->retrieveRelevant($userQuery, 5);
+
+        if (!empty($kbEntries)) {
+            $context = implode("\n\n", array_map(fn($kb) => $kb['content'], $kbEntries));
+
             $responseText = $this->llm->generateCompletion("Context:\n$context\n\nQuestion:\n$userQuery");
+            $kbID = $kbEntries[0]['kbID'] ?? null;
+
         } else {
             $responseText = $this->llm->generateCompletion($userQuery);
             $kbID = null;
