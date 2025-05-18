@@ -195,6 +195,31 @@
   </div>
 </div>
 
+<!-- Inquiries by Year Level & Course -->
+<!-- Inquiries by Year Level & Course -->
+<div class="row mb-4">
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header bg-white border-bottom align-items-center">
+        <h5 class="fw-bold mb-0">Top Year Levels by Inquiries</h5>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center" style="height: 300px;">
+        <canvas id="yearChart"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card h-100">
+      <div class="card-header bg-white border-bottom align-items-center">
+        <h5 class="fw-bold mb-0">Top Courses by Inquiries</h5>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center" style="height: 300px;">
+        <canvas id="courseChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Messages Per User (Full Width) -->
 <div class="card mb-4">
   <div class="card-header bg-white border-bottom">
@@ -238,6 +263,10 @@ Chart.register({
 </script> 
 
 <script>
+
+const yearCtx = document.getElementById('yearChart').getContext('2d');
+  const courseCtx = document.getElementById('courseChart').getContext('2d');
+
 document.addEventListener('DOMContentLoaded', function () {
   const filterSelect = document.getElementById('filterSelect');
   const customInputs = document.getElementById('customInputs');
@@ -425,6 +454,113 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 });
+
+const yearChart = new Chart(yearCtx, {
+  type: 'pie',
+  data: {
+    labels: @json($topYearLabels),
+    datasets: [{
+      label: 'Inquiries',
+      data: @json($topYearCounts),
+      backgroundColor: [
+        '#4bc0c0', '#36a2eb', '#9966ff', '#ff9f40', '#ff6384'
+      ],
+      borderColor: '#fff',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          boxWidth: 12,
+          padding: 15
+        }
+      },
+      title: {
+        display: true,
+        text: 'Top Year Levels by Inquiries',
+        align: 'center',
+        position: 'top',
+        font: {
+          size: 16,
+          weight: 'bold'
+        },
+        padding: {
+          top: 10,
+          bottom: 10
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.raw || 0;
+            return `${label}: ${value} inquiries`;
+          }
+        }
+      }
+    }
+  }
+});
+
+const courseChart = new Chart(courseCtx, {
+  type: 'pie',
+  data: {
+    labels: @json($topCourseLabels),
+    datasets: [{
+      label: 'Inquiries',
+      data: @json($topCourseCounts),
+      backgroundColor: [
+        '#9966ff', '#ffcd56', '#4bc0c0', '#ff6384', '#36a2eb'
+      ],
+      borderColor: '#fff',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          boxWidth: 12,
+          padding: 15
+        }
+      },
+      title: {
+        display: true,
+        text: 'Top Courses by Inquiries',
+        align: 'center',
+        position: 'top',
+        font: {
+          size: 16,
+          weight: 'bold'
+        },
+        padding: {
+          top: 10,
+          bottom: 10
+        }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.raw || 0;
+            return `${label}: ${value} inquiries`;
+          }
+        }
+      }
+    }
+  }
+});
+
 
 // Peak Hour Chart
 new Chart(document.getElementById('peakHourChart'), {

@@ -241,6 +241,55 @@ private function getCategoryPieData($start, $end)
         ];
     }
 
+    private function getUserMessageInsights()
+{
+    // Top year levels by number of inquiries (messages)
+    $topYearMessage = Message::join('users', 'messages.userID', '=', 'users.userID')
+        ->join('years', 'users.yearID', '=', 'years.yearID')
+        ->where('messages.sender', 'user')
+        ->select('years.year_level')
+        ->selectRaw('COUNT(messages.messageID) as count') 
+        ->groupBy('years.year_level')
+        ->orderByDesc('count')
+        ->get();
+
+    // Top courses by number of inquiries (messages)
+    $topCourseMessage = Message::join('users', 'messages.userID', '=', 'users.userID')
+        ->join('courses', 'users.courseID', '=', 'courses.courseID')
+        ->where('messages.sender', 'user')
+        ->select('courses.course_name')
+        ->selectRaw('COUNT(messages.messageID) as count')
+        ->groupBy('courses.course_name')
+        ->orderByDesc('count')
+        ->get();
+
+    // Total users count
+    $totalUsers = User::count();
+
+    // Total messages from users
+    $totalMessages = Message::where('sender', 'user')->count();
+
+    // Messages per user (number of inquiries per user)
+    $messagesPerUser = Message::where('sender', 'user')
+        ->select('userID')
+        ->selectRaw('COUNT(*) as count')
+        ->groupBy('userID')
+        ->orderByDesc('count')
+        ->get();
+
+    // Calculate average messages per user
+    $averageMessagesPerUser = $messagesPerUser->avg('count');
+
+    return [
+        'topYearLevelMessage' => $topYearMessage,
+        'topCourseMessage' => $topCourseMessage,
+        'totalUsers' => $totalUsers,
+        'totalMessages' => $totalMessages,
+        'averageMessagesPerUser' => $averageMessagesPerUser,
+        'messagesPerUser' => $messagesPerUser,
+    ];
+}
+
     private function getPeakInsights()
     {
         $timezoneFrom = '+00:00'; // DB timezone (UTC)
@@ -286,16 +335,28 @@ private function getCategoryPieData($start, $end)
         $chartData = $this->getChartData($filter, $start, $end);
         $pieData = $this->getCategoryPieData($start, $end);
         $userInsights = $this->getUserInsights();
+
         $peakInsights = $this->getPeakInsights();
         $recentLogs = Logs::with('user')->latest('created_at')->take(5)->get();
         $avgPerDay = $this->getAverageMessagesPerDay($start, $end);
 
+        $userMessageInsights = $this->getUserMessageInsights();
+
+        // Prepare chart labels and counts from insights
+        $topYearLabels = $userMessageInsights['topYearLevelMessage']->pluck('year_level');
+        $topYearCounts = $userMessageInsights['topYearLevelMessage']->pluck('count');
+    
+        $topCourseLabels = $userMessageInsights['topCourseMessage']->pluck('course_name');
+        $topCourseCounts = $userMessageInsights['topCourseMessage']->pluck('count');
+
         return view('admin.reports_analytics', array_merge(
-            compact('user', 'filter', 'recentLogs'),
+            compact('user', 'filter', 'recentLogs', 'topYearLabels', 'topYearCounts',
+        'topCourseLabels', 'topCourseCounts',),
             $stats,
             $chartData,
             $pieData,
             $userInsights,
+            $userMessageInsights,
             $peakInsights,
             compact('avgPerDay')
 
@@ -317,6 +378,7 @@ private function getCategoryPieData($start, $end)
         $chartData = $this->getChartData($filter, $start, $end);
         $pieData = $this->getCategoryPieData($start, $end);
         $userInsights = $this->getUserInsights();
+        $userMessageInsights = $this->getUserMessageInsights();
         $peakInsights = $this->getPeakInsights();
         $avgPerDay = $this->getAverageMessagesPerDay($start, $end);
 
@@ -339,6 +401,7 @@ private function getCategoryPieData($start, $end)
             'pie' => $pieData,
             'recentLogs' => $recentLogs,
             'userInsights' => $userInsights,
+            'userMessageInsights' => $userMessageInsights,
             'peakInsights' => $peakInsights,
             'avgPerDay' => $avgPerDay,
         ]);
@@ -361,7 +424,13 @@ public function exportReports(Request $request)
     $chartData = $this->getChartData($filter, $start, $end);
     $pieData = $this->getCategoryPieData($start, $end); // Add this line
     $userInsights = $this->getUserInsights();
+    $userMessageInsights = $this->getUserMessageInsights();
     $peakInsights = $this->getPeakInsights();
+
+    $categoryMessages = [];
+foreach ($pieData['categoryLabels'] as $index => $category) {
+    $categoryMessages[$category] = $pieData['categoryCounts'][$index];
+}
 
 
     $pdf = Pdf::loadView('admin.pdfReport', array_merge(
@@ -370,7 +439,9 @@ public function exportReports(Request $request)
         $chartData,
         $pieData,        // Include categoryLabels and categoryCounts
         $userInsights,
-        $peakInsights
+        $userMessageInsights,
+        $peakInsights,
+        compact('categoryMessages')
     ));
 
     return $pdf->download('analytics-report-' . now()->format('Y-m-d_H-i') . '.pdf');
@@ -380,17 +451,25 @@ public function exportCsv(Request $request)
 {
     $filter = $request->query('filter', 'day');
     [$start, $end] = $this->getDateRange($request);
-    $avgPerDay = $this->getAverageMessagesPerDay($start, $end);
 
+    $avgPerDay = $this->getAverageMessagesPerDay($start, $end);
     $stats = $this->getMessageStats($start, $end);
     $userInsights = $this->getUserInsights();
+    $userMessageInsights = $this->getUserMessageInsights();
     $peakInsights = $this->getPeakInsights();
+
+    $topYearLevelMessage = $userMessageInsights['topYearLevelMessage']->first();
+    $topCourseMessage = $userMessageInsights['topCourseMessage']->first();
+
+    $totalUsers = $userMessageInsights['totalUsers'] ?? 0;
+    $messagesPerUser = $userMessageInsights['averageMessagesPerUser'] ?? 0;
 
     $topYearLevel = $userInsights['topYearLevel']->first();
     $topCourse = $userInsights['topCourse']->first();
 
     $response = new StreamedResponse(function () use (
-        $stats, $userInsights, $peakInsights, $topYearLevel, $topCourse
+        $stats, $topYearLevel, $topCourse, $topYearLevelMessage, $topCourseMessage,
+        $totalUsers, $messagesPerUser, $peakInsights
     ) {
         $handle = fopen('php://output', 'w');
 
@@ -407,28 +486,29 @@ public function exportCsv(Request $request)
         fputcsv($handle, ['Most Frequent Category', $stats['mostCategoryName'] ?? 'N/A']);
         fputcsv($handle, ['Most Frequent Category Count', $stats['mostCategoryCount'] ?? 0]);
 
-        // Blank line
-        fputcsv($handle, ['']);
+        fputcsv($handle, ['']); // Blank line
 
         // Section: User Insights
         fputcsv($handle, ['--- User Insights ---']);
-        fputcsv($handle, ['Top Year Level', $topYearLevel->year_level ?? 'N/A']);
-        fputcsv($handle, ['Top Year Level Count', $topYearLevel->count ?? 0]);
-        fputcsv($handle, ['Top Course', $topCourse->course_name ?? 'N/A']);
-        fputcsv($handle, ['Top Course Count', $topCourse->count ?? 0]);
-        fputcsv($handle, ['Total Registered Users', $userInsights['totalUsers'] ?? 0]);
-        fputcsv($handle, ['Average Messages Per User', $userInsights['messagesPerUser'] ?? 0]);
+        fputcsv($handle, ['Top Year Level', $topYearLevel?->year_level ?? 'N/A']);
+        fputcsv($handle, ['Top Year Level Count', $topYearLevel?->count ?? 0]);
+        fputcsv($handle, ['Year with the most Inquiries', $topYearLevelMessage?->year_level ?? 'N/A']);
+        fputcsv($handle, ['Inquiries Count (Year Level)', $topYearLevelMessage?->count ?? 0]);
+        fputcsv($handle, ['Top Course', $topCourse?->course_name ?? 'N/A']);
+        fputcsv($handle, ['Top Course Count', $topCourse?->count ?? 0]);
+        fputcsv($handle, ['Course with the most Inquiries', $topCourseMessage?->course_name ?? 'N/A']);
+        fputcsv($handle, ['Inquiries Count (Course)', $topCourseMessage?->count ?? 0]);
+        fputcsv($handle, ['Total Registered Users', $totalUsers]);
+        fputcsv($handle, ['Average Messages Per User', round($messagesPerUser, 2)]);
 
-        // Blank line
-        fputcsv($handle, ['']);
+        fputcsv($handle, ['']); // Blank line
 
         // Section: Peak Time Insights
         fputcsv($handle, ['--- Peak Times ---']);
         fputcsv($handle, ['Peak Hour', 'Message Count']);
         foreach ($peakInsights['peakHour'] as $hourData) {
-            // Assuming it's a UNIX timestamp or datetime string, adjust accordingly:
-            $hour = date('H', is_numeric($hourData['hour']) ? (int)$hourData['hour'] : strtotime($hourData['hour']));
-            fputcsv($handle, ["{$hour}:00", $hourData['count']]);
+            $hour = date('H:00', is_numeric($hourData['hour']) ? $hourData['hour'] * 3600 : strtotime($hourData['hour']));
+            fputcsv($handle, [$hour, $hourData['count']]);
         }
 
         fputcsv($handle, ['']); // Blank line
@@ -447,6 +527,7 @@ public function exportCsv(Request $request)
 
     return $response;
 }
+
 
     private function getAverageMessagesPerDay($start, $end)
     {
