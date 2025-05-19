@@ -48,11 +48,11 @@ class ChatbotController extends Controller
             $conversation = Conversation::create([
                 'userID' => $user->userID,
                 'conversation_status' => 'active',
-                'conversation_title' => $userQuery, // Set first message as title
+                'conversation_title' => $this->generateTitle($userQuery),
                 'created_at' => now(),
             ]);
-        } elseif ($conversation->conversation_title === null) {
-            $conversation->update(['conversation_title' => $userQuery]);
+        } elseif ($conversation->conversation_title === null || $conversation->conversation_title === '"New Conversation"') {
+            $conversation->update(['conversation_title' => $this->generateTitle($userQuery)]);
         }
     
         // Detect the category
@@ -79,7 +79,22 @@ class ChatbotController extends Controller
         if (!empty($kbEntries)) {
             $context = implode("\n\n", array_map(fn($kb) => $kb['content'], $kbEntries));
 
-            $responseText = $this->llm->generateCompletion("Context:\n$context\n\nQuestion:\n$userQuery");
+            $formattedPrompt = <<<PROMPT
+            You are a helpful assistant.
+            
+            - For factual or numeric answers (like calculations), respond plainly without any HTML.
+            - For detailed or list answers, use simple HTML tags like <strong>, <ul>, <li>, <br>.
+            
+            Context:
+            $context
+            
+            Question:
+            $userQuery
+            
+            Answer:
+            PROMPT;
+            
+            $responseText = $this->llm->generateCompletion($formattedPrompt);
             $kbID = $kbEntries[0]['kbID'] ?? null;
 
         } else {
@@ -122,6 +137,7 @@ class ChatbotController extends Controller
                 $latestUserMessage->update(['responded_at' => $botMessage->sent_at]);
             }
         }
+        
     
         return response()->json([
             'message' => $responseText,
@@ -216,6 +232,35 @@ EOT;
         ]);
     }
 
+    private function generateTitle(string $userQuery): string
+    {
+        if (empty(trim($userQuery))) {
+            return 'New Conversation';
+        }
+    
+        $prompt = <<<EOT
+    Summarize the following message into a short, clear conversation title (3-7 words):
+    
+    Message: "$userQuery"
+    
+    Title:
+    EOT;
+    
+        $title = $this->llm->generateCompletion($prompt);
+    
+        $title = trim($title);
+    
+        if (empty($title)) {
+            $title = 'New Conversation';
+        }
+    
+        if (strlen($title) > 50) {
+            $title = substr($title, 0, 50) . '...';
+        }
+    
+        return $title;
+    }
+
     public function newChat(Request $request)
     {
         $user = Auth::user();
@@ -235,12 +280,16 @@ EOT;
         }
 
         // Create a new conversation
-        $userQuery = $request->input('message');
+        $userQuery = $request->input('message') ?? '';
+        if (empty(trim($userQuery))) {
+            $userQuery = 'New conversation';
+        }
+    
 
         $conversation = Conversation::create([
             'userID' => $user->userID,
             'conversation_status' => 'active',
-            'conversation_title' => $userQuery, // Set first message as title
+            'conversation_title' => $this->generateTitle($userQuery),
             'created_at' => now(),
         ]);
 

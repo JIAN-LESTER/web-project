@@ -365,6 +365,8 @@
 
 
 <script>
+
+  
 /* Custom chart colors to match the dark green theme */
 const chartColors = {
   primary: '#165a36',      // Dark green

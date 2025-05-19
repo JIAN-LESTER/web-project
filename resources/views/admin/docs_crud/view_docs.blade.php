@@ -1,8 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-<a href="{{ route('admin.knowledge_base') }}" class="btn btn-secondary mb-3">Back</a>
+
 <div class="container mt-4">
+<a href="{{ route('admin.knowledge_base') }}" class="btn btn-secondary mb-3">Back</a>
     
   <div class="card">
     

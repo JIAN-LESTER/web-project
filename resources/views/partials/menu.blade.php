@@ -97,7 +97,7 @@
    class="nav-link load-conversation flex-column align-items-start"
    data-id="{{ $conversation->conversationID }}">
 
-  <small class="text-muted">Conversation #{{ $conversation->conversationID }}</small>
+  
   <span style="display:block; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;">
     {{ Str::limit($conversation->conversation_title, 50) }}
 </span>
