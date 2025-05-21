@@ -1,7 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- Include Google Fonts - Poppins -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Include Custom CSS -->
 <link rel="stylesheet" href="{{ asset('admin/logs.css') }}">
+
 <div class="container-fluid logs-container">
     <div class="logs-header">
         <div class="row align-items-center">
@@ -11,11 +17,11 @@
             </div>
             <div class="col-md-6 text-md-end">
                 <div class="action-buttons">
-                    <button id="exportCSV" class="btn btn-outline-secondary">
-                        <i class="fas fa-download me-2"></i>Export CSV
+                    <button id="exportCSV" class="btn">
+                        <i class="fas fa-download"></i>Export CSV
                     </button>
-                    <button id="refreshLogs" class="btn btn-outline-secondary">
-                        <i class="fas fa-sync-alt me-2"></i>Refresh
+                    <button id="refreshLogs" class="btn">
+                        <i class="fas fa-sync-alt"></i>Refresh
                     </button>
                 </div>
             </div>
@@ -26,19 +32,19 @@
         <div class="card-body">
             <div class="row mb-4">
                 <div class="col-lg-8 col-md-7">
-                    <form method="GET" action="{{ route('admin.logs') }}" class="logs-search-form">
+                    <form method="GET" action="{{ route('admin.logs') }}" class="logs-search-form" id="searchForm">
                         <div class="search-wrapper">
-                            <input type="text" name="search" class="form-control search-input"
-                                   placeholder="Search by user, action, or message ID..."
+                            <input type="text" name="search" class="form-control search-input" id="liveSearch"
+                                   placeholder="Search by user, action, or ID..."
                                    value="{{ request('search') }}">
-                            <button type="submit" class="btn search-button">Search</button>
+                            <button type="submit" class="search-button">Search</button>
                         </div>
                     </form>
                 </div>
                 <div class="col-lg-4 col-md-5">
                     <div class="dropdown filter-dropdown">
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-filter me-2"></i>Filter Options
+                            <i class="fas fa-filter"></i> Filter Options
                         </button>
                         <ul class="dropdown-menu filter-menu" aria-labelledby="filterDropdown">
                             <li>
@@ -90,7 +96,7 @@
                         <tr>
                             <th class="sortable col-id" data-sort="id">
                                 <div class="sort-header">
-                                    Log ID <i class="fas fa-sort"></i>
+                                    ID <i class="fas fa-sort"></i>
                                 </div>
                             </th>
                             <th class="sortable col-user" data-sort="user">
@@ -98,7 +104,6 @@
                                     User <i class="fas fa-sort"></i>
                                 </div>
                             </th>
-                          
                             <th class="sortable col-action" data-sort="action">
                                 <div class="sort-header">
                                     Action <i class="fas fa-sort"></i>
@@ -113,7 +118,7 @@
                     </thead>
                     <tbody>
                         @forelse($logs as $log)
-                            <tr class="log-row" data-log-id="{{ $log->logID }}">
+                            <tr class="log-row" data-log-id="{{ $log->logID }}" style="--i: {{ $loop->index }}">
                                 <td class="log-id">{{ $log->logID }}</td>
                                 <td class="log-user">
                                     <div class="user-info">
@@ -126,7 +131,6 @@
                                         </div>
                                     </div>
                                 </td>
-                                
                                 <td class="log-action">
                                     @php
                                         $actionClass = '';
@@ -167,9 +171,9 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="no-data">
+                                <td colspan="4" class="no-data">
                                     <div class="empty-logs">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
                                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                                             <polyline points="14 2 14 8 20 8"></polyline>
                                             <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -191,10 +195,10 @@
                     Showing {{ $logs->firstItem() ?? 0 }} to {{ $logs->lastItem() ?? 0 }} of {{ $logs->total() }} results
                 </div>
                 <div class="pagination">
-                    <!-- Left arrow - using unicode character -->
+                    <!-- Left arrow -->
                     <a href="{{ $logs->previousPageUrl() }}"
                        class="page-link {{ $logs->onFirstPage() ? 'disabled' : '' }}">
-                        ←
+                        <i class="fas fa-chevron-left"></i>
                     </a>
 
                     <!-- Page numbers -->
@@ -205,10 +209,10 @@
                         </a>
                     @endfor
 
-                    <!-- Right arrow - using unicode character -->
+                    <!-- Right arrow -->
                     <a href="{{ $logs->nextPageUrl() }}"
                        class="page-link {{ !$logs->hasMorePages() ? 'disabled' : '' }}">
-                        →
+                        <i class="fas fa-chevron-right"></i>
                     </a>
                 </div>
             </div>
@@ -299,7 +303,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const logId = this.getAttribute('data-log-id');
             const userName = this.querySelector('.user-name')?.textContent || 'Unknown';
             const userEmail = this.querySelector('.user-email')?.textContent || '';
-            const messageId = this.querySelector('.log-message')?.textContent.trim() || 'N/A';
             const action = this.querySelector('.action-badge')?.textContent.trim() || '';
             const date = this.querySelector('.log-date')?.textContent || '';
             const time = this.querySelector('.log-time')?.textContent || '';
@@ -308,7 +311,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('panel-log-id').textContent = logId;
             document.getElementById('panel-user').textContent = userName;
             document.getElementById('panel-email').textContent = userEmail;
-            document.getElementById('panel-message-id').textContent = messageId;
             document.getElementById('panel-action').textContent = action;
             document.getElementById('panel-timestamp').textContent = `${date} at ${time}`;
 
@@ -334,7 +336,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 browserIcon.className = 'fas fa-globe info-icon';
             }
 
-            // Show panel and backdrop with animation
+            // Show panel and backdrop
             logDetailsPanel.classList.add('show');
             logDetailsBackdrop.classList.add('show');
         });
@@ -375,17 +377,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return { browser, os };
     }
 
-    // Close panel functionality with animation
+    // Close panel functionality
     const closePanel = function() {
-        // Add the closing animation class
-        logDetailsPanel.classList.add('closing');
+        logDetailsPanel.classList.remove('show');
         logDetailsBackdrop.classList.remove('show');
-
-        // Wait for animation to complete before hiding panel
-        setTimeout(() => {
-            logDetailsPanel.classList.remove('show');
-            logDetailsPanel.classList.remove('closing');
-        }, 300); // Match this to the animation duration
     };
 
     // Add multiple ways to close the panel
@@ -514,7 +509,68 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('endDate').value = '';
     });
 
-    // Add sorting functionality
+    // Add live search functionality
+    const liveSearch = document.getElementById('liveSearch');
+    if (liveSearch) {
+        liveSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.log-row');
+
+            rows.forEach(row => {
+                const userName = row.querySelector('.user-name')?.textContent.toLowerCase() || '';
+                const userEmail = row.querySelector('.user-email')?.textContent.toLowerCase() || '';
+                const logId = row.querySelector('.log-id')?.textContent.toLowerCase() || '';
+                const action = row.querySelector('.action-badge')?.textContent.toLowerCase() || '';
+
+                // Check if any field contains the search term
+                const isMatch = userName.includes(searchTerm) ||
+                               userEmail.includes(searchTerm) ||
+                               logId.includes(searchTerm) ||
+                               action.includes(searchTerm);
+
+                // Show/hide row based on match
+                row.style.display = isMatch ? '' : 'none';
+            });
+
+            // Check if no results found
+            const visibleRows = document.querySelectorAll('.log-row[style="display: none;"]');
+            const tableBody = document.querySelector('.logs-table tbody');
+            const noResultsRow = document.getElementById('noSearchResults');
+
+            if (visibleRows.length === rows.length && searchTerm !== '') {
+                // No matches found
+                if (!noResultsRow) {
+                    const newRow = document.createElement('tr');
+                    newRow.id = 'noSearchResults';
+                    newRow.innerHTML = `
+                        <td colspan="4" class="no-data">
+                            <div class="empty-logs">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                <h5>No matching logs</h5>
+                                <p>Try a different search term</p>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(newRow);
+                }
+            } else if (noResultsRow) {
+                // Remove no results message if there are matches
+                noResultsRow.remove();
+            }
+        });
+
+        // Prevent form submission on enter key
+        liveSearch.form.addEventListener('submit', function(e) {
+            // Only prevent default if it's the live search form being submitted by pressing Enter
+            if (e.submitter === null || e.submitter === undefined) {
+                e.preventDefault();
+            }
+        });
+    }
     const sortHeaders = document.querySelectorAll('.sortable');
     sortHeaders.forEach(header => {
         header.addEventListener('click', function() {
