@@ -11,6 +11,33 @@
     <link rel="stylesheet" href="{{ asset('login_and_register/two-factor.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <style>
+        .timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #10b981; /* green initially */
+    text-align: center;
+    white-space: nowrap;
+}
+
+.timer-pulse {
+    animation: pulseColor 1s infinite;
+}
+
+@keyframes pulseColor {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1); /* Slight scale */
+    }
+}
+    </style>
+
 
 </head>
 
@@ -45,7 +72,7 @@
             </p>
 
             @if($errors->any())
-                <div class="alert-box alert-danger">
+                <div class="alert-box alert-danger auto-dismiss">
                     <div class="alert-icon"><i class="fas fa-exclamation-circle"></i></div>
                     <div class="alert-content">
                         <ul>
@@ -61,7 +88,7 @@
             @endif
 
             @if(session('message'))
-                <div class="alert-box alert-success">
+                <div class="alert-box alert-success auto-dismiss">
                     <div class="alert-icon"><i class="fas fa-check-circle"></i></div>
                     <div class="alert-content">
                         <p>{{ session('message') }}</p>
@@ -291,6 +318,23 @@
                 this.submit();
             }, 1500);
         });
+
+ document.addEventListener('DOMContentLoaded', function () {
+        // Automatically dismiss alerts after 5 seconds (5000ms)
+        const alerts = document.querySelectorAll('.auto-dismiss');
+
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s ease';
+
+                // Remove from DOM after fade out
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        });
+    });
+
+
     </script>
 </body>
 

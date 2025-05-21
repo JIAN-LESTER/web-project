@@ -101,11 +101,7 @@
 
                     <div class="form-options">
                         <div class="checkbox-wrapper">
-                            <label class="checkbox-label">
-                                <input type="checkbox" name="remember" id="remember">
-                                <span class="checkbox-custom"></span>
-                                <span class="checkbox-text">Remember me</span>
-                            </label>
+                          
                         </div>
                         <a href="{{ route('password.request') }}" class="forgot-password">Forgot Password?</a>
                     </div>
