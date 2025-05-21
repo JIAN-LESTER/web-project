@@ -2,7 +2,7 @@
 <div class="sidebar-header border-bottom d-flex align-items-center justify-content-between px-3 py-2">
   <div class="d-flex align-items-center gap-2">
     <!-- Logo -->
-    <span class="fw-bold text-white" style="font-size: 1rem; height:40px;">OASP Assist</span>
+    <span class="fw-bold text-white" style="font-size: 1.1rem; height:40px; font-family: 'Poppins', sans-serif;">OASP Assist</span>
   </div>
 
   @php
@@ -30,9 +30,8 @@
         />
         Dashboard
       </a>
-    </li>
-    <li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('admin.reports_analytics') ? 'active' : '' }}"
+
+      <a class="nav-link {{ request()->routeIs('admin.reports_analytics') ? 'active' : '' }}"
          href="{{ route('admin.reports_analytics') }}"
          aria-current="{{ request()->routeIs('admin.reports_analytics') ? 'page' : '' }}">
         <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-chart.svg') }}" alt="Reports"
@@ -78,8 +77,6 @@
       </a>
     </li>
 
-    
-
   @else
     <!-- User Navigation -->
     <li class="nav-title">Chat History</li>
@@ -97,7 +94,6 @@
    class="nav-link load-conversation flex-column align-items-start"
    data-id="{{ $conversation->conversationID }}">
 
-  
   <span style="display:block; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;">
     {{ Str::limit($conversation->conversation_title, 50) }}
 </span>
@@ -115,6 +111,15 @@
 
 <!-- Sidebar Styling -->
 <style>
+  /* Include Google Fonts - Poppins */
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+  /* Base typography */
+  .sidebar-nav {
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 13px;
+  }
+
   .nav-icon {
     width: 1.25rem;
     height: 1.25rem;
@@ -127,24 +132,31 @@
     display: flex;
     align-items: center;
     color: #fff;
-    transition: background-color 0.2s ease;
+    font-weight: 400;
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    margin: 0 0.5rem 0.2rem 0.5rem;
   }
 
   .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.08);
   }
 
   .nav-link.active {
     background-color: rgba(255, 255, 255, 0.1);
-    font-weight: bold;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
   }
 
   .nav-title {
-    color: #bbb;
-    padding: 0.75rem 1rem 0.25rem;
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.85rem 1.5rem 0.35rem;
     font-weight: 600;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.5rem;
   }
 
   .btn-close {
@@ -158,6 +170,10 @@
     filter: none;
   }
 
+  .btn-close:hover {
+    opacity: 0.8;
+  }
+
   .btn-close::before {
     content: '×';
     font-size: 1.5rem;
@@ -168,5 +184,28 @@
 
   .btn-close > svg {
     display: none;
+  }
+
+  /* User navigation chat history items */
+  .load-conversation {
+    font-size: 0.85rem !important;
+    padding: 0.5rem 1rem !important;
+    line-height: 1.4;
+  }
+
+  .load-conversation:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Adjust spacing to match dashboard page */
+  .sidebar-header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* No animations on click */
+  .nav-item {
+    transition: none;
   }
 </style>
