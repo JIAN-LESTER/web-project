@@ -59,4 +59,23 @@ class TwoFactorAuthController extends Controller
 
         return back()->withErrors(['two_factor_code' => 'Invalid or expired OTP. Please log in again.']);
     }
+
+    public function resend(Request $request)
+    {
+        $user = User::find(session('2fa_user_id'));
+
+        if (!$user) {
+            return redirect()->route('login')->withErrors(['message' => 'Session expired. Please log in again.']);
+        }
+
+        // Generate new code and expiration
+        $user->two_factor_code = rand(100000, 999999);
+        $user->two_factor_expires_at = now()->addMinutes(5);
+        $user->save();
+
+        // Send the new code via email
+        Mail::to($user->email)->send(new TwoFactorCodeMail($user));
+
+        return back()->with('message', 'A new verification code has been sent to your email.');
+    }
 }

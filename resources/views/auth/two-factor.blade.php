@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('login_and_register/two-factor.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        .timer-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: #10b981; /* green initially */
+    text-align: center;
+    white-space: nowrap;
+}
+
+.timer-pulse {
+    animation: pulseColor 1s infinite;
+}
+
+@keyframes pulseColor {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.1); /* Slight scale */
+    }
+}
+    </style>
+
+
 </head>
+
 <body>
     <div class="container">
         <!-- Background animation elements -->
@@ -28,8 +59,10 @@
 
             <div class="auth-icon-container">
                 <svg class="shield-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-                    <path class="lock-path" d="M11 14.6v2.4h2v-2.4c.6-.35 1-1 1-1.7 0-1.1-.9-2-2-2s-2 .9-2 2c0 .7.4 1.35 1 1.7z"/>
+                    <path
+                        d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z" />
+                    <path class="lock-path"
+                        d="M11 14.6v2.4h2v-2.4c.6-.35 1-1 1-1.7 0-1.1-.9-2-2-2s-2 .9-2 2c0 .7.4 1.35 1 1.7z" />
                 </svg>
             </div>
 
@@ -39,7 +72,7 @@
             </p>
 
             @if($errors->any())
-                <div class="alert-box alert-danger">
+                <div class="alert-box alert-danger auto-dismiss">
                     <div class="alert-icon"><i class="fas fa-exclamation-circle"></i></div>
                     <div class="alert-content">
                         <ul>
@@ -55,7 +88,7 @@
             @endif
 
             @if(session('message'))
-                <div class="alert-box alert-success">
+                <div class="alert-box alert-success auto-dismiss">
                     <div class="alert-icon"><i class="fas fa-check-circle"></i></div>
                     <div class="alert-content">
                         <p>{{ session('message') }}</p>
@@ -66,57 +99,59 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('2fa.verify') }}" class="auth-form">
-                @csrf
-                <div class="form-group">
-                    <label for="two_factor_code">Enter Authentication Code</label>
-                    <div class="code-input-container">
-                        <div class="code-input-wrapper">
-                            <input type="text"
-                                  name="two_factor_code"
-                                  id="two_factor_code"
-                                  class="code-input"
-                                  required
-                                  autofocus
-                                  maxlength="6"
-                                  pattern="[0-9]{6}"
-                                  autocomplete="off"
-                                  oninput="updateCodeInputUI(this)">
-                            <div class="code-digits">
-                                <div class="digit-box"></div>
-                                <div class="digit-box"></div>
-                                <div class="digit-box"></div>
-                                <div class="digit-box"></div>
-                                <div class="digit-box"></div>
-                                <div class="digit-box"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="code-expire-timer">
-                        <div class="timer-circle">
-                            <svg class="timer-svg" viewBox="0 0 36 36">
-                                <path class="timer-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                                <path class="timer-fill" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"></path>
-                            </svg>
-                            <span class="timer-text">5:00</span>
-                        </div>
-                        <span class="timer-label">Code expires in</span>
-                    </div>
-
-                    <div class="resend-container">
-                        <p class="resend-text">Didn't receive a code?</p>
-                        <a href="{{ route('2fa.resend') }}" class="resend-link">
-                            <i class="fas fa-sync-alt resend-icon"></i> Resend verification code
-                        </a>
-                    </div>
+            <!-- Main 2FA verification form -->
+<form method="POST" action="{{ route('2fa.verify') }}" class="auth-form">
+    @csrf
+    <div class="form-group">
+        <label for="two_factor_code">Enter Authentication Code</label>
+        <div class="code-input-container">
+            <div class="code-input-wrapper">
+                <input type="text" name="two_factor_code" id="two_factor_code" class="code-input" required
+                    autofocus maxlength="6" pattern="[0-9]{6}" autocomplete="off"
+                    oninput="updateCodeInputUI(this)">
+                <div class="code-digits">
+                    <div class="digit-box"></div>
+                    <div class="digit-box"></div>
+                    <div class="digit-box"></div>
+                    <div class="digit-box"></div>
+                    <div class="digit-box"></div>
+                    <div class="digit-box"></div>
                 </div>
+            </div>
+        </div>
+        <div class="code-expire-timer">
+            <div class="timer-circle">
+                <svg class="timer-svg" viewBox="0 0 36 36">
+                    <path class="timer-bg"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831">
+                    </path>
+                    <path class="timer-fill"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831">
+                    </path>
+                </svg>
+                <span class="timer-text">5:00</span>
+            </div>
+            <span class="timer-label">Code expires in</span>
+        </div>
+    </div>
 
-                <div class="buttons-container">
-                    <button type="submit" class="primary-button">
-                        <i class="fas fa-check button-icon"></i> Verify
-                    </button>
-                </div>
-            </form>
+    <div class="buttons-container">
+        <button type="submit" class="primary-button">
+            <i class="fas fa-check button-icon"></i> Verify
+        </button>
+    </div>
+</form>
+
+<!-- Resend form (outside the main form) -->
+<div class="resend-container">
+    <p class="resend-text">Didn't receive a code?</p>
+    <form method="POST" action="{{ route('2fa.resend') }}" class="inline-form">
+        @csrf
+        <button type="submit" class="resend-link">
+            <i class="fas fa-sync-alt resend-icon"></i> Resend verification code
+        </button>
+    </form>
+</div>
 
             <div class="secondary-options">
                 <div class="divider">
@@ -131,7 +166,7 @@
 
     <script>
         // Countdown timer for code expiration
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             let totalSeconds = 5 * 60; // 5 minutes in seconds
             const timerText = document.querySelector('.timer-text');
             const timerFill = document.querySelector('.timer-fill');
@@ -153,22 +188,22 @@
             };
 
             // Set up pulsing effect on input focus
-            codeInput.addEventListener('focus', function() {
+            codeInput.addEventListener('focus', function () {
                 document.querySelector('.code-input-wrapper').classList.add('pulse');
             });
 
-            codeInput.addEventListener('blur', function() {
+            codeInput.addEventListener('blur', function () {
                 document.querySelector('.code-input-wrapper').classList.remove('pulse');
             });
 
             // Focus the input field when clicking anywhere in the digit boxes
-            document.querySelector('.code-digits').addEventListener('click', function() {
+            document.querySelector('.code-digits').addEventListener('click', function () {
                 codeInput.focus();
             });
 
             // Start resend countdown
             updateResendText();
-            const resendTimer = setInterval(function() {
+            const resendTimer = setInterval(function () {
                 resendCounter--;
                 updateResendText();
 
@@ -178,7 +213,7 @@
             }, 1000);
 
             // Expiration timer
-            const timer = setInterval(function() {
+            const timer = setInterval(function () {
                 totalSeconds--;
 
                 // Format minutes and seconds
@@ -257,7 +292,7 @@
         }
 
         // Add animation when form is submitted
-        document.querySelector('.auth-form').addEventListener('submit', function(e) {
+        document.querySelector('.auth-form').addEventListener('submit', function (e) {
             // Don't actually submit yet
             e.preventDefault();
 
@@ -283,6 +318,24 @@
                 this.submit();
             }, 1500);
         });
+
+ document.addEventListener('DOMContentLoaded', function () {
+        // Automatically dismiss alerts after 5 seconds (5000ms)
+        const alerts = document.querySelectorAll('.auto-dismiss');
+
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s ease';
+
+                // Remove from DOM after fade out
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        });
+    });
+
+
     </script>
 </body>
+
 </html>

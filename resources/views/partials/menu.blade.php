@@ -15,7 +15,7 @@
 </div>
 
 <!-- Sidebar Navigation -->
-<ul class="sidebar-nav" data-coreui="navigation" data-simplebar>
+< class="sidebar-nav" data-coreui="navigation" data-simplebar>
 
   @if ($user->role === 'admin')
     <!-- Admin Navigation -->
@@ -39,7 +39,8 @@
         />
         Reports
       </a>
-    </li>
+</li>
+
     <li class="nav-title">Management</li>
 
     <li class="nav-item">
@@ -62,7 +63,7 @@
       </a>
     </li>
 
-    <!-- Preferences -->
+   
     <li class="nav-title">System</li>
 
     <li class="nav-group">
