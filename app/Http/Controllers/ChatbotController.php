@@ -73,7 +73,6 @@ class ChatbotController extends Controller
             'sent_at' => now(),
         ]);
     
-        // Retrieve response from KB or LLM
         $kbEntries = $this->kbRetrieval->retrieveRelevant($userQuery, 5);
 
         if (!empty($kbEntries)) {

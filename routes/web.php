@@ -39,7 +39,7 @@ Route::get('/', [AuthController::class, 'showLoginForm'])->name('home'); // or r
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login'); // <-- this is the fix
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/2fa/resend', 'Auth\YourAuthController@resendTwoFactorCode')->name('2fa.resend');
+Route::post('/2fa/resend', [TwoFactorAuthController::class, 'resend'])->name('2fa.resend');
 
 Route::get('/chatbot', [UserController::class, 'index'])->name('chatbot');
 
