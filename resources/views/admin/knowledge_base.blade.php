@@ -1,130 +1,383 @@
 @extends('layouts.app')
 
 @section('content')
+<!-- Include Google Fonts - Poppins -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Include Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<!-- Include Custom CSS -->
 <link rel="stylesheet" href="{{ asset('admin/knowledge-base.css') }}">
-<div class="container-fluid mt-4">
-  <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h4 class="mb-0">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="kb-icon">
-          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
-        </svg>
-        Knowledge Base
-      </h4>
-      <a href="{{ route('kb.upload') }}" class="btn btn-primary btn-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
-          <path d="M12 5v14"></path>
-          <path d="M5 12h14"></path>
-        </svg>
-        Upload New Document
-      </a>
-    </div>
 
-    <div class="card-body">
-      <form action="{{ route('kb.search') }}" method="GET" class="mb-3">
-        <div class="search-container">
-          <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input type="text" name="query" class="form-control search-input" placeholder="Search documents by title or content..." value="{{ request('query') }}">
-          <button class="btn btn-primary search-button" type="submit">Search</button>
-        </div>
-      </form>
-
-      <div class="table-responsive">
-        <table class="table table-bordered table-hover">
-          <thead class="table-light">
-            <tr>
-              <th>Title</th>
-              <th>Source</th>
-              <th>Category</th>
-              <th>Uploaded At</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            @forelse($documents as $doc)
-              <tr>
-                <td>
-                  <div class="document-title">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="file-icon">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
-                      <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    {{ $doc->kb_title }}
-                  </div>
-                </td>
-                <td>{{ $doc->source }}</td>
-                <td>
-                  @php
-                    $categoryName = $doc->category->category_name ?? 'Uncategorized';
-                    $categoryClass = 'category-default';
-
-                    switch(strtolower($categoryName)) {
-                      case 'technical':
-                        $categoryClass = 'category-technical';
-                        break;
-                      case 'business':
-                        $categoryClass = 'category-business';
-                        break;
-                      case 'legal':
-                        $categoryClass = 'category-legal';
-                        break;
-                      case 'marketing':
-                        $categoryClass = 'category-marketing';
-                        break;
-                    }
-                  @endphp
-                  <span class="category-tag {{ $categoryClass }}">{{ $categoryName }}</span>
-                </td>
-                <td>{{ $doc->created_at->format('M d, Y') }}</td>
-                <td>
-                  <a href="{{ route('kb.view', $doc->kbID) }}" class="btn btn-sm btn-info">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
-                    View
-                  </a>
-                </td>
-              </tr>
-            @empty
-              <tr>
-                <td colspan="5" class="text-center py-4">
-                  <div class="empty-state">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="empty-icon mb-3">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                      <polyline points="14 2 14 8 20 8"></polyline>
-                      <line x1="16" y1="13" x2="8" y2="13"></line>
-                      <line x1="16" y1="17" x2="8" y2="17"></line>
-                      <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    <h5>No documents found</h5>
-                    <p class="text-muted">Try adjusting your search or upload a new document.</p>
-                    <a href="{{ route('kb.upload') }}" class="btn btn-primary btn-sm mt-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-1">
-                        <path d="M12 5v14"></path>
-                        <path d="M5 12h14"></path>
-                      </svg>
-                      Upload New Document
+<div class="container-fluid kb-container">
+    <div class="kb-header">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="kb-title">Knowledge Base</h1>
+                <p class="kb-subtitle">Centralized document repository for quick reference</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <div class="action-buttons">
+                    <a href="{{ route('kb.upload') }}" class="btn">
+                        <i class="fas fa-upload"></i>Upload New Document
                     </a>
-                  </div>
-                </td>
-              </tr>
-            @endforelse
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Pagination -->
-      <div class="d-flex justify-content-center mt-3">
-        {{ $documents->links() }}
-      </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <div class="kb-card">
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <form method="GET" action="{{ route('kb.search') }}" class="kb-search-form" id="searchForm">
+                        <div class="search-wrapper">
+                            <input type="text" name="query" class="form-control search-input" id="liveSearch"
+                                   placeholder="Search documents by title or content..."
+                                   value="{{ request('query') }}">
+                            <button type="submit" class="search-button">Search</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="kb-table-wrapper">
+                <table class="table kb-table">
+                    <thead>
+                        <tr>
+                            <th class="sortable col-title" data-sort="title">
+                                <div class="sort-header">
+                                    Document Title <i class="fas fa-sort"></i>
+                                </div>
+                            </th>
+                            <th class="sortable col-source" data-sort="source">
+                                <div class="sort-header">
+                                    Source <i class="fas fa-sort"></i>
+                                </div>
+                            </th>
+                            <th class="sortable col-category" data-sort="category">
+                                <div class="sort-header">
+                                    Category <i class="fas fa-sort"></i>
+                                </div>
+                            </th>
+                            <th class="sortable col-date" data-sort="date">
+                                <div class="sort-header">
+                                    Uploaded At <i class="fas fa-sort"></i>
+                                </div>
+                            </th>
+                            <th class="col-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($documents as $index => $doc)
+                            <tr class="document-row" data-doc-id="{{ $doc->kbID }}" style="--i: {{ $index }}">
+                                <td class="doc-title-cell">
+                                    <div class="doc-title">
+                                        <i class="fas fa-file-alt doc-icon"></i>
+                                        {{ $doc->kb_title }}
+                                    </div>
+                                </td>
+                                <td class="doc-source-cell">{{ $doc->source }}</td>
+                                <td class="doc-category-cell">
+                                    @php
+                                        $categoryName = $doc->category->category_name ?? 'Uncategorized';
+                                        $categoryClass = 'category-default';
+
+                                        switch(strtolower($categoryName)) {
+                                            case 'technical':
+                                                $categoryClass = 'category-technical';
+                                                break;
+                                            case 'business':
+                                                $categoryClass = 'category-business';
+                                                break;
+                                            case 'legal':
+                                                $categoryClass = 'category-legal';
+                                                break;
+                                            case 'marketing':
+                                                $categoryClass = 'category-marketing';
+                                                break;
+                                        }
+                                    @endphp
+                                    <span class="category-badge {{ $categoryClass }}">{{ $categoryName }}</span>
+                                </td>
+                                <td class="doc-date-cell">
+                                    <div class="date-info">
+                                        <div class="date-display">{{ $doc->created_at->format('M d, Y') }}</div>
+                                        <div class="time-display">{{ $doc->created_at->format('h:i A') }}</div>
+                                    </div>
+                                </td>
+                                <td class="doc-actions-cell">
+                                    <div class="action-buttons">
+                                        <a href="{{ route('kb.view', $doc->kbID) }}" class="btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{{ route('kb.download', $doc->kbID) }}" class="btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Download Document">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="no-data">
+                                    <div class="empty-docs">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                                            <polyline points="10 9 9 9 8 9"></polyline>
+                                        </svg>
+                                        <h5>No documents found</h5>
+                                        <p>No matching documents with the current search criteria</p>
+                                        <a href="{{ route('kb.upload') }}" class="btn btn-primary mt-3">
+                                            <i class="fas fa-upload me-2"></i>Upload New Document
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination-wrapper">
+                <div class="pagination-info">
+                    Showing {{ $documents->firstItem() ?? 0 }} to {{ $documents->lastItem() ?? 0 }} of {{ $documents->total() }} documents
+                </div>
+                <div class="pagination">
+                    <!-- Left arrow -->
+                    <a href="{{ $documents->previousPageUrl() }}"
+                       class="page-link {{ $documents->onFirstPage() ? 'disabled' : '' }}">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+
+                    <!-- Page numbers -->
+                    @for ($i = 1; $i <= $documents->lastPage(); $i++)
+                        <a href="{{ $documents->url($i) }}"
+                           class="page-link {{ $documents->currentPage() == $i ? 'active' : '' }}">
+                            {{ $i }}
+                        </a>
+                    @endfor
+
+                    <!-- Right arrow -->
+                    <a href="{{ $documents->nextPageUrl() }}"
+                       class="page-link {{ !$documents->hasMorePages() ? 'disabled' : '' }}">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+<!-- Document Details Panel -->
+<div class="doc-details-panel" id="docDetailsPanel">
+    <div class="doc-details-header">
+        <h5 class="doc-details-title">Document Details</h5>
+        <button type="button" class="doc-details-close" id="closeDocDetails">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div class="doc-details-content">
+        <div class="doc-details-section">
+            <h6 class="doc-details-section-title">Basic Information</h6>
+            <div class="doc-detail-item">
+                <span class="detail-label">Document ID:</span>
+                <span class="detail-value highlight" id="panel-doc-id"></span>
+            </div>
+            <div class="doc-detail-item">
+                <span class="detail-label">Title:</span>
+                <span class="detail-value" id="panel-doc-title"></span>
+            </div>
+            <div class="doc-detail-item">
+                <span class="detail-label">Source:</span>
+                <span class="detail-value" id="panel-doc-source"></span>
+            </div>
+        </div>
+
+        <div class="doc-details-section">
+            <h6 class="doc-details-section-title">Classification</h6>
+            <div class="doc-detail-item">
+                <span class="detail-label">Category:</span>
+                <span class="detail-value highlight" id="panel-doc-category"></span>
+            </div>
+            <div class="doc-detail-item">
+                <span class="detail-label">Uploaded:</span>
+                <span class="detail-value" id="panel-doc-date"></span>
+            </div>
+            <div class="doc-detail-item">
+                <span class="detail-label">Size:</span>
+                <span class="detail-value" id="panel-doc-size"></span>
+            </div>
+        </div>
+
+        <div class="doc-details-section">
+            <h6 class="doc-details-section-title">Description</h6>
+            <div class="doc-description" id="panel-doc-description">
+                <!-- Document description will be inserted here -->
+            </div>
+        </div>
+    </div>
+    <div class="doc-details-footer">
+        <a href="#" class="btn btn-primary" id="panel-view-btn">View Document</a>
+        <a href="#" class="btn btn-download" id="panel-download-btn">Download</a>
+        <button type="button" class="btn btn-secondary" id="panelCloseBtn">Close</button>
+    </div>
+</div>
+<div class="doc-details-backdrop" id="docDetailsBackdrop"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
+    // Make table rows clickable to show details
+    const documentRows = document.querySelectorAll('.document-row');
+    const docDetailsPanel = document.getElementById('docDetailsPanel');
+    const docDetailsBackdrop = document.getElementById('docDetailsBackdrop');
+
+    documentRows.forEach(row => {
+        row.addEventListener('click', function(e) {
+            // Don't show panel if clicked on action buttons
+            if (e.target.closest('.btn-icon') || e.target.closest('.action-buttons')) {
+                return;
+            }
+
+            const docId = this.getAttribute('data-doc-id');
+            const docTitle = this.querySelector('.doc-title')?.textContent.trim() || '';
+            const docSource = this.querySelector('.doc-source-cell')?.textContent || '';
+            const docCategory = this.querySelector('.category-badge')?.textContent || '';
+            const docDate = this.querySelector('.date-display')?.textContent || '';
+            const docTime = this.querySelector('.time-display')?.textContent || '';
+
+            // Set panel content
+            document.getElementById('panel-doc-id').textContent = docId;
+            document.getElementById('panel-doc-title').textContent = docTitle;
+            document.getElementById('panel-doc-source').textContent = docSource;
+            document.getElementById('panel-doc-category').textContent = docCategory;
+            document.getElementById('panel-doc-date').textContent = `${docDate} at ${docTime}`;
+            document.getElementById('panel-doc-size').textContent = '1.2 MB'; // This would be dynamic in real implementation
+            document.getElementById('panel-doc-description').textContent = 'This document contains detailed information about...'; // This would be dynamic
+
+            // Set action button links
+            document.getElementById('panel-view-btn').href = `/kb/view/${docId}`;
+            document.getElementById('panel-download-btn').href = `/kb/download/${docId}`;
+
+            // Show panel and backdrop
+            docDetailsPanel.classList.add('show');
+            docDetailsBackdrop.classList.add('show');
+        });
+    });
+
+    // Close panel functionality
+    const closePanel = function() {
+        docDetailsPanel.classList.remove('show');
+        docDetailsBackdrop.classList.remove('show');
+    };
+
+    // Add multiple ways to close the panel
+    document.getElementById('closeDocDetails').addEventListener('click', closePanel);
+    document.getElementById('panelCloseBtn').addEventListener('click', closePanel);
+    docDetailsBackdrop.addEventListener('click', closePanel);
+
+    // Add keyboard escape to close panel
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && docDetailsPanel.classList.contains('show')) {
+            closePanel();
+        }
+    });
+
+    // Add sorting functionality
+    const sortHeaders = document.querySelectorAll('.sortable');
+    sortHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+            const sort = this.getAttribute('data-sort');
+
+            // Toggle sort direction
+            const currentDirection = this.getAttribute('data-direction') || 'asc';
+            const newDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+
+            // Reset all headers
+            document.querySelectorAll('.sortable').forEach(el => {
+                el.removeAttribute('data-direction');
+                el.querySelector('i').className = 'fas fa-sort';
+            });
+
+            // Update this header
+            this.setAttribute('data-direction', newDirection);
+            this.querySelector('i').className = `fas fa-sort-${newDirection === 'asc' ? 'up' : 'down'}`;
+
+            // Add actual sorting logic (you can implement AJAX or form submit here)
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('sort', sort);
+            currentUrl.searchParams.set('direction', newDirection);
+            window.location.href = currentUrl.toString();
+        });
+    });
+
+    // Add live search functionality
+    const liveSearch = document.getElementById('liveSearch');
+    if (liveSearch) {
+        liveSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('.document-row');
+
+            rows.forEach(row => {
+                const docTitle = row.querySelector('.doc-title')?.textContent.toLowerCase() || '';
+                const docSource = row.querySelector('.doc-source-cell')?.textContent.toLowerCase() || '';
+                const docCategory = row.querySelector('.category-badge')?.textContent.toLowerCase() || '';
+
+                // Check if any field contains the search term
+                const isMatch = docTitle.includes(searchTerm) ||
+                               docSource.includes(searchTerm) ||
+                               docCategory.includes(searchTerm);
+
+                // Show/hide row based on match
+                row.style.display = isMatch ? '' : 'none';
+            });
+
+            // Check if no results found
+            const visibleRows = document.querySelectorAll('.document-row[style="display: none;"]');
+            const tableBody = document.querySelector('.kb-table tbody');
+            const noResultsRow = document.getElementById('noSearchResults');
+
+            if (visibleRows.length === rows.length && searchTerm !== '') {
+                // No matches found
+                if (!noResultsRow) {
+                    const newRow = document.createElement('tr');
+                    newRow.id = 'noSearchResults';
+                    newRow.innerHTML = `
+                        <td colspan="5" class="no-data">
+                            <div class="empty-docs">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+                                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                </svg>
+                                <h5>No matching documents</h5>
+                                <p>Try a different search term</p>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(newRow);
+                }
+            } else if (noResultsRow) {
+                // Remove no results message if there are matches
+                noResultsRow.remove();
+            }
+        });
+
+        // Prevent form submission on enter key
+        liveSearch.form.addEventListener('submit', function(e) {
+            // Only prevent default if it's the live search form being submitted by pressing Enter
+            if (e.submitter === null || e.submitter === undefined) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
 @endsection

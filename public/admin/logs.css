@@ -1,5 +1,5 @@
 /*
- * Minimalist Logs CSS
+ * Minimalist Logs CSS with Animations
  * A clean, modern interface for the logs section
  */
 
@@ -158,7 +158,7 @@ body {
 
 /* Search form */
 .logs-search-form {
-  margin-bottom: 0;
+  margin-bottom: var(--spacing-lg);
   width: 100%;
 }
 
@@ -197,140 +197,6 @@ body {
 
 .search-button:hover {
   background-color: var(--primary-dark);
-}
-
-/* Filter dropdown */
-.filter-dropdown {
-  text-align: right;
-  width: 100%;
-}
-
-.filter-dropdown .btn-outline-secondary {
-  width: 100%;
-  border: 1px solid var(--gray-200);
-  color: var(--gray-700);
-  padding: 10px 16px;
-  text-align: left;
-  font-weight: 500;
-  font-size: 0.9rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: white;
-  border-radius: var(--radius-md);
-}
-
-.filter-dropdown .btn-outline-secondary:hover {
-  background-color: var(--gray-50);
-  border-color: var(--gray-300);
-}
-
-.filter-menu {
-  width: 300px;
-  padding: 0;
-  border: none;
-  box-shadow: var(--shadow-lg);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-}
-
-.filter-section {
-  padding: var(--spacing-md);
-  border-bottom: 1px solid var(--gray-100);
-}
-
-.filter-heading {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--gray-700);
-  margin-bottom: var(--spacing-md);
-}
-
-.form-check {
-  margin-bottom: var(--spacing-sm);
-}
-
-.filter-check {
-  cursor: pointer;
-  accent-color: var(--primary);
-}
-
-.form-check-label {
-  font-size: 0.85rem;
-  cursor: pointer;
-  padding-left: var(--spacing-xs);
-  color: var(--gray-700);
-}
-
-.date-filters {
-  display: flex;
-  gap: var(--spacing-md);
-}
-
-.date-group {
-  flex: 1;
-}
-
-.date-group label {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--gray-600);
-  margin-bottom: var(--spacing-xs);
-  font-weight: 500;
-}
-
-.date-group input {
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--gray-200);
-  padding: 8px var(--spacing-sm);
-  width: 100%;
-  font-size: 0.85rem;
-}
-
-.date-group input:focus {
-  border-color: var(--primary);
-  outline: none;
-  box-shadow: 0 0 0 2px var(--primary-light);
-}
-
-.filter-actions {
-  display: flex;
-  justify-content: space-between;
-  padding: var(--spacing-md);
-  background-color: var(--gray-50);
-  gap: var(--spacing-sm);
-}
-
-#applyFilters, #clearFilters {
-  flex: 1;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 500;
-  border-radius: var(--radius-sm);
-  font-size: 0.85rem;
-  border: 1px solid transparent;
-}
-
-#applyFilters {
-  background-color: var(--primary);
-  color: white;
-}
-
-#applyFilters:hover {
-  background-color: var(--primary-dark);
-}
-
-#clearFilters {
-  background-color: white;
-  border-color: var(--gray-200);
-  color: var(--gray-600);
-}
-
-#clearFilters:hover {
-  background-color: var(--gray-50);
-  border-color: var(--gray-300);
 }
 
 /* Table styles */
@@ -401,9 +267,25 @@ body {
   color: var(--primary);
 }
 
+/* Animation for table rows */
 .logs-table tbody tr {
   transition: background-color var(--transition-fast);
   border-bottom: 1px solid var(--gray-100);
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeInDown 0.5s forwards;
+  animation-delay: calc(var(--i) * 0.05s);
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .logs-table tbody tr:last-child {
@@ -625,6 +507,18 @@ body {
 
 .log-details-panel.show {
   display: block;
+  animation: fadeInPanel 0.3s forwards;
+}
+
+@keyframes fadeInPanel {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -48%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .log-details-header {
@@ -774,6 +668,16 @@ body {
 
 .log-details-backdrop.show {
   display: block;
+  animation: fadeInBackdrop 0.3s forwards;
+}
+
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* Utility classes */
@@ -801,10 +705,6 @@ body {
 /* Responsive adjustments */
 @media (max-width: 992px) {
   .action-buttons {
-    margin-top: var(--spacing-md);
-  }
-
-  .filter-dropdown {
     margin-top: var(--spacing-md);
   }
 

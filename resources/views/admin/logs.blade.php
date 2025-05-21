@@ -43,9 +43,9 @@
                 </div>
                 <div class="col-lg-4 col-md-5">
                     <div class="dropdown filter-dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{-- <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-filter"></i> Filter Options
-                        </button>
+                        </button> --}}
                         <ul class="dropdown-menu filter-menu" aria-labelledby="filterDropdown">
                             <li>
                                 <div class="filter-section">
