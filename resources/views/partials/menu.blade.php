@@ -15,7 +15,7 @@
 </div>
 
 <!-- Sidebar Navigation -->
-<ul class="sidebar-nav" data-coreui="navigation" data-simplebar>
+< class="sidebar-nav" data-coreui="navigation" data-simplebar>
 
   @if ($user->role === 'admin')
     <!-- Admin Navigation -->
@@ -30,10 +30,9 @@
         />
         Dashboard
       </a>
-
-    
-
-      <a class="nav-link {{ request()->routeIs('admin.reports_analytics') ? 'active' : '' }}"
+    </li>
+    <li class="nav-item">
+    <a class="nav-link {{ request()->routeIs('admin.reports_analytics') ? 'active' : '' }}"
          href="{{ route('admin.reports_analytics') }}"
          aria-current="{{ request()->routeIs('admin.reports_analytics') ? 'page' : '' }}">
         <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-chart.svg') }}" alt="Reports"
@@ -41,7 +40,8 @@
         />
         Reports
       </a>
-    </li>
+</li>
+
     <li class="nav-title">Management</li>
 
     <li class="nav-item">
@@ -64,7 +64,7 @@
       </a>
     </li>
 
-    <!-- Preferences -->
+   
     <li class="nav-title">System</li>
 
     <li class="nav-group">
