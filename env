@@ -80,3 +80,12 @@ AWS_BUCKET=
 AWS_USE_PATH_STYLE_ENDPOINT=false
 
 VITE_APP_NAME="${APP_NAME}"
+
+OPENAI_API_KEY= "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"
+USE_PYTHON_RAG=true
+OPENAI_EMBEDDING_MODEL=text-embedding-ada-002
+OPENAI_COMPLETION_MODEL=gpt-3.5-turbo
+COHERE_API_KEY="IhyfOnMhPrpfgiDSqf3c0ayCmGpHAicG1JqbGVOY"
+PINECONE_API_KEY="pcsk_5cGdaK_HBX58mZYRha1A3t3mgr1LHf1ErShL6JQaf5itiHHQrFftXt4jhuoMc8BgzgcAFG"
+PINECONE_UPSERT_URL=https://jian-lester.svc.gcp-starter.pinecone.io/vectors/upsert
+PINECONE_QUERY_URL=https://jian-lester.svc.gcp-starter.pinecone.io/query
