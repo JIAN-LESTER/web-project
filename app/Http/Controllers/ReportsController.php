@@ -297,7 +297,7 @@ private function getPeakInsights()
     $peakDay = Message::where('sender', 'user')
         ->selectRaw("DATE(created_at) as day, COUNT(*) as count")
         ->groupBy('day')
-        ->orderByDesc('count')
+        ->orderBy('count')
         ->get()
         ->map(function ($item) {
             $item->day = Carbon::parse($item->day)->format('M d');

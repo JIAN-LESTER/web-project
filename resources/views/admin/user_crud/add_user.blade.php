@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mt-5">
+    <div class="container-fluid mt-5">
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-8">
                 <div class="card shadow-sm border-0 rounded-lg">
@@ -59,35 +59,27 @@
                                 @enderror
                             </div>
 
-                            <div class="form-row">
-                                <div class="input-group half-width mb-3">
-                                    <label for="year" class="input-label">Year Level</label>
-                                    <div class="input-wrapper">
-                                        <select name="year_id" id="year" class="input-field">
-                                            <option value="">Select Year (Optional)</option>
-                                            @foreach ($years as $year)
-                                                <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    @error('year_id')
-                                        <div class="error-message">{{ $message }}</div>
-                                    @enderror
+                            <div class="row mb-3">
+                                <!-- Year Level -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="year" class="form-label">Year Level</label>
+                                    <select name="year_id" id="year" class="form-select">
+                                        <option value="">Select Year (Optional)</option>
+                                        @foreach ($years as $year)
+                                            <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
-                                <div class="input-group half-width mb-3">
-                                    <label for="course" class="input-label">Course</label>
-                                    <div class="input-wrapper">
-                                        <select name="course_id" id="course" class="input-field">
-                                            <option value="">Select Course (Optional)</option>
-                                            @foreach ($courses as $course)
-                                                <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    @error('course_id')
-                                        <div class="error-message">{{ $message }}</div>
-                                    @enderror
+                                <!-- Course -->
+                                <div class="col-md-6 mb-3">
+                                    <label for="course" class="form-label">Course</label>
+                                    <select name="course_id" id="course" class="form-select">
+                                        <option value="">Select Course (Optional)</option>
+                                        @foreach ($courses as $course)
+                                            <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
 
@@ -118,7 +110,7 @@
         }
     </script>
 
-<script>
+    <script>
         const yearSelect = document.getElementById('year');
         const courseSelect = document.getElementById('course');
 

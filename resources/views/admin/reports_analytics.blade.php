@@ -114,7 +114,7 @@
   <!-- Key Metrics Overview -->
   <div class="row">
     <!-- Summary Statistics Bar Chart -->
-    <div class="col-md-6 mb-4">
+    <div class="col-md-6 mb-4 mt-4">
       <div class="card h-100">
         <div class="card-header">
           <h5><i class="bi bi-bar-chart-fill me-2"></i>Summary Statistics</h5>
@@ -126,7 +126,7 @@
     </div>
 
     <!-- Category Counts Pie Chart -->
-    <div class="col-md-6 mb-4">
+    <div class="col-md-6 mb-4 mt-4">
       <div class="card h-100">
         <div class="card-header">
           <h5><i class="bi bi-pie-chart-fill me-2"></i>Inquiry Category Distribution</h5>
@@ -139,11 +139,11 @@
   </div>
 
   <!-- Inquiry Trend Chart -->
-  <div class="card mb-4">
+  <div class="card mb-4 mt-4" >
     <div class="card-header">
       <h5><i class="bi bi-graph-up me-2"></i>Inquiry Trend Over Time</h5>
     </div>
-    <div class="card-body chart-scroll-container" style="height: 400px;">
+    <div class="card-body chart-scroll-container mb-4" style="height: 400px;">
       <div id="queriesChartWrapper" style="height: 300px;">
         <div id="chartLoading" class="d-none">
           <div class="spinner-border" role="status"></div>
@@ -155,8 +155,8 @@
   </div>
 
   <!-- Peak Time Analysis -->
-  <div class="row mb-4">
-    <div class="col-md-6">
+  <div class="row mb-4" >
+    <div class="col-md-6  mt-4">
       <div class="card h-100">
         <div class="card-header">
           <h5><i class="bi bi-clock me-2"></i>Peak Message Hour</h5>
@@ -166,7 +166,7 @@
         </div>
       </div>
     </div>
-    <div class="col-md-6">
+    <div class="col-md-6 mt-4">
       <div class="card h-100">
         <div class="card-header">
           <h5><i class="bi bi-calendar-week me-2"></i>Peak Message Day</h5>
@@ -179,7 +179,7 @@
   </div>
 
   <!-- Year & Course Analysis -->
-  <div class="row mb-4">
+  <div class="row mb-4 mt-4">
     <div class="col-md-6">
       <div class="card h-100">
         <div class="card-header">
@@ -203,7 +203,7 @@
   </div>
 
   <!-- Inquiries by Year Level & Course -->
-  <div class="row mb-4">
+  <div class="row mt-4 mb-4">
     <div class="col-md-6">
       <div class="card h-100">
         <div class="card-header">
@@ -227,7 +227,7 @@
   </div>
 
   <!-- Messages Per User -->
-  <div class="card mb-4">
+  <div class="card mb-4 mt-4">
     <div class="card-header">
       <h5><i class="bi bi-people-fill me-2"></i>Messages Per User</h5>
     </div>
@@ -796,7 +796,7 @@ document.addEventListener('DOMContentLoaded', function () {
           },
           title: {
             display: true,
-            text: 'Day of Week',
+            text: 'Days',
             font: {
               family: 'Poppins',
               size: 12,
