@@ -1,229 +1,294 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GuideBot Register</title>
+    <title>OASP Assist Register</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Link to external CSS file -->
     <link rel="stylesheet" href="{{ asset('login_and_register/register.css') }}">
 </head>
-<body>
-    <!-- Main container -->
-    <div class="container">
-        <!-- Top purple section -->
-        <div class="top-section">
-            <div class="logo">Logo</div>
-            <div class="sign-in-text">Sign Up to</div>
-            <div class="brand-name">GuideBot</div>
 
-            <!-- Saly illustration image -->
-            <div class="illustration-container">
-                <img src="{{ asset('assets/images/Saly.png') }}" alt="Rocket illustration" class="rocket-illustration">
-            </div>
+<body>
+    <div class="container">
+        <!-- Background animation elements -->
+        <div class="background-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
         </div>
 
-        <!-- Bottom white section -->
-        <div class="bottom-section"></div>
-
-        <!-- Register card that overlaps both sections -->
-        <div class="login-card">
-            <!-- Header with welcome text and sign in link -->
-            <div class="header-section">
-                <div class="welcome-text">Welcome to <span class="brand-highlight">GuideBot</span></div>
-                <div class="signup-section">
-                    Have an Account?<br><a href="{{ route('login') }}" class="signup-link">Sign In</a>
+        <div class="form-container">
+            <!-- Left panel (green) -->
+            <div class="form-panel left-panel">
+                <div class="content">
+                    <h1>Join OASP Assist</h1>
+                    <p>Create an account to start your journey with OASP Assist and access personalized resources.</p>
+                    <img src="{{ asset('assets/images/group105.png') }}" alt="Register illustration" class="panel-image">
                 </div>
             </div>
 
-            <!-- Main heading -->
-            <h1 class="card-heading">Sign Up</h1>
+            <!-- Right panel (dark) -->
+            <div class="form-panel right-panel">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <span>OASP Assist</span>
+                </div>
 
-            <!-- Register form -->
-            <form class="form-container" method="POST" action="{{ route('register') }}">
-    @csrf
+                <div class="form-header">
+                    <h2>Create Account</h2>
+                    <p>Fill in your details to get started</p>
+                </div>
 
-    <div class="input-group">
-        <label for="name" class="input-label">Name</label>
-        <div class="input-field-wrapper">
-            <i class="fas fa-user input-icon"></i>
-            <input type="text" name="name" id="name" class="input-field" placeholder="Enter your name" value="{{ old('name') }}" required>
-        </div>
-        @error('name')
-            <div class="error-message">{{ $message }}</div>
-        @enderror
-    </div>
+                <!-- Error messages -->
+                @if(session('error'))
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <div>
+                            <strong>Registration Failed</strong>
+                            <p>{{ session('error') }}</p>
+                        </div>
+                        <span class="close-alert">&times;</span>
+                    </div>
+                @endif
 
-    <div class="form-row">
-        <div class="input-group half-width">
-            <label for="year" class="input-label">Year Level</label>
-            <div class="input-field-wrapper">
-                <i class="fas fa-graduation-cap input-icon"></i>
-                <select name="year_id" id="year" class="input-field">
-                    <option value="">Select Year (Optional)</option>
-                    @foreach ($years as $year)
-                        <option value="{{ $year->yearID }}" {{ old('year_id') == $year->yearID ? 'selected' : '' }}>
-                            {{ $year->year_level }}
-                        </option>
-                    @endforeach
-                </select>
+                <!-- Registration form -->
+                <form class="register-form" method="POST" action="{{ route('register') }}">
+                    @csrf
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fas fa-user"></i></span>
+                            <input type="text" name="name" id="name" required value="{{ old('name') }}">
+                            <label for="name">Full Name</label>
+                            <span class="focus-border"></span>
+                        </div>
+                        @error('name')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half-width">
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-graduation-cap"></i></span>
+                                <select name="year_id" id="year" class="select-field">
+                                    <option value="" selected disabled>Select Year</option>
+                                    @foreach ($years as $year)
+                                        <option value="{{ $year->yearID }}" {{ old('year_id') == $year->yearID ? 'selected' : '' }}>
+                                            {{ $year->year_level }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span class="focus-border"></span>
+                            </div>
+                            @error('year_id')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group half-width">
+                            <div class="input-group">
+                                <span class="input-icon"><i class="fas fa-book"></i></span>
+                                <select name="course_id" id="course" class="select-field" {{ old('year_id') ? '' : 'disabled' }}>
+                                    <option value="" selected disabled>Select Course</option>
+                                    @foreach ($courses as $course)
+                                        <option value="{{ $course->courseID }}" {{ old('course_id') == $course->courseID ? 'selected' : '' }}>
+                                            {{ $course->course_name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <span class="focus-border"></span>
+                            </div>
+                            @error('course_id')
+                                <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                            <input type="email" name="email" id="email" required value="{{ old('email') }}">
+                            <label for="email">Email Address</label>
+                            <span class="focus-border"></span>
+                        </div>
+                        @error('email')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fas fa-lock"></i></span>
+                            <input type="password" name="password" id="password" required>
+                            <label for="password">Password</label>
+                            <span class="toggle-password" onclick="togglePassword('password')">
+                                <i class="fa fa-eye-slash"></i>
+                            </span>
+                            <span class="focus-border"></span>
+                        </div>
+                        @error('password')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-icon"><i class="fas fa-lock"></i></span>
+                            <input type="password" name="password_confirmation" id="password-confirmation" required>
+                            <label for="password-confirmation">Confirm Password</label>
+                            <span class="toggle-password" onclick="togglePassword('password-confirmation')">
+                                <i class="fa fa-eye-slash"></i>
+                            </span>
+                            <span class="focus-border"></span>
+                        </div>
+                        @error('password_confirmation')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="form-group terms-checkbox">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="terms" id="terms" required>
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">I agree to the <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a></span>
+                        </label>
+                        @error('terms')
+                            <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="btn-register">
+                        <span class="btn-text">Create Account</span>
+                        {{-- <span class="btn-icon"><i class="fas fa-arrow-right"></i></span> --}}
+                    </button>
+
+                    <div class="separator">
+                        <span>OR</span>
+                    </div>
+
+                    <div class="social-login">
+                        <a href="#" class="social-btn google">
+                            <i class="fab fa-google"></i>
+                            <span>Sign up with Google</span>
+                        </a>
+                    </div>
+
+                    <div class="login-link">
+                        Already have an account? <a href="{{ route('login') }}">Sign In</a>
+                    </div>
+                </form>
             </div>
-            @error('year_id')
-                <div class="error-message">{{ $message }}</div>
-            @enderror
-        </div>
-
-        <div class="input-group half-width">
-            <label for="course" class="input-label">Course</label>
-            <div class="input-field-wrapper">
-                <i class="fas fa-book input-icon"></i>
-                <select name="course_id" id="course" class="input-field" {{ old('year_id') ? '' : 'disabled' }}>
-                    <option value="">Select Course (Optional)</option>
-                    @foreach ($courses as $course)
-                        <option value="{{ $course->courseID }}" {{ old('course_id') == $course->courseID ? 'selected' : '' }}>
-                            {{ $course->course_name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            @error('course_id')
-                <div class="error-message">{{ $message }}</div>
-            @enderror
-        </div>
-    </div>
-
-    <div class="input-group">
-        <label for="email" class="input-label">Email address</label>
-        <div class="input-field-wrapper">
-            <i class="fas fa-envelope input-icon"></i>
-            <input type="email" name="email" id="email" class="input-field" placeholder="Enter your email address" value="{{ old('email') }}" required>
-        </div>
-        @error('email')
-            <div class="error-message">{{ $message }}</div>
-        @enderror
-    </div>
-
-    <div class="input-group">
-        <label for="password" class="input-label">Password</label>
-        <div class="input-field-wrapper">
-            <i class="fas fa-lock input-icon"></i>
-            <input type="password" name="password" id="password" class="input-field" placeholder="Enter your password" required>
-            <i class="fas fa-eye-slash toggle-password" id="togglePassword"></i>
-        </div>
-        @error('password')
-            <div class="error-message">{{ $message }}</div>
-        @enderror
-    </div>
-
-    <div class="input-group">
-        <label for="password-confirmation" class="input-label">Confirm Password</label>
-        <div class="input-field-wrapper">
-            <i class="fas fa-lock input-icon"></i>
-            <input type="password" name="password_confirmation" id="password-confirmation" class="input-field" placeholder="Confirm your password" required>
-            <i class="fas fa-eye-slash toggle-password" id="toggleConfirmPassword"></i>
-        </div>
-        @error('password_confirmation')
-            <div class="error-message">{{ $message }}</div>
-        @enderror
-    </div>
-
-    <button type="submit" class="login-button">Sign Up</button>
-</form>
-
         </div>
     </div>
 
     <!-- SweetAlert2 Script -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <!-- JavaScript -->
     <script>
+        function togglePassword(fieldId) {
+            const passwordInput = document.getElementById(fieldId);
+            const icon = passwordInput.nextElementSibling.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             // Year and course dependency
             const yearSelect = document.getElementById('year');
             const courseSelect = document.getElementById('course');
 
             function handleYearChange() {
-                const selectedValue = yearSelect.value;
-
-                if (!selectedValue || selectedValue === '0') {
-                    // If year is empty OR equals 0, disable and clear course
-                    courseSelect.value = '';
-                    courseSelect.disabled = true;
-                } else {
-                    // Else, enable course selection
+                if (yearSelect.value) {
                     courseSelect.disabled = false;
+                } else {
+                    courseSelect.disabled = true;
+                    courseSelect.value = '';
                 }
             }
 
-            // Listen for changes
-            yearSelect.addEventListener('change', handleYearChange);
+            if (yearSelect) {
+                yearSelect.addEventListener('change', handleYearChange);
 
-            // Check initially on page load
-            handleYearChange();
-
-            // Toggle password visibility for password field
-            const togglePassword = document.getElementById('togglePassword');
-            const passwordInput = document.getElementById('password');
-
-            if (togglePassword && passwordInput) {
-                togglePassword.addEventListener('click', function() {
-                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    passwordInput.setAttribute('type', type);
-
-                    this.classList.toggle('fa-eye');
-                    this.classList.toggle('fa-eye-slash');
-                });
+                // Initialize on page load
+                handleYearChange();
             }
 
-            // Toggle password visibility for confirm password field
-            const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
-            const confirmPasswordInput = document.getElementById('password-confirmation');
-
-            if (toggleConfirmPassword && confirmPasswordInput) {
-                toggleConfirmPassword.addEventListener('click', function() {
-                    const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                    confirmPasswordInput.setAttribute('type', type);
-
-                    this.classList.toggle('fa-eye');
-                    this.classList.toggle('fa-eye-slash');
+            // Close alert messages
+            const closeButtons = document.querySelectorAll('.close-alert');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const alert = this.parentElement;
+                    alert.classList.add('fade-out');
+                    setTimeout(() => {
+                        alert.style.display = 'none';
+                    }, 300);
                 });
+            });
+
+            // Auto-hide alerts after 8 seconds
+            const alerts = document.querySelectorAll('.alert');
+            if (alerts.length > 0) {
+                setTimeout(() => {
+                    alerts.forEach(alert => {
+                        alert.classList.add('fade-out');
+                        setTimeout(() => {
+                            alert.style.display = 'none';
+                        }, 300);
+                    });
+                }, 8000);
             }
+
+            // Add focus animation to input fields
+            const inputs = document.querySelectorAll('.input-group input');
+            inputs.forEach(input => {
+                // Check if input has value on page load
+                if (input.value.trim() !== '') {
+                    input.classList.add('has-value');
+                }
+
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('focused');
+                    if (this.value.trim() !== '') {
+                        this.classList.add('has-value');
+                    } else {
+                        this.classList.remove('has-value');
+                    }
+                });
+            });
         });
     </script>
 
-    <!-- Display success message -->
+    <!-- Success message -->
     @if(session('success'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Success!',
-            text: '{{ session('success') }}',
-            customClass: {
-                container: 'my-swal-container'
-            },
-            didOpen: () => {
-                document.querySelector('.swal2-container').style.zIndex = '10000000';
-            }
-        });
-    </script>
-    @endif
-
-    @if(session('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Error!',
-            text: '{{ session('error') }}',
-            customClass: {
-                container: 'my-swal-container'
-            },
-            didOpen: () => {
-                document.querySelector('.swal2-container').style.zIndex = '10000000';
-            }
-        });
-    </script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#0D6832',
+                timer: 3000,
+                timerProgressBar: true
+            });
+        </script>
     @endif
 </body>
 </html>

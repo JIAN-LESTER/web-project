@@ -2,19 +2,24 @@
 
 
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\KBController;
+use App\Http\Controllers\ReportsController;
 use App\Livewire\Chatbot;
+use App\Models\KnowledgeBase;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserManagementController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\LogsController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\TwoFactorAuthController;
 
 
 use App\Http\Controllers\PasswordResetController;
+use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
@@ -38,8 +43,13 @@ Route::get('/2fa/resend', 'Auth\YourAuthController@resendTwoFactorCode')->name('
 
 Route::get('/chatbot', [UserController::class, 'index'])->name('chatbot');
 
-// For AJAX POST
+
 Route::post('/chatbot/message', [ChatbotController::class, 'handleChat'])->name('chatbot.handle');
+Route::get('/chat/conversation/{conversationID}', [ChatbotController::class, 'showConversation'])->name('chat.conversation');
+Route::get('/chatbot/new', [ChatbotController::class, 'newChat'])->name('chat.new');
+
+Route::get('/chat/conversation/{conversationID}/messages', [ChatbotController::class, 'fetchMessages']);
+
 
 
 Route::get('/2fa', function () {
@@ -57,15 +67,30 @@ Route::get('/dashboard', function () {
 
 
 
+Route::get('user/profile', [UserManagementController::class, 'profile'])->name('profile');
+Route::put('user/updateProfile', [UserManagementController::class, 'updateProfile'])->name('profile.update');
+Route::get('/user/{id}/profile', [UserManagementController::class, 'editProfile'])->name('profile.edit');
+
+
+
+
+
 
 
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
-Route::get('/dashboard', [AdminController::class, 'viewDashboard'])->name('admin.dashboard');
-Route::get('/knowledge-base', [AdminController::class, 'viewKB'])->name('admin.knowledge_base');
-Route::get('/reports-analytics', [AdminController::class, 'viewReports'])->name('admin.reports_analytics');
+Route::get('/dashboard', [AdminController::class, 'viewDashboard', ])->name('admin.dashboard');
+Route::get('/reports-analytics', [ReportsController::class, 'viewReports'])->name('admin.reports_analytics');
+Route::get('/reports-analytics/export', [ReportsController::class, 'exportReports'])->name('admin.reports_analytics.exports');
+Route::get('/admin/reports/export-csv', [ReportsController::class, 'exportCsv'])->name('admin.reports_export_csv');
+Route::get('/reports/ajax-data', [ReportsController::class, 'ajaxReportData'])->name('reports.ajax');
+
+
+
+
+
 Route::get('/logs', [AdminController::class, 'viewLogs'])->name('admin.logs');
 Route::get('/user-management', [AdminController::class, 'viewUsers'])->name('admin.user_management');
 Route::get('/charts', [AdminController::class, 'viewCharts'])->name('admin.charts');
@@ -81,6 +106,14 @@ Route::prefix('admin/user_crud')->name('admin.')->group(function () {
     Route::delete('/destroy/{id}', [UserManagementController::class, 'destroy'])->name('destroy');
 });
 
+
+Route::prefix('admin/kb')->middleware(['auth'])->group(function () {
+    Route::get('/', [AdminController::class, 'viewKB'])->name('admin.knowledge_base');
+    Route::get('/upload', [KBController::class, 'create'])->name('kb.upload');
+    Route::post('/store', [KBController::class, 'store'])->name('kb.store');
+    Route::get('/view/{id}', [KBController::class, 'view'])->name('kb.view');
+    Route::get('/search', [KBController::class, 'search'])->name('kb.search');
+});
 
 
 

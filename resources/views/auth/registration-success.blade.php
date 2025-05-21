@@ -1,18 +1,32 @@
 <!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Successful - GuideBot</title>
+    <title>Registration Successful - OASP Assist</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Link to your CSS file -->
     <link rel="stylesheet" href="{{ asset('login_and_register/registration-success.css') }}">
 </head>
 <body>
     <div class="container">
-        <div class="background-pattern"></div>
+        <!-- Background animation elements -->
+        <div class="background-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
 
         <div class="success-card">
+            <div class="logo">
+                <i class="fas fa-robot"></i>
+                <span>OASP Assist</span>
+            </div>
+
             <div class="success-icon-container">
                 <svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
                     <circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>
@@ -22,7 +36,7 @@
 
             <h1 class="success-heading">Registration Successful!</h1>
             <p class="success-message">
-                Welcome to <span class="highlight">GuideBot</span>! Your account has been created successfully.
+                Welcome to <span class="highlight">OASP Assist</span>! Your account has been created successfully.
             </p>
 
             <div class="success-steps">
@@ -36,7 +50,7 @@
                 </div>
                 <div class="step">
                     <div class="step-number">3</div>
-                    <div class="step-text">Once verified, you can sign in and start using GuideBot's features.</div>
+                    <div class="step-text">Once verified, you can sign in and start using OASP Assist's features.</div>
                 </div>
             </div>
 
@@ -50,7 +64,7 @@
     <script>
         // Confetti animation
         function createConfetti() {
-            const colors = ['#FFFFFF', '#8B68C1', '#28a745', '#FFC107', '#FF5722'];
+            const colors = ['#FFFFFF', '#4ADE80', '#12823e', '#0D6832', '#134E4A'];
             const confettiCount = 200;
 
             for (let i = 0; i < confettiCount; i++) {

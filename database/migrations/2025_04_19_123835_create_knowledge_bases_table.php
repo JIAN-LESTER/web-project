@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('knowledge_bases', function (Blueprint $table) {
             $table->id('kbID');
             $table->string('kb_title');
-            $table->text('question');
-            $table->text('answer');
+            $table->text('content');
             $table->json('embedding');
             $table->foreignId('categoryID')->references('categoryID')->on('categories')->onDelete('cascade');
             $table->string('source');

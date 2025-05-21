@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->enum('role', ['admin', 'user'])->default('user');
-            $table->enum('userStatus', ['active', 'inactive'])->default('active');
+            $table->enum('user_status', ['active', 'inactive'])->default('active');
             $table->foreignId('courseID')->nullable()->references('courseID')->on('courses')->onDelete('cascade');
             $table->foreignId('yearID')->nullable()->references('yearID')->on('years')->onDelete('cascade');
             $table->string('avatar')->nullable(); 
@@ -30,6 +30,8 @@ return new class extends Migration
             $table->string('verification_token')->nullable();
             $table->string('two_factor_code')->nullable();
             $table->timestamp('two_factor_expires_at')->nullable();
+            $table->integer('failed_attempts')->default(0);
+            $table->timestamp('lockout_time')->nullable();
             $table->timestamps();   
         });
 

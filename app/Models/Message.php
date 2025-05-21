@@ -21,6 +21,7 @@ class Message extends Model
         'message_status',
         'sender',
         'message_type',
+        'categoryID',
         'sent_at',
         'responded_at',
     ];

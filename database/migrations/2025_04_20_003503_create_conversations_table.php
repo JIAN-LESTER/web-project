@@ -12,8 +12,10 @@ return new class extends Migration
         Schema::create('conversations', function (Blueprint $table) {
             $table->id('conversationID');
             $table->foreignId('userID')->references('userID')->on('users')->onDelete('cascade');
-            $table->enum('conversation_status', ['pending', 'answered', 'not_answered']);
-            $table->timestamp('sent_at');
+            $table->enum('conversation_status', ['active', 'answered', 'not_answered', 'ended']);
+            $table->string('conversation_title')->nullable();
+            $table->timestamps();
+          
         });
     }
 

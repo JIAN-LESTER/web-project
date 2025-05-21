@@ -15,8 +15,7 @@ class KnowledgeBase extends Model
 
     protected $fillable = [
         'kb_title',
-        'question',
-        'answer',
+        'content',
         'embedding',
         'categoryID',
         'source',

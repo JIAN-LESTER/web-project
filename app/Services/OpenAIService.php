@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use Http;
+use Symfony\Component\Process\Process;
 
 class OpenAIService
 {
@@ -19,26 +21,23 @@ class OpenAIService
     // Method to generate embeddings
     public function generateEmbedding($text)
     {
-        try {
-            $response = $this->client->post($this->apiUrl . 'embeddings', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->apiKey,
-                    'Content-Type'  => 'application/json',
-                ],
-                'json' => [
-                    'input' => $text,
-                    'model' => 'text-embedding-ada-002',  // Model for embeddings
-                ],
+        $scriptPath = base_path('app/Python/scripts/generate_embeddings.py');
+        $pythonPath = 'C:\Python312\python.exe'; 
+    
+        $process = new Process([$pythonPath, $scriptPath]);
+        $process->setInput($text);
+        $process->run();
+    
+        if (!$process->isSuccessful()) {
+            \Log::error("Local embedding script failed", [
+                'error' => $process->getErrorOutput(),
             ]);
-
-            $data = json_decode($response->getBody(), true);
-
-            return $data['data'][0]['embedding'] ?? null;
-        } catch (\Exception $e) {
-            return null;
+            return [];
         }
+    
+        $output = $process->getOutput();
+        return json_decode($output, true) ?? [];
     }
-
     // Method to generate a completion (chat)
     public function generateCompletion($prompt)
     {
@@ -63,4 +62,6 @@ class OpenAIService
             return 'Error: Unable to generate a response.';
         }
     }
+
+
 }
