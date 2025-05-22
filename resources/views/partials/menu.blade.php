@@ -2,7 +2,7 @@
 <div class="sidebar-header border-bottom d-flex align-items-center justify-content-between px-3 py-2">
   <div class="d-flex align-items-center gap-2">
     <!-- Logo -->
-    <span class="fw-bold text-white" style="font-size: 1rem; height:40px;">OASP Assist</span>
+    <span class="fw-bold text-white" style="font-size: 1rem; height:40px; font-family: 'Poppins', sans-serif;">OASP Assist</span>
   </div>
 
   @php
@@ -19,7 +19,7 @@
 
   @if ($user->role === 'admin')
     <!-- Admin Navigation -->
-    <li class="nav-title">Quick Access</li>
+    <li class="nav-title" style="margin-top: -1px;">Quick Access</li>
 
     <li class="nav-item">
       <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
@@ -30,11 +30,8 @@
         />
         Dashboard
       </a>
-
-    
-
-     
     </li>
+
     <li class="nav-item">
     <a class="nav-link {{ request()->routeIs('admin.reports_analytics') ? 'active' : '' }}"
          href="{{ route('admin.reports_analytics') }}"
@@ -45,7 +42,7 @@
         Reports
       </a>
     </li>
-  
+
     <li class="nav-title">Management</li>
 
     <li class="nav-item">
@@ -93,16 +90,14 @@
       <ul class="nav-group-items">
         <li class="nav-item"><a class="nav-link" href="{{ route('admin.logs') }}">System Logs</a></li>
         <li class="nav-item"><a class="nav-link" href="{{ route('admin.inquiry_logs') }}">Inquiry Logs</a></li>
-  
+
       </ul>
     </li>
-
-    
 
   @else
 
   <li class="nav-title">Quick Access</li>
- 
+
 <li class="nav-item">
   <a class="nav-link" href="{{ route('user.dashboard') }}">
   <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-speedometer.svg') }}" alt="Dashboard"
@@ -152,17 +147,21 @@
     data-loaded="{{ count($conversations) }}"
   >
     @forelse ($conversations as $conversation)
-      <li class="list-group-item list-group-item-action p-3 position-relative">
-        <div class="fw-semibold mb-1 text-truncate" style="max-width: 90%;">
-          {{ Str::limit($conversation->conversation_title, 50) }}
-        </div>
-        <small class="text-muted">{{ \Carbon\Carbon::parse($conversation->updated_at)->format('F j, Y, g:i A') }}</small>
-        <a href="#" class="stretched-link load-conversation" data-id="{{ $conversation->conversationID }}"></a>
+      <li class="nav-item">
+      <a href="#"
+   class="nav-link load-conversation flex-column align-items-start"
+   data-id="{{ $conversation->conversationID }}">
+
+
+  <span style="display:block; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;">
+    {{ Str::limit($conversation->conversation_title, 50) }}
+</span>
+
+</a>
       </li>
     @empty
-      <li class="list-group-item text-center text-muted p-4">
-        <i class="bi bi-chat-left-dots-fill fs-1 d-block mb-2 text-primary opacity-50"></i>
-        <p class="mb-0">No conversations yet.</p>
+      <li class="nav-item">
+        <span class="nav-link text-muted">No conversations yet</span>
       </li>
     @endforelse
 
@@ -175,7 +174,7 @@
   @endif
 </ul>
 
-<!-- Sidebar Styling -->
+<!-- Sidebar Styling - Updated to match dashboard -->
 <style>
 
 #chat-history-list::-webkit-scrollbar {
@@ -217,7 +216,7 @@
   right: 0;
   height: 30px;
   pointer-events: none;
- 
+
   z-index: 10;
   display: block;
 }
@@ -263,23 +262,33 @@
     align-items: center;
     color: #fff;
     transition: background-color 0.2s ease;
+    font-family: 'Poppins', sans-serif !important; /* MATCHING DASHBOARD FONT */
+    font-size: 13px !important; /* MATCHING DASHBOARD FONT SIZE */
+    font-weight: 500 !important; /* MATCHING DASHBOARD FONT WEIGHT */
+    padding: 0.75rem 1.25rem;
   }
 
   .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff !important;
   }
 
   .nav-link.active {
     background-color: rgba(255, 255, 255, 0.1);
-    font-weight: bold;
+    font-weight: 600 !important; /* SLIGHTLY BOLDER FOR ACTIVE STATE */
+    color: #ffffff !important;
   }
 
   .nav-title {
-    color: #bbb;
+    color: #8cd9bd !important; /* Using emerald-light variable */
     padding: 0.75rem 1rem 0.25rem;
-    font-weight: 600;
-    font-size: 0.75rem;
+    font-weight: 600 !important; /* MATCHING DASHBOARD */
+    font-size: 0.75rem !important; /* MATCHING DASHBOARD SCALE */
     text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    margin-top: -1px;
+    font-family: 'Poppins', sans-serif !important; /* MATCHING DASHBOARD FONT */
+    opacity: 0.8;
   }
 
   .btn-close {
@@ -299,82 +308,10 @@
     color: white;
     display: inline-block;
     line-height: 1;
+    font-family: 'Poppins', sans-serif; /* MATCHING DASHBOARD FONT */
   }
 
   .btn-close > svg {
     display: none;
   }
-
-  .sidebar-nav .nav-group-items {
-  background-color: #2a2a2a !important;
-}
-
-.sidebar-nav .nav-group .nav-link {
-  color: white !important;
-}
 </style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const chatHistoryList = document.getElementById('chat-history-list');
-    const loadingSpinner = document.getElementById('loading-spinner');
-
-    if (!chatHistoryList) return;
-
-    let totalConversations = parseInt(chatHistoryList.dataset.total, 10);
-    let loadedConversations = parseInt(chatHistoryList.dataset.loaded, 10);
-    let isLoading = false;
-
-    chatHistoryList.addEventListener('scroll', function () {
-      if (isLoading) return;
-
-      const scrollBottom = chatHistoryList.scrollTop + chatHistoryList.clientHeight;
-      const scrollHeight = chatHistoryList.scrollHeight;
-
-      // Trigger loading more when scrolled near bottom (e.g., within 50px)
-      if (scrollHeight - scrollBottom < 50 && loadedConversations < totalConversations) {
-        loadMoreConversations();
-      }
-    });
-
-    function loadMoreConversations() {
-      isLoading = true;
-      loadingSpinner.style.display = 'block';
-
-      fetch(`{{ route('conversations.load') }}?offset=${loadedConversations}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.conversations.length > 0) {
-            data.conversations.forEach(conv => {
-              const li = document.createElement('li');
-              li.classList.add('list-group-item', 'list-group-item-action', 'p-3', 'position-relative');
-              li.innerHTML = `
-                <div class="fw-semibold mb-1 text-truncate" style="max-width: 90%;">${conv.conversation_title.substring(0, 50)}</div>
-                <small class="text-muted">${new Date(conv.updated_at).toLocaleString()}</small>
-                <a href="#" class="stretched-link load-conversation" data-id="${conv.conversationID}"></a>
-              `;
-              chatHistoryList.insertBefore(li, loadingSpinner);
-            });
-            loadedConversations += data.conversations.length;
-
-            if (loadedConversations >= totalConversations) {
-              // No more conversations to load
-              loadingSpinner.style.display = 'none';
-              chatHistoryList.removeEventListener('scroll', scrollHandler);
-            }
-          } else {
-            // No more data
-            loadingSpinner.style.display = 'none';
-            chatHistoryList.removeEventListener('scroll', scrollHandler);
-          }
-          isLoading = false;
-          loadingSpinner.style.display = 'none';
-        })
-        .catch(err => {
-          console.error(err);
-          isLoading = false;
-          loadingSpinner.style.display = 'none';
-        });
-    }
-  });
-</script>
