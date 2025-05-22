@@ -22,7 +22,7 @@
     <li class="nav-title" style="margin-top: -1px;">Quick Access</li>
 
     <li class="nav-item">
-      <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+      <a class="nav-link mb-1 {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
          href="{{ route('admin.dashboard') }}"
          aria-current="{{ request()->routeIs('admin.dashboard') ? 'page' : '' }}">
         <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-speedometer.svg') }}" alt="Dashboard"
@@ -46,7 +46,7 @@
     <li class="nav-title">Management</li>
 
     <li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('admin.knowledge_base') ? 'active' : '' }}"
+    <a class="nav-link mb-1 {{ request()->routeIs('admin.knowledge_base') ? 'active' : '' }}"
          href="{{ route('admin.knowledge_base') }}"
          aria-current="{{ request()->routeIs('admin.knowledge_base') ? 'page' : '' }}">
         <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-book.svg') }}" alt="Knowledge Base"
@@ -55,7 +55,7 @@
         Knowledge Base
       </a>
 
-      <a class="nav-link {{ request()->routeIs('faqs') ? 'active' : '' }}"
+      <a class="nav-link mb-1 {{ request()->routeIs('faqs') ? 'active' : '' }}"
          href="{{ route('faqs') }}"
          aria-current="{{ request()->routeIs('faqs') ? 'page' : '' }}">
         <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-user.svg') }}" alt="Users"
@@ -88,8 +88,8 @@
       </a>
 
       <ul class="nav-group-items">
-        <li class="nav-item"><a class="nav-link" href="{{ route('admin.logs') }}">System Logs</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ route('admin.inquiry_logs') }}">Inquiry Logs</a></li>
+        <li class="nav-item"><a class="nav-link mb-1" href="{{ route('admin.logs') }}">System Logs</a></li>
+        <li class="nav-item"><a class="nav-link mb-1" href="{{ route('admin.inquiry_logs') }}">Inquiry Logs</a></li>
 
       </ul>
     </li>

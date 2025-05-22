@@ -44,7 +44,6 @@
                 'day' => 'Today',
                 'week' => 'This Week',
                 'month' => 'This Month',
-                'custom' => $customLabel,
                 'all' => 'All Time',
             ];
           @endphp
@@ -333,7 +332,6 @@ document.addEventListener('DOMContentLoaded', function () {
       if (customOption) customOption.textContent = customText;
     }
   });
-  
 
   // Show loading animation for the main trend chart
   const chartLoading = document.getElementById('chartLoading');

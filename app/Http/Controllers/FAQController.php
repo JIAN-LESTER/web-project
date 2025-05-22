@@ -27,30 +27,42 @@ class FAQController extends Controller
         $this->llm = $llm;
     }
 
-
-
     public function index(Request $request)
-{
-    $search = $request->input('query');      // matches input name="query"
-    $category = $request->input('category'); // matches input name="category"
+    {
+        // Get search query and category filter from request
+        $query = $request->input('query');
+        $categoryId = $request->input('category');
 
-    $faqs = Faq::query()
-        ->when($search, function ($queryBuilder, $search) {
-            $queryBuilder->where('question', 'like', "%{$search}%");
-        })
-        ->when($category, function ($queryBuilder, $category) {
-            $queryBuilder->where('categoryID', $category);
-        })
-        ->latest()
-        ->paginate(10)
-        ->appends(['query' => $search, 'category' => $category]); // keep filters on pagination
+        // Get categories to populate dropdown
+        $categories = Categories::all();
 
-    $categories = Categories::all();
+        // Start query builder for FAQs, eager load category relation
+        $faqsQuery = Faq::with('category');
 
-    return view('admin.faqs', compact('faqs', 'search', 'category', 'categories'));
-}
+        // Apply search filter (on question or category name)
+        if (!empty($query)) {
+            $faqsQuery->where(function($q) use ($query) {
+                $q->where('question', 'LIKE', "%{$query}%")
+                  ->orWhereHas('category', function($q2) use ($query) {
+                      $q2->where('category_name', 'LIKE', "%{$query}%");
+                  });
+            });
+        }
 
-    
+        // Apply category filter if selected
+        if (!empty($categoryId)) {
+            $faqsQuery->where('categoryID', $categoryId);
+        }
+
+        // Order by newest first (optional)
+        $faqsQuery->orderBy('created_at', 'desc');
+
+        // Paginate (10 per page here)
+        $faqs = $faqsQuery->paginate(10)->withQueryString();
+
+        // Return view with FAQs and categories
+        return view('admin.faqs', compact('faqs', 'categories'));
+    }
     
     /**
      * Show the form for creating a new resource.

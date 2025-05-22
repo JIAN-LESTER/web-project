@@ -90,24 +90,24 @@ $embedding = $this->cohere->generateEmbedding($cleanedText);
     }
 
     public function search(Request $request)
-    {
-        $search = $request->input('query');  // name your input 'query' or 'search' consistently
-        $category = $request->input('category');
-    
-        $documents = KnowledgeBase::with('category')
-            ->when($search, function ($query, $search) {
-                $query->where('kb_title', 'like', "%{$search}%");
-            })
-            ->when($category, function ($query, $category) {
-                $query->where('categoryID', $category);
-            })
-            ->latest()
-            ->paginate(10);
-    
-        $categories = Categories::all();
-    
-        return view('admin.knowledge_base', compact('categories', 'documents', 'category', 'search'));
-    }
+{
+    $search = $request->input('query');
+    $category = $request->input('category_filter'); // Match the form input name
+
+    $documents = KnowledgeBase::with('category')
+        ->when($search, function ($query, $search) {
+            $query->where('kb_title', 'like', "%{$search}%");
+        })
+        ->when($category, function ($query, $category) {
+            $query->where('categoryID', $category);
+        })
+        ->latest()
+        ->paginate(10);
+
+    $categories = Categories::all();
+
+    return view('admin.knowledge_base', compact('categories', 'documents', 'category', 'search'));
+}
     public function destroy(String $id)
     {
         $kb = KnowledgeBase::findOrFail($id);

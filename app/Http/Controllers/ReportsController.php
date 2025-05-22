@@ -16,55 +16,35 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 class ReportsController extends Controller
 {
     private function getDateRange(Request $request)
-    {
-        $filter = $request->query('filter', 'day');
-        $startDate = $request->query('start_date');
-        $endDate = $request->query('end_date');
-        $startTime = $request->query('start_time');
-        $endTime = $request->query('end_time');
-    
-        if ($filter === 'all') {
+{
+    $filter = $request->query('filter', 'day');
+
+    switch ($filter) {
+        case 'all':
             $first = Message::where('sender', 'user')->orderBy('created_at')->first();
             $last = Message::where('sender', 'user')->orderByDesc('created_at')->first();
-    
-            $start = $first ? Carbon::parse($first->created_at)->startOfDay() : null;
-            $end   = $last  ? Carbon::parse($last->created_at)->endOfDay()   : null;
-    
-            return [$start, $end];
-        }
-        elseif ($filter === 'custom') {
-            if ($startDate && $endDate) {
-                $start = Carbon::parse("{$startDate} " . ($startTime ?? '00:00:00'));
-                $end   = Carbon::parse("{$endDate} " . ($endTime ?? '23:59:59'));
-            } else {
-                // Handle missing start/end in custom
-                abort(400, 'Custom filter requires start_date and end_date.');
-            }
-        } 
-    
-        if ($startDate && $endDate) {
-            $start = Carbon::parse("{$startDate} " . ($startTime ?? '00:00:00'));
-            $end   = Carbon::parse("{$endDate} " . ($endTime ?? '23:59:59'));
-        } else {
-            switch ($filter) {
-                case 'week':
-                    $start = Carbon::now()->startOfWeek();
-                    $end   = Carbon::now()->endOfWeek();
-                    break;
-                case 'month':
-                    $start = Carbon::now()->startOfMonth();
-                    $end   = Carbon::now()->endOfMonth();
-                    break;
-                case 'day':
-                default:
-                    $start = Carbon::today();
-                    $end   = Carbon::today()->endOfDay();
-                    break;
-            }
-        }
-    
-        return [$start, $end];
+            $start = $first ? Carbon::parse($first->created_at)->startOfDay() : now()->startOfDay();
+            $end   = $last ? Carbon::parse($last->created_at)->endOfDay() : now()->endOfDay();
+            break;
+        case 'week':
+            $start = Carbon::now()->startOfWeek();
+            $end   = Carbon::now()->endOfWeek();
+            break;
+        case 'month':
+            $start = Carbon::now()->startOfMonth();
+            $end   = Carbon::now()->endOfMonth();
+            break;
+        case 'day':
+        default:
+            $start = Carbon::today();
+            $end   = Carbon::today()->endOfDay();
+            break;
     }
+
+    return [$start, $end];
+}
+
+
     private function getMessageStats($start, $end)
     {
         $totalMessages = Message::where('sender', 'user')->whereBetween('created_at', [$start, $end])->count();
@@ -110,12 +90,13 @@ class ReportsController extends Controller
         $labels = collect();
         $counts = collect();
     
-        if ($filter === 'all' || (!$start && !$end)) {
+        if ($filter === 'all') {
             $firstMessage = Message::where('sender', 'user')->orderBy('created_at')->first();
+            $lastMessage = Message::where('sender', 'user')->orderByDesc('created_at')->first();
     
-            if ($firstMessage) {
+            if ($firstMessage && $lastMessage) {
                 $start = Carbon::parse($firstMessage->created_at)->startOfMonth();
-                $end = now()->endOfMonth();
+                $end = Carbon::parse($lastMessage->created_at)->endOfMonth();
                 $monthsToShow = $start->diffInMonths($end) + 1;
     
                 for ($i = 0; $i < $monthsToShow; $i++) {
@@ -137,29 +118,20 @@ class ReportsController extends Controller
                     Message::where('sender', 'user')->whereBetween('created_at', [$hourStart, $hourEnd])->count()
                 );
             }
-        } elseif ($filter === 'custom' && $start && $end) {
-            for ($i = 0; $i <= $start->diffInDays($end); $i++) {
-                $dayStart = $start->copy()->addDays($i)->startOfDay();
-                $dayEnd = $dayStart->copy()->endOfDay();
-    
-                $labels->push($dayStart->format('M d'));
-                $counts->push(
-                    Message::where('sender', 'user')->whereBetween('created_at', [$dayStart, $dayEnd])->count()
-                );
-            }
         } elseif ($filter === 'week') {
             for ($i = 0; $i < 7; $i++) {
                 $dayStart = $start->copy()->addDays($i)->startOfDay();
                 $dayEnd = $dayStart->copy()->endOfDay();
     
-                $labels->push($dayStart->format('M d'));
+                $labels->push($dayStart->format('D')); // e.g., Mon, Tue
                 $counts->push(
                     Message::where('sender', 'user')->whereBetween('created_at', [$dayStart, $dayEnd])->count()
                 );
             }
         } elseif ($filter === 'month') {
+            // Show last 6 months including current month
             $monthsToShow = 6;
-            $start = $start ?: Carbon::now()->subMonths($monthsToShow - 1)->startOfMonth();
+            $start = now()->copy()->subMonths($monthsToShow - 1)->startOfMonth();
     
             for ($i = 0; $i < $monthsToShow; $i++) {
                 $monthStart = $start->copy()->addMonths($i)->startOfMonth();
@@ -174,7 +146,7 @@ class ReportsController extends Controller
     
         return ['labels' => $labels, 'counts' => $counts];
     }
-
+    
 private function getCategoryPieData($start, $end)
 {
     $categoryData = Message::where('sender', 'user')
