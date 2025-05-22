@@ -212,6 +212,29 @@ class AdminController extends Controller
         return view('admin.logs', compact('logs', 'search'));
     }
 
+    public function viewInquiryLogs(Request $request)
+    {
+        $search = $request->get('search');
+    
+        $logs = Logs::query()
+        ->with(['user', 'message'])
+        ->whereNotNull('messageID')
+        ->when($search, function ($query, $search) {
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            })
+            ->orWhereHas('message', function ($q) use ($search) {
+                $q->where('content', 'like', "%{$search}%");
+            })
+            ->orWhere('created_at', 'like', "%{$search}%");
+        })
+        ->orderBy('created_at', 'desc')
+        ->paginate(12);
+    
+        return view('admin.inquiry_logs', compact('logs', 'search'));
+    }
+    
+
     public function viewUsers(Request $request)
     {
 

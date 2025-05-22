@@ -43,9 +43,9 @@ class TwoFactorAuthController extends Controller
             ]);
 
             if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard')->with('success', '2FA Verified Successfully. You are now logged in.');
+                return redirect()->route('admin.dashboard');
             } elseif ($user->role === 'user') {
-                return redirect()->route('chatbot')->with('success', '2FA Verified Successfully. You are now logged in.');
+                return redirect()->route('user.dashboard');
             }
         }
 

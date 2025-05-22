@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Conversation;
+use App\Models\Logs;
 use App\Models\Message;
 use App\Services\KnowledgeRetrievalService;
 
@@ -45,14 +46,24 @@ class ChatbotController extends Controller
     
         // Create new conversation if none exists or update title if needed
         if (!$conversation) {
+            $title = $this->generateTitle($userQuery);
+            $title = trim($title, '"');  // Remove leading and trailing double quotes
+        
             $conversation = Conversation::create([
                 'userID' => $user->userID,
                 'conversation_status' => 'active',
-                'conversation_title' => $this->generateTitle($userQuery),
+                'conversation_title' => $title,
                 'created_at' => now(),
             ]);
-        } elseif ($conversation->conversation_title === null || $conversation->conversation_title === '"New Conversation"') {
-            $conversation->update(['conversation_title' => $this->generateTitle($userQuery)]);
+        } elseif (
+            $conversation->conversation_title === null ||
+            trim($conversation->conversation_title, '"') === 'New Conversation'
+        ) {
+            $title = $this->generateTitle($userQuery);
+            $title = trim($title, '"');  // Remove quotes here too
+            $conversation->update([
+                'conversation_title' => $title,
+            ]);
         }
     
         // Detect the category
@@ -62,7 +73,7 @@ class ChatbotController extends Controller
         }
     
         // Save user message (no response_time yet)
-        Message::create([
+        $message = Message::create([
             'userID' => $user->userID,
             'conversationID' => $conversation->conversationID,
             'categoryID' => (int) ($category ?? 4),
@@ -71,6 +82,12 @@ class ChatbotController extends Controller
             'message_status' => 'sent',
             'message_type' => 'text',
             'sent_at' => now(),
+        ]);
+
+        Logs::create([
+            'userID' => Auth::id(),
+            'messageID' => $message->messageID,
+            'action_type' => 'Sent a message',
         ]);
     
         $kbEntries = $this->kbRetrieval->retrieveRelevant($userQuery, 5);
@@ -124,6 +141,7 @@ class ChatbotController extends Controller
             'sent_at' => now(),
             'response_time' => $responseTime, // Saved here
         ]);
+
     
         // Update responded_at on the latest user message
         if (!$noAnswer) {
@@ -259,7 +277,6 @@ EOT;
     
         return $title;
     }
-
     public function newChat(Request $request)
     {
         $user = Auth::user();

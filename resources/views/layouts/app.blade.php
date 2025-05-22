@@ -1319,7 +1319,7 @@
                     </svg>
                 </button>
 
-                @if ($user->role === 'user' && (!request()->routeIs('profile') && !request()->routeIs('profile.edit')))
+                @if ($user->role === 'user' && (!request()->routeIs('profile') && !request()->routeIs('profile.edit') && !request()->routeIs('user.dashboard')))
                 <a href="{{ route('chat.new') }}"
                    class="btn btn-outline-primary d-none d-lg-inline-flex align-items-center gap-2 rounded-pill shadow-sm px-3 py-2"
                    style="transition: background-color 0.2s ease, box-shadow 0.2s ease;"
