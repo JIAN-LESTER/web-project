@@ -125,11 +125,12 @@ Route::prefix('admin/user_crud')->name('admin.')->group(function () {
 
 
 Route::prefix('admin/kb')->middleware(['auth'])->group(function () {
+    Route::get('/search', [KBController::class, 'search'])->name('kb.search');
     Route::get('/', [AdminController::class, 'viewKB'])->name('admin.knowledge_base');
     Route::get('/upload', [KBController::class, 'create'])->name('kb.upload');
     Route::post('/store', [KBController::class, 'store'])->name('kb.store');
     Route::get('/view/{id}', [KBController::class, 'view'])->name('kb.view');
-    Route::get('/search', [KBController::class, 'search'])->name('kb.search');
+    Route::delete('/destroy/{id}', [KBController::class, 'destroy'])->name('kb.destroy');
 });
 
 

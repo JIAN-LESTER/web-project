@@ -50,7 +50,7 @@ class OpenAIService
                 'json' => [
                     'model' => 'gpt-3.5-turbo',  // You can choose the appropriate model
                     'prompt' => $prompt,
-                    'max_tokens' => 100,
+                    'max_tokens' => 1024,
                     'temperature' => 0.7,
                 ],
             ]);

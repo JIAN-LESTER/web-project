@@ -24,7 +24,7 @@ class CohereService
             ->post('https://api.cohere.ai/v1/generate', [
                 'model' => 'command-r-plus',
                 'prompt' => $prompt,
-                'max_tokens' => 300,
+                'max_tokens' => 1024,
                 'temperature' => 0.3,
                 'stop_sequences' => ["--END--"]
             ]);

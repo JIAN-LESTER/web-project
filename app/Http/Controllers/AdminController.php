@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categories;
+use App\Models\Category;
 use App\Models\Course;
 use App\Models\KnowledgeBase;
 use App\Models\Logs;
@@ -186,31 +187,71 @@ class AdminController extends Controller
             'recentLogs'         => $recentLogs,
         ]);
     }
-    public function viewKB()
-    {
-        $documents = KnowledgeBase::with('category')->latest()->paginate(10);
-        return view('admin.knowledge_base', compact('documents'));
-    }
+    public function viewKB(Request $request)
+{
+    $search = $request->input('search');
+    $category = $request->input('category');
+
+    $documents = KnowledgeBase::with('category')
+        ->when($search, function ($query, $search) {
+            $query->where('kb_title', 'like', "%{$search}%");
+        })
+        ->when($category, function ($query, $category) {
+            $query->where('categoryID', $category);
+        })
+        ->latest()
+        ->paginate(10);
+
+    $categories = Categories::all();
+
+    return view('admin.knowledge_base', compact('documents', 'search', 'category', 'categories'));
+    
+}
+
+    
 
 
 
-    public function viewLogs(Request $request)
-    {
-        $search = $request->get('search');
+public function viewLogs(Request $request)
+{
+    $search = $request->get('search');
+    $filter = $request->get('filter', 'all'); // user, action, or all
+    $startDate = $request->get('start_date');
+    $endDate = $request->get('end_date');
 
-        $logs = Logs::query()
-            ->with('user')
-            ->when($search, function ($query, $search) {
+    $logs = Logs::query()->with('user');
+
+    if ($search) {
+        if ($filter === 'user') {
+            $logs->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            });
+        } elseif ($filter === 'action') {
+            $logs->where('action_type', 'like', "%{$search}%");
+        } else { // all
+            $logs->where(function ($query) use ($search) {
                 $query->whereHas('user', function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%");
                 })
-                    ->orWhere('action_type', 'like', "%{$search}%")
-                    ->orWhere('created_at', 'like', "%{$search}%");
-            })->orderBy('created_at', 'desc')
-            ->paginate(12);
-
-        return view('admin.logs', compact('logs', 'search'));
+                ->orWhere('action_type', 'like', "%{$search}%")
+                ->orWhere('created_at', 'like', "%{$search}%");
+            });
+        }
     }
+
+    if ($startDate) {
+        $logs->whereDate('created_at', '>=', $startDate);
+    }
+
+    if ($endDate) {
+        $logs->whereDate('created_at', '<=', $endDate);
+    }
+
+    $logs = $logs->orderBy('created_at', 'desc')->paginate(12)->appends($request->query());
+
+    return view('admin.logs', compact('logs', 'search', 'filter'));
+}
+
 
     public function viewInquiryLogs(Request $request)
     {
@@ -237,30 +278,49 @@ class AdminController extends Controller
 
     public function viewUsers(Request $request)
     {
-
         $search = $request->get('search');
-
+        $roles = $request->get('roles', []);
+        $statuses = $request->get('statuses', []);
+        $year = $request->get('year');
+        $course = $request->get('course');
+    
         $users = User::with(['course', 'year'])
             ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('role', 'like', "%{$search}%");
-            })->paginate(12);
-
+                return $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhere('role', 'like', "%{$search}%");
+                });
+            })
+            ->when(!empty($roles), function ($query) use ($roles) {
+                return $query->whereIn('role', $roles);
+            })
+            ->when(!empty($statuses), function ($query) use ($statuses) {
+                return $query->whereIn('status', $statuses);
+            })
+            ->when($year, function ($query) use ($year) {
+                return $query->where('year_level', $year);
+            })
+            ->when($course, function ($query) use ($course) {
+                return $query->where('course_name', $course);
+            })
+            ->paginate(12)
+            ->appends($request->query()); // retain filters in pagination links
+    
         $courses = Course::all();
         $years = Year::all();
-
-        return view('admin.user_management', compact('users', 'search', 'years', 'courses'));
+    
+        return view('admin.user_management', compact(
+            'users',
+            'search',
+            'years',
+            'courses',
+            'roles',
+            'statuses',
+            'year',
+            'course'
+        ));
     }
+    
 
-
-    public function viewCharts()
-    {
-        return view('admin.charts');
-    }
-
-    public function viewForms()
-    {
-        return view('admin.forms');
-    }
 }

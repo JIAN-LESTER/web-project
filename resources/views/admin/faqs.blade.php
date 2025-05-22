@@ -20,15 +20,38 @@
             </div>
         </div>
     </div>
+   
 
     <div class="users-card">
+        
         <div class="card-body">
+        <form method="GET" action="{{ route('faqs') }}" class="mb-4">
+    <div class="d-flex flex-wrap align-items-center gap-2">
+        <input type="text" name="query" class="form-control" placeholder="Search by question..."
+            value="{{ request('query') }}" style="flex: 1 1 300px; min-width: 200px;">
+
+            <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search me-1"></i> Filter
+        </button>
+
+        <select name="category" class="form-select" style="flex: 0 0 200px;">
+            <option value="">All Categories</option>
+            @foreach($categories as $cat)
+                <option value="{{ $cat->categoryID }}" {{ request('category') == $cat->categoryID ? 'selected' : '' }}>
+                    {{ $cat->category_name }}
+                </option>
+            @endforeach
+        </select>
+
+       
+    </div>
+</form>
 
             @if(session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @endif
 
-            <div class="users-table-wrapper">
+            <div class="users-table-wrapper mt-4">
                 <table class="table users-table">
                     <thead>
                         <tr>

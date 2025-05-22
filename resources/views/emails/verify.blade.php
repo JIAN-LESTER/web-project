@@ -1,11 +1,19 @@
 @component('mail::message')
+# 📧 Email Verification Required
 
-Hello {{ $user->first_name }},
-Please click the button below to verify your email address:
-@component('mail::button', ['url' => url("/verify-email/" . $user->verification_token)])
-Verify Email
-@endcomponent
-Thanks,
-{{ config('app.name') }}
+Hi {{ $user->first_name }},
+
+Thank you for registering with **OASP Chat**.  
+To complete your registration and activate your account, please verify your email address by clicking the button below:
+
+@component('mail::button', ['url' => url("/verify-email/" . $user->verification_token), 'color' => 'success'])
+✅ Verify My Email
 @endcomponent
 
+This helps us ensure the security of your account.
+
+> If you didn’t create an account, please ignore this email.
+
+Thanks,<br>
+**- CMU OASP**
+@endcomponent

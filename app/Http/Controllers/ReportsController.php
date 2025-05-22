@@ -32,6 +32,15 @@ class ReportsController extends Controller
     
             return [$start, $end];
         }
+        elseif ($filter === 'custom') {
+            if ($startDate && $endDate) {
+                $start = Carbon::parse("{$startDate} " . ($startTime ?? '00:00:00'));
+                $end   = Carbon::parse("{$endDate} " . ($endTime ?? '23:59:59'));
+            } else {
+                // Handle missing start/end in custom
+                abort(400, 'Custom filter requires start_date and end_date.');
+            }
+        } 
     
         if ($startDate && $endDate) {
             $start = Carbon::parse("{$startDate} " . ($startTime ?? '00:00:00'));

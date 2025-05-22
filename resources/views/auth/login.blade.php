@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OASP Assist Login</title>
+    <title>OASP Chat Login</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
@@ -27,7 +27,7 @@
             <div class="form-panel left-panel">
                 <div class="content">
                     <h1>Welcome Back!</h1>
-                    <p>Sign in to continue your journey with OASP Assist and access all your personalized content.</p>
+                    <p>Sign in to continue your journey with OASP Chat and access all your personalized content.</p>
                     <img src="{{ asset('assets/images/group101.png') }}" alt="Login illustration" class="panel-image">
                 </div>
             </div>

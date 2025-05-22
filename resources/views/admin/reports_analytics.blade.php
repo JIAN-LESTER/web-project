@@ -333,6 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (customOption) customOption.textContent = customText;
     }
   });
+  
 
   // Show loading animation for the main trend chart
   const chartLoading = document.getElementById('chartLoading');

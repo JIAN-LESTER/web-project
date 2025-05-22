@@ -29,11 +29,28 @@ class FAQController extends Controller
 
 
 
-    public function index()
-    {
-        $faqs = Faq::paginate(10); // Show 10 FAQs per page (change as needed)
-        return view('admin.faqs', compact('faqs'));
-    }
+    public function index(Request $request)
+{
+    $search = $request->input('query');      // matches input name="query"
+    $category = $request->input('category'); // matches input name="category"
+
+    $faqs = Faq::query()
+        ->when($search, function ($queryBuilder, $search) {
+            $queryBuilder->where('question', 'like', "%{$search}%");
+        })
+        ->when($category, function ($queryBuilder, $category) {
+            $queryBuilder->where('categoryID', $category);
+        })
+        ->latest()
+        ->paginate(10)
+        ->appends(['query' => $search, 'category' => $category]); // keep filters on pagination
+
+    $categories = Categories::all();
+
+    return view('admin.faqs', compact('faqs', 'search', 'category', 'categories'));
+}
+
+    
     
     /**
      * Show the form for creating a new resource.
@@ -135,7 +152,7 @@ class FAQController extends Controller
             'categoryID' => $request->category,
         ]);
     
-        return redirect()->route('faqs')->with('success', 'FAQ updated successfully.');
+        return redirect()->route('faqs');
     }
     /**
      * Remove the specified resource from storage.
@@ -144,7 +161,7 @@ class FAQController extends Controller
     $faq = Faq::findOrFail($id);  // Find FAQ by id or fail
     $faq->delete();
 
-    return redirect()->route('faqs')->with('success', 'FAQ deleted successfully.');
+    return redirect()->route('faqs');
 }
 
 
@@ -234,7 +251,8 @@ public function handleFaqQuestion(Request $request)
 You are a helpful assistant.
 
 - For factual or numeric answers (like calculations), respond plainly without any HTML.
-- For detailed or list answers, use simple HTML tags like <strong>, <ul>, <li>, <br>.
+- For detailed or list answers, use simple HTML tags like <strong>, <ul>, <li>, <br>. Keep in mind that make it as short as possible. 
+
 
 Context:
 $context
