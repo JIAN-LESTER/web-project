@@ -8,17 +8,17 @@
     </div>
 
     <div class="card-body">
-   
+
       <form action="{{ route('kb.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-   
+
         <div class="mb-3">
           <label for="kb_title" class="form-label">Document Title</label>
           <input type="text" id="kb_title" name="kb_title" class="input-field" required placeholder="Enter the document title">
         </div>
 
-   
+
         <div class="mb-3">
           <label for="category" class="form-label">Category</label>
           <select name="category" id="category" class="form-select" required>

@@ -2,7 +2,7 @@
 <div class="sidebar-header border-bottom d-flex align-items-center justify-content-between px-3 py-2">
   <div class="d-flex align-items-center gap-2">
     <!-- Logo -->
-    <span class="fw-bold text-white" style="font-size: 1rem; height:40px;">OASP Assist</span>
+    <span class="fw-bold text-white" style="font-size: 1rem; height:40px; font-family: 'Poppins', sans-serif;">OASP Assist</span>
   </div>
 
   @php
@@ -19,7 +19,7 @@
 
   @if ($user->role === 'admin')
     <!-- Admin Navigation -->
-    <li class="nav-title">Quick Access</li>
+    <li class="nav-title" style="margin-top: -1px;">Quick Access</li>
 
     <li class="nav-item">
       <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
@@ -30,11 +30,8 @@
         />
         Dashboard
       </a>
-
-    
-
-     
     </li>
+
     <li class="nav-item">
     <a class="nav-link {{ request()->routeIs('admin.reports_analytics') ? 'active' : '' }}"
          href="{{ route('admin.reports_analytics') }}"
@@ -45,7 +42,7 @@
         Reports
       </a>
     </li>
-  
+
     <li class="nav-title">Management</li>
 
     <li class="nav-item">
@@ -82,8 +79,6 @@
       </a>
     </li>
 
-    
-
   @else
     <!-- User Navigation -->
     <li class="nav-title">Chat History</li>
@@ -101,8 +96,7 @@
    class="nav-link load-conversation flex-column align-items-start"
    data-id="{{ $conversation->conversationID }}">
 
-  
-  <span style="display:block; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;">
+  <span style="display:block; white-space:normal; word-wrap:break-word; overflow-wrap:break-word; font-family: 'Poppins', sans-serif; font-size: 13px;">
     {{ Str::limit($conversation->conversation_title, 50) }}
 </span>
 
@@ -110,14 +104,14 @@
       </li>
     @empty
       <li class="nav-item">
-        <span class="nav-link text-muted">No conversations yet</span>
+        <span class="nav-link text-muted" style="font-family: 'Poppins', sans-serif; font-size: 13px;">No conversations yet</span>
       </li>
     @endforelse
   @endif
 
 </ul>
 
-<!-- Sidebar Styling -->
+<!-- Sidebar Styling - Updated to match dashboard -->
 <style>
   .nav-icon {
     width: 1.25rem;
@@ -132,23 +126,33 @@
     align-items: center;
     color: #fff;
     transition: background-color 0.2s ease;
+    font-family: 'Poppins', sans-serif !important; /* MATCHING DASHBOARD FONT */
+    font-size: 13px !important; /* MATCHING DASHBOARD FONT SIZE */
+    font-weight: 500 !important; /* MATCHING DASHBOARD FONT WEIGHT */
+    padding: 0.75rem 1.25rem;
   }
 
   .nav-link:hover {
     background-color: rgba(255, 255, 255, 0.05);
+    color: #ffffff !important;
   }
 
   .nav-link.active {
     background-color: rgba(255, 255, 255, 0.1);
-    font-weight: bold;
+    font-weight: 600 !important; /* SLIGHTLY BOLDER FOR ACTIVE STATE */
+    color: #ffffff !important;
   }
 
   .nav-title {
-    color: #bbb;
+    color: #8cd9bd !important; /* Using emerald-light variable */
     padding: 0.75rem 1rem 0.25rem;
-    font-weight: 600;
-    font-size: 0.75rem;
+    font-weight: 600 !important; /* MATCHING DASHBOARD */
+    font-size: 0.75rem !important; /* MATCHING DASHBOARD SCALE */
     text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    margin-top: -1px;
+    font-family: 'Poppins', sans-serif !important; /* MATCHING DASHBOARD FONT */
+    opacity: 0.8;
   }
 
   .btn-close {
@@ -168,9 +172,50 @@
     color: white;
     display: inline-block;
     line-height: 1;
+    font-family: 'Poppins', sans-serif; /* MATCHING DASHBOARD FONT */
   }
 
   .btn-close > svg {
     display: none;
+  }
+
+  /* Additional styles for conversation links */
+  .load-conversation {
+    border-left: 3px solid transparent !important;
+    transition: all 0.2s ease !important;
+  }
+
+  .load-conversation:hover {
+    border-left-color: #4ECDC4 !important; /* accent-highlight color */
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  .load-conversation.active {
+    border-left-color: #4ECDC4 !important; /* accent-highlight color */
+    background-color: rgba(255, 255, 255, 0.1) !important;
+  }
+
+  /* Text styling for consistency */
+  .nav-link span {
+    font-family: 'Poppins', sans-serif !important; /* MATCHING DASHBOARD FONT */
+    font-size: 13px !important; /* MATCHING DASHBOARD FONT SIZE */
+    line-height: 1.4 !important; /* BETTER READABILITY */
+  }
+
+  .text-muted {
+    font-family: 'Poppins', sans-serif !important; /* MATCHING DASHBOARD FONT */
+    font-size: 13px !important; /* MATCHING DASHBOARD FONT SIZE */
+    opacity: 0.7 !important;
+  }
+
+  /* Sidebar header text styling */
+  .sidebar-header span {
+    font-family: 'Poppins', sans-serif !important; /* MATCHING DASHBOARD FONT */
+    font-weight: 600 !important; /* MATCHING DASHBOARD */
+  }
+
+  /* Ensure all sidebar text uses Poppins font */
+  .sidebar-nav * {
+    font-family: 'Poppins', sans-serif !important;
   }
 </style>

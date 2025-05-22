@@ -42,7 +42,7 @@
                         <div class="mb-3">
                             <label for="edit-password" class="form-label">Password</label>
                             <input type="password" class="form-control" id="edit-password" name="password" placeholder="Leave blank to keep current password">
-            
+
                         </div>
 
                         {{-- Role --}}
