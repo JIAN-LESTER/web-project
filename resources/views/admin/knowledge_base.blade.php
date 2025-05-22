@@ -110,9 +110,7 @@
                                         <a href="{{ route('kb.view', $doc->kbID) }}" class="btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="View Document">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('kb.download', $doc->kbID) }}" class="btn-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="Download Document">
-                                            <i class="fas fa-download"></i>
-                                        </a>
+                                        
                                     </div>
                                 </td>
                             </tr>

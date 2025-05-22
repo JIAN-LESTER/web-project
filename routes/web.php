@@ -2,8 +2,10 @@
 
 
 use App\Http\Controllers\ChatbotController;
+use App\Http\Controllers\FAQController;
 use App\Http\Controllers\KBController;
 use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\ConversationController;
 use App\Livewire\Chatbot;
 use App\Models\KnowledgeBase;
 use Illuminate\Support\Facades\Route;
@@ -72,6 +74,11 @@ Route::put('user/updateProfile', [UserManagementController::class, 'updateProfil
 Route::get('/user/{id}/profile', [UserManagementController::class, 'editProfile'])->name('profile.edit');
 
 
+Route::get('admin/inquiry-logs', [AdminController::class, 'viewInquiryLogs'])->name('admin.inquiry_logs');
+
+Route::get('user/dashboard', [UserController::class, 'viewDashboard'])->name('user.dashboard');
+
+Route::get('/conversations/load', [ConversationController::class, 'loadMore'])->name('conversations.load');
 
 
 
@@ -86,6 +93,16 @@ Route::get('/reports-analytics', [ReportsController::class, 'viewReports'])->nam
 Route::get('/reports-analytics/export', [ReportsController::class, 'exportReports'])->name('admin.reports_analytics.exports');
 Route::get('/admin/reports/export-csv', [ReportsController::class, 'exportCsv'])->name('admin.reports_export_csv');
 Route::get('/reports/ajax-data', [ReportsController::class, 'ajaxReportData'])->name('reports.ajax');
+
+
+Route::get('/faqs', [FAQController::class, 'index'])->name('faqs');
+Route::get('/faqs/create', [FAQController::class, 'create'])->name('faqs.create');
+Route::post('/faqs/store', [FAQController::class, 'store'])->name('faqs.store');
+Route::get('/faqs/edit/{id}', [FAQController::class, 'edit'])->name('faqs.edit');
+Route::post('/faqs/update/{id}', [FAQController::class, 'update'])->name('faqs.update');
+Route::delete('/faqs/destroy/{id}', [FAQController::class, 'destroy'])->name('faqs.destroy');
+
+Route::post('/faq/question', [FAQController::class, 'handleFaqQuestion']);
 
 
 

@@ -24,4 +24,8 @@ class Categories extends Model
     public function message(){
         return $this->hasMany(Message::class, 'conversationID', 'conversationID');
     }
+
+    public function faq(){
+        return $this->hasMany(Faq::class, 'categoryID', 'categoryID');
+    }
 }

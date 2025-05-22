@@ -115,12 +115,12 @@
                         <span>OR</span>
                     </div>
 
-                    <div class="social-login">
+                    <!-- <div class="social-login">
                         <a href="#" class="social-btn google">
                             <i class="fab fa-google"></i>
                             <span>Sign in with Google</span>
                         </a>
-                    </div>
+                    </div> -->
 
                     <div class="register-link">
                         Don't have an account? <a href="{{ route('register') }}">Sign Up</a>

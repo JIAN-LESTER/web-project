@@ -8,6 +8,12 @@
 <!-- Include Custom CSS -->
 <link rel="stylesheet" href="{{ asset('admin/logs.css') }}">
 
+<style>
+      html {
+    overflow: hidden;
+  }
+</style>
+
 <div class="container-fluid logs-container">
     <div class="logs-header">
         <div class="row align-items-center">
@@ -17,9 +23,7 @@
             </div>
             <div class="col-md-6 text-md-end">
                 <div class="action-buttons">
-                    <button id="exportCSV" class="btn">
-                        <i class="fas fa-download"></i>Export CSV
-                    </button>
+                   
                     <button id="refreshLogs" class="btn">
                         <i class="fas fa-sync-alt"></i>Refresh
                     </button>

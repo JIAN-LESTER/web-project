@@ -58,6 +58,15 @@
         Knowledge Base
       </a>
 
+      <a class="nav-link {{ request()->routeIs('faqs') ? 'active' : '' }}"
+         href="{{ route('faqs') }}"
+         aria-current="{{ request()->routeIs('faqs') ? 'page' : '' }}">
+        <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-user.svg') }}" alt="Users"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 448 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        />
+        FAQs
+      </a>
+
       <a class="nav-link {{ request()->routeIs('admin.user_management') ? 'active' : '' }}"
          href="{{ route('admin.user_management') }}"
          aria-current="{{ request()->routeIs('admin.user_management') ? 'page' : '' }}">
@@ -71,54 +80,161 @@
     <!-- Preferences -->
     <li class="nav-title">System</li>
 
+
     <li class="nav-group">
-      <a class="nav-link {{ request()->routeIs('admin.logs') ? 'active' : '' }}"
-         href="{{ route('admin.logs') }}"
-         aria-current="{{ request()->routeIs('admin.logs') ? 'page' : '' }}">
+      <a class="nav-link nav-group-toggle"
+         href="#">
         <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-history.svg') }}" alt="Logs"
              onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M504 255.531c.253 136.64-111.18 248.372-247.82 248.468-59.015.042-113.223-20.53-155.822-54.911-11.077-8.94-11.905-25.541-1.839-35.607l11.267-11.267c8.609-8.609 22.353-9.551 31.891-1.984C173.062 425.135 212.781 440 256 440c101.705 0 184-82.311 184-184 0-101.705-82.311-184-184-184-48.814 0-93.149 18.969-126.068 49.932l50.754 50.754c10.08 10.08 2.941 27.314-11.313 27.314H24c-8.837 0-16-7.163-16-16V38.627c0-14.254 17.234-21.393 27.314-11.314l49.372 49.372C129.209 34.136 189.552 8 256 8c136.81 0 247.747 110.78 248 247.531zm-180.912 78.784l9.823-12.63c8.138-10.463 6.253-25.542-4.21-33.679L288 256.349V152c0-13.255-10.745-24-24-24h-16c-13.255 0-24 10.745-24 24v135.651l65.409 50.874c10.463 8.137 25.541 6.253 33.679-4.21z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
         />
         Logs
       </a>
+
+      <ul class="nav-group-items">
+        <li class="nav-item"><a class="nav-link" href="{{ route('admin.logs') }}">System Logs</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ route('admin.inquiry_logs') }}">Inquiry Logs</a></li>
+  
+      </ul>
     </li>
 
     
 
   @else
-    <!-- User Navigation -->
-    <li class="nav-title">Chat History</li>
-    @php
-      $conversations = \App\Models\Conversation::where('userID', $user->userID)
-                        ->latest('updated_at')
-                        ->take(10)
-                        ->orderByDesc('conversationID')
-                        ->get();
-    @endphp
 
+  <li class="nav-title">Quick Access</li>
+ 
+<li class="nav-item">
+  <a class="nav-link" href="{{ route('user.dashboard') }}">
+  <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-speedometer.svg') }}" alt="Dashboard"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        /> Dashboard
+  </a>
+</li>
+
+<li class="nav-title">Chat</li>
+
+<li class="nav-item">
+  <a class="nav-link" href="{{ route('chatbot') }}">
+  <img class="nav-icon" src="{{ asset('vendors/@coreui/icons/svg/free/cil-speedometer.svg') }}" alt="Dashboard"
+             onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+        /> Chat Interface
+  </a>
+</li>
+
+
+<li class="nav-item dropdown">
+  <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="chatHistoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <img
+      class="nav-icon"
+      src="{{ asset('vendors/@coreui/icons/svg/free/cil-history.svg') }}"
+      alt="Logs"
+      onerror="this.onerror=null; this.style.backgroundImage='url(\'data:image/svg+xml,%3Csvg xmlns=\\\'http://www.w3.org/2000/svg\\\' viewBox=\\\'0 0 512 512\\\'%3E%3Cpath fill=\\\'white\\\' d=\\\'M504 255.531c.253 136.64-111.18 248.372-247.82 248.468-59.015.042-113.223-20.53-155.822-54.911-11.077-8.94-11.905-25.541-1.839-35.607l11.267-11.267c8.609-8.609 22.353-9.551 31.891-1.984C173.062 425.135 212.781 440 256 440c101.705 0 184-82.311 184-184 0-101.705-82.311-184-184-184-48.814 0-93.149 18.969-126.068 49.932l50.754 50.754c10.08 10.08 2.941 27.314-11.313 27.314H24c-8.837 0-16-7.163-16-16V38.627c0-14.254 17.234-21.393 27.314-11.314l49.372 49.372C129.209 34.136 189.552 8 256 8c136.81 0 247.747 110.78 248 247.531zm-180.912 78.784l9.823-12.63c8.138-10.463 6.253-25.542-4.21-33.679L288 256.349V152c0-13.255-10.745-24-24-24h-16c-13.255 0-24 10.745-24 24v135.651l65.409 50.874c10.463 8.137 25.541 6.253 33.679-4.21z\\\'/%3E%3C/svg%3E\')'; this.style.backgroundSize='contain'; this.style.backgroundRepeat='no-repeat'; this.style.backgroundPosition='center';"
+    />
+    Chat History
+  </a>
+
+  @php
+    $initialLoadCount = 10;
+    $totalConversations = \App\Models\Conversation::where('userID', $user->userID)->count();
+    $conversations = \App\Models\Conversation::where('userID', $user->userID)
+                      ->latest('updated_at')
+                      ->orderByDesc('conversationID')
+                      ->take($initialLoadCount)
+                      ->get();
+  @endphp
+
+  <ul
+    class="dropdown-menu w-100 shadow-sm border-0 mt-1 p-0 rounded"
+    aria-labelledby="chatHistoryDropdown"
+    style="max-height: 300px; overflow-y: auto;"
+    id="chat-history-list"
+    data-total="{{ $totalConversations }}"
+    data-loaded="{{ count($conversations) }}"
+  >
     @forelse ($conversations as $conversation)
-      <li class="nav-item">
-      <a href="#"
-   class="nav-link load-conversation flex-column align-items-start"
-   data-id="{{ $conversation->conversationID }}">
-
-  
-  <span style="display:block; white-space:normal; word-wrap:break-word; overflow-wrap:break-word;">
-    {{ Str::limit($conversation->conversation_title, 50) }}
-</span>
-
-</a>
+      <li class="list-group-item list-group-item-action p-3 position-relative">
+        <div class="fw-semibold mb-1 text-truncate" style="max-width: 90%;">
+          {{ Str::limit($conversation->conversation_title, 50) }}
+        </div>
+        <small class="text-muted">{{ \Carbon\Carbon::parse($conversation->updated_at)->format('F j, Y, g:i A') }}</small>
+        <a href="#" class="stretched-link load-conversation" data-id="{{ $conversation->conversationID }}"></a>
       </li>
     @empty
-      <li class="nav-item">
-        <span class="nav-link text-muted">No conversations yet</span>
+      <li class="list-group-item text-center text-muted p-4">
+        <i class="bi bi-chat-left-dots-fill fs-1 d-block mb-2 text-primary opacity-50"></i>
+        <p class="mb-0">No conversations yet.</p>
       </li>
     @endforelse
-  @endif
 
+    <li id="loading-spinner" class="text-center p-2" style="display: none;">
+      <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+    </li>
+  </ul>
+</li>
+
+  @endif
 </ul>
 
 <!-- Sidebar Styling -->
 <style>
+
+#chat-history-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+#chat-history-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+#chat-history-list::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 123, 255, 0.5); /* Bootstrap primary color, semi-transparent */
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+#chat-history-list::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 123, 255, 0.8);
+}
+
+/* Firefox scrollbar */
+#chat-history-list {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 123, 255, 0.5) transparent;
+}
+
+/* Fade effect at bottom */
+#chat-history-list {
+  position: relative;
+  padding-right: 8px; /* for scrollbar spacing */
+}
+
+/* Create fade overlay at bottom */
+#chat-history-list::after {
+  content: "";
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  pointer-events: none;
+ 
+  z-index: 10;
+  display: block;
+}
+
+/* List item hover/focus */
+#chat-history-list li.list-group-item-action:hover,
+#chat-history-list li.list-group-item-action:focus {
+  background-color: #e9f5ff; /* very light blue */
+  cursor: pointer;
+  color: #004085; /* darker blue */
+}
+
+/* Smooth scrolling */
+#chat-history-list {
+  scroll-behavior: smooth;
+}
+
   .nav-icon {
     width: 1.25rem;
     height: 1.25rem;
@@ -126,6 +242,21 @@
     vertical-align: middle;
     filter: brightness(0) invert(1); /* makes icon white */
   }
+
+  .dropdown-menu {
+  background-color: #2a2a2a !important; /* dark gray or any color you want */
+  color: white !important;
+}
+
+.dropdown-menu .dropdown-item {
+  color: white !important;
+}
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus {
+  background-color: #444 !important; /* hover background */
+  color: white !important;
+}
 
   .nav-link {
     display: flex;
@@ -173,4 +304,77 @@
   .btn-close > svg {
     display: none;
   }
+
+  .sidebar-nav .nav-group-items {
+  background-color: #2a2a2a !important;
+}
+
+.sidebar-nav .nav-group .nav-link {
+  color: white !important;
+}
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const chatHistoryList = document.getElementById('chat-history-list');
+    const loadingSpinner = document.getElementById('loading-spinner');
+
+    if (!chatHistoryList) return;
+
+    let totalConversations = parseInt(chatHistoryList.dataset.total, 10);
+    let loadedConversations = parseInt(chatHistoryList.dataset.loaded, 10);
+    let isLoading = false;
+
+    chatHistoryList.addEventListener('scroll', function () {
+      if (isLoading) return;
+
+      const scrollBottom = chatHistoryList.scrollTop + chatHistoryList.clientHeight;
+      const scrollHeight = chatHistoryList.scrollHeight;
+
+      // Trigger loading more when scrolled near bottom (e.g., within 50px)
+      if (scrollHeight - scrollBottom < 50 && loadedConversations < totalConversations) {
+        loadMoreConversations();
+      }
+    });
+
+    function loadMoreConversations() {
+      isLoading = true;
+      loadingSpinner.style.display = 'block';
+
+      fetch(`{{ route('conversations.load') }}?offset=${loadedConversations}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.conversations.length > 0) {
+            data.conversations.forEach(conv => {
+              const li = document.createElement('li');
+              li.classList.add('list-group-item', 'list-group-item-action', 'p-3', 'position-relative');
+              li.innerHTML = `
+                <div class="fw-semibold mb-1 text-truncate" style="max-width: 90%;">${conv.conversation_title.substring(0, 50)}</div>
+                <small class="text-muted">${new Date(conv.updated_at).toLocaleString()}</small>
+                <a href="#" class="stretched-link load-conversation" data-id="${conv.conversationID}"></a>
+              `;
+              chatHistoryList.insertBefore(li, loadingSpinner);
+            });
+            loadedConversations += data.conversations.length;
+
+            if (loadedConversations >= totalConversations) {
+              // No more conversations to load
+              loadingSpinner.style.display = 'none';
+              chatHistoryList.removeEventListener('scroll', scrollHandler);
+            }
+          } else {
+            // No more data
+            loadingSpinner.style.display = 'none';
+            chatHistoryList.removeEventListener('scroll', scrollHandler);
+          }
+          isLoading = false;
+          loadingSpinner.style.display = 'none';
+        })
+        .catch(err => {
+          console.error(err);
+          isLoading = false;
+          loadingSpinner.style.display = 'none';
+        });
+    }
+  });
+</script>
