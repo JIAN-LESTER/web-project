@@ -1261,12 +1261,12 @@
 
                 rows.forEach(row => {
                     const docTitle = row.querySelector('.doc-title')?.textContent.toLowerCase() || '';
-                    const docSource = row.querySelector('.doc-source-cell')?.textContent.toLowerCase() || '';
+                
                     const docCategory = row.querySelector('.category-badge')?.getAttribute('data-category-id') || '';
 
                     const matchesSearch = !searchTerm ||
-                        docTitle.includes(searchTerm) ||
-                        docSource.includes(searchTerm);
+                        docTitle.includes(searchTerm)
+                       ;
 
                     const matchesCategory = !selectedCategory || docCategory === selectedCategory;
 

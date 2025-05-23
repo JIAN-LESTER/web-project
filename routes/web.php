@@ -123,6 +123,8 @@ Route::prefix('admin/user_crud')->name('admin.')->group(function () {
     Route::delete('/destroy/{id}', [UserManagementController::class, 'destroy'])->name('destroy');
 });
 
+Route::get('/admin/user_crud/{id}/data', [UserController::class, 'getUserData']);
+
 
 Route::prefix('admin/kb')->middleware(['auth'])->group(function () {
     Route::get('/search', [KBController::class, 'search'])->name('kb.search');

@@ -253,27 +253,51 @@ public function viewLogs(Request $request)
 }
 
 
-    public function viewInquiryLogs(Request $request)
-    {
-        $search = $request->get('search');
-    
-        $logs = Logs::query()
+public function viewInquiryLogs(Request $request)
+{
+    $search = $request->get('search');
+    $filter = $request->get('filter', 'all'); // user, message, or all
+    $startDate = $request->get('start_date');
+    $endDate = $request->get('end_date');
+
+    $logs = Logs::query()
         ->with(['user', 'message'])
-        ->whereNotNull('messageID')
-        ->when($search, function ($query, $search) {
-            $query->whereHas('user', function ($q) use ($search) {
+        ->whereNotNull('messageID');
+
+    if ($search) {
+        if ($filter === 'user') {
+            $logs->whereHas('user', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%");
-            })
-            ->orWhereHas('message', function ($q) use ($search) {
+            });
+        } elseif ($filter === 'message') {
+            $logs->whereHas('message', function ($q) use ($search) {
                 $q->where('content', 'like', "%{$search}%");
-            })
-            ->orWhere('created_at', 'like', "%{$search}%");
-        })
-        ->orderBy('created_at', 'desc')
-        ->paginate(12);
-    
-        return view('admin.inquiry_logs', compact('logs', 'search'));
+            });
+        } else { // all
+            $logs->where(function ($query) use ($search) {
+                $query->whereHas('user', function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%");
+                })
+                ->orWhereHas('message', function ($q) use ($search) {
+                    $q->where('content', 'like', "%{$search}%");
+                })
+                ->orWhere('created_at', 'like', "%{$search}%");
+            });
+        }
     }
+
+    if ($startDate) {
+        $logs->whereDate('created_at', '>=', $startDate);
+    }
+
+    if ($endDate) {
+        $logs->whereDate('created_at', '<=', $endDate);
+    }
+
+    $logs = $logs->orderBy('created_at', 'desc')->paginate(12)->appends($request->query());
+
+    return view('admin.inquiry_logs', compact('logs', 'search', 'filter', 'startDate', 'endDate'));
+}
     
 
     public function viewUsers(Request $request)
@@ -287,9 +311,7 @@ public function viewLogs(Request $request)
         $users = User::with(['course', 'year'])
             ->when($search, function ($query, $search) {
                 return $query->where(function ($q) use ($search) {
-                    $q->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%")
-                      ->orWhere('role', 'like', "%{$search}%");
+                    $q->where('name', 'like', "%{$search}%");
                 });
             })
             ->when(!empty($roles), function ($query) use ($roles) {

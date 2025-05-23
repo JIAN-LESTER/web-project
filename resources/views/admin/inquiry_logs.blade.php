@@ -10,8 +10,27 @@
 
     <style>
           html {
-    overflow: hidden;
-  }
+            overflow: hidden;
+        }
+
+        .filter-dropdown {
+            position: relative;
+            z-index: 1050;
+            /* Bootstrap default dropdown z-index */
+        }
+
+        /* Prevent clipping from table wrapper */
+        .logs-table-wrapper {
+            position: relative;
+            overflow: visible !important;
+            /* override any overflow:hidden */
+            z-index: 1;
+        }
+
+        .dropdown-menu {
+            background-color: white !important;
+            color: #212529 !important;
+        }
     </style>
 
     <div class="container-fluid logs-container">
@@ -33,66 +52,83 @@
                     <div class="col-lg-8 col-md-7">
                         <form method="GET" action="{{ route('admin.inquiry_logs') }}" class="logs-search-form"
                             id="searchForm">
-                            <div class="search-wrapper">
-                                <input type="text" name="search" class="form-control search-input" id="liveSearch"
+                            <div class="row g-2 align-items-center">
+                            <div class="col-lg-8 col-md-7 d-flex">
+                                <input type="text" name="search" class="form-control " id="liveSearch"
                                     placeholder="Search by user, action, or ID..." value="{{ request('search') }}">
-                                <button type="submit" class="search-button">Search</button>
+                              
                             </div>
+
+                            <div class="col-lg-4 col-md-5">
+                                    <div class="dropdown filter-dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                            id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-filter"></i> Filter Options
+                                        </button>
+
+                                        <ul class="dropdown-menu p-3 shadow-sm w-100" aria-labelledby="filterDropdown">
+                                            <!-- Filter Type -->
+                                            <li class="mb-3">
+                                                <h6 class="text-secondary fw-semibold mb-2">Filter Type</h6>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="filter" value="user"
+                                                        id="filterUser" {{ request('filter') == 'user' ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="filterUser">User</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="filter"
+                                                        value="action" id="filterAction" {{ request('filter') == 'message' ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="filterAction">Message</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="filter" value="all"
+                                                        id="filterAll" {{ request('filter', 'all') == 'all' ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="filterAll">All</label>
+                                                </div>
+                                            </li>
+
+                                            <!-- Date Range -->
+                                            <li class="mb-3">
+                                                <h6 class="text-secondary fw-semibold mb-2">Date Range</h6>
+                                                <div class="row g-2">
+                                                    <div class="col-6">
+                                                        <label for="startDate" class="form-label">From</label>
+                                                        <input type="date" id="startDate" name="start_date"
+                                                            class="form-control form-control-sm"
+                                                            value="{{ request('start_date') }}">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label for="endDate" class="form-label">To</label>
+                                                        <input type="date" id="endDate" name="end_date"
+                                                            class="form-control form-control-sm"
+                                                            value="{{ request('end_date') }}">
+                                                    </div>
+                                                </div>
+                                            </li>
+
+                                            <!-- Buttons -->
+                                            <li class="d-flex justify-content-between mt-3">
+                                                <button type="submit" class="btn btn-sm btn-primary">
+                                                    <i class="fas fa-filter me-1"></i> Apply
+                                                </button>
+                                                <a href="{{ route('admin.logs') }}"
+                                                    class="btn btn-sm btn-outline-secondary">
+                                                    <i class="fas fa-times me-1"></i> Clear
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+
+
+                                </div>
+
+
                         </form>
                     </div>
-                    <div class="col-lg-4 col-md-5">
-                        <div class="dropdown filter-dropdown">
-                            {{-- <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-filter"></i> Filter Options
-                            </button> --}}
-                            <ul class="dropdown-menu filter-menu" aria-labelledby="filterDropdown">
-                                <li>
-                                    <div class="filter-section">
-                                        <h6 class="filter-heading">Filter by Action</h6>
-                                        <div class="form-check">
-                                            <input class="form-check-input filter-check" type="checkbox" value="Login"
-                                                id="loginCheck">
-                                            <label class="form-check-label" for="loginCheck">Login</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input filter-check" type="checkbox" value="Email"
-                                                id="emailCheck">
-                                            <label class="form-check-label" for="emailCheck">Email Verification</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input filter-check" type="checkbox" value="Register"
-                                                id="registerCheck">
-                                            <label class="form-check-label" for="registerCheck">Registration</label>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="filter-section">
-                                        <h6 class="filter-heading">Date Range</h6>
-                                        <div class="date-filters">
-                                            <div class="date-group">
-                                                <label for="startDate">From</label>
-                                                <input type="date" id="startDate" class="form-control">
-                                            </div>
-                                            <div class="date-group">
-                                                <label for="endDate">To</label>
-                                                <input type="date" id="endDate" class="form-control">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="filter-actions">
-                                        <button type="button" class="btn" id="applyFilters">Apply Filters</button>
-                                        <button type="button" class="btn" id="clearFilters">Clear</button>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
-                </div>
-
+                   
                 <div class="logs-table-wrapper">
                     <table class="table logs-table">
                         <thead>
@@ -532,18 +568,18 @@
                             const newRow = document.createElement('tr');
                             newRow.id = 'noSearchResults';
                             newRow.innerHTML = `
-                            <td colspan="4" class="no-data">
-                                <div class="empty-logs">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
-                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                    </svg>
-                                    <h5>No matching logs</h5>
-                                    <p>Try a different search term</p>
-                                </div>
-                            </td>
-                        `;
+                                                <td colspan="4" class="no-data">
+                                                    <div class="empty-logs">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+                                                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                                        </svg>
+                                                        <h5>No matching logs</h5>
+                                                        <p>Try a different search term</p>
+                                                    </div>
+                                                </td>
+                                            `;
                             tableBody.appendChild(newRow);
                         }
                     } else if (noResultsRow) {
@@ -586,3 +622,4 @@
         });
     </script>
 @endsection
+
