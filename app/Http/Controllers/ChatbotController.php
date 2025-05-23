@@ -99,7 +99,7 @@ class ChatbotController extends Controller
             You are a helpful assistant.
             
             - For factual or numeric answers (like calculations), respond plainly without any HTML.
-            - For detailed or list answers, use simple HTML tags like <strong>, <ul>, <li>, <br>. Summarize it if possible
+            - For detailed or list answers, use simple HTML tags like <strong>, <ul>, <li>, <br>.
             
             Context:
             $context

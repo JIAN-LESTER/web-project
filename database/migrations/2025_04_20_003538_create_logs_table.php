@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id('logID');
             $table->foreignId('userID')->references('userID')->on('users')->onDelete('cascade');
             $table->string('action_type');
+            $table->foreignId('messageID')->references('messageID')->on('messages')->onDelete('cascade');
             $table->timestamp('created_at');
         });
     }

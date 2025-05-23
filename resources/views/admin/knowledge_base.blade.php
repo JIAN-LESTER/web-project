@@ -30,25 +30,25 @@
                 <div class="row mb-4">
                     <div class="col-12">
                         <form method="GET" action="{{ route('kb.search') }}" class="kb-search-form" id="searchForm">
-                            <div class="search-wrapper">
-                                <input type="text" name="query" class="form-control search-input" id="liveSearch"
-                                    placeholder="Search documents by title or content..." value="{{ request('query') }}">
-
-                                <button type="submit" class="search-button">Search</button>
-                                <select name="category_filter" class="form-control category-filter" id="categoryFilter">
-                                    <option value="">All Categories</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->categoryID }}" {{ request('category_filter') == $category->categoryID ? 'selected' : '' }}>
-                                            {{ $category->category_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                            <div class="d-flex align-items-center">
+                                <div class="flex-grow-1 me-2">
+                                    <input type="text" name="query" class="form-control" id="liveSearch"
+                                        placeholder="Search documents by title or content..." value="{{ request('query') }}">
+                                </div>
+                                <div>
+                                    <select name="category_filter" class="form-control category-filter" id="categoryFilter">
+                                        <option value="">All Categories</option>
+                                        @foreach($categories as $category)
+                                            <option value="{{ $category->categoryID }}" {{ request('category_filter') == $category->categoryID ? 'selected' : '' }}>
+                                                {{ $category->category_name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-
                         </form>
                     </div>
                 </div>
-
 
 
                 <div class="kb-table-wrapper">
@@ -120,7 +120,7 @@
                                     </td>
                                     <td class="doc-actions-cell">
                                         <div class="action-buttons">
-                                           
+
 
                                             <button type="button" class="btn-icon" onclick="confirmDelete({{ $doc->kbID }})"
                                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Document">
@@ -227,7 +227,7 @@
                     <span class="detail-label">Uploaded:</span>
                     <span class="detail-value" id="panel-doc-date"></span>
                 </div>
-                
+
             </div>
 
             <div class="doc-details-section">
@@ -239,7 +239,7 @@
         </div>
         <div class="doc-details-footer">
             <a href="{{ route('kb.view', $doc->kbID) }}" class="btn btn-primary" id="panel-view-btn">View Document</a>
-          
+
             <button type="button" class="btn btn-secondary" id="panelCloseBtn">Close</button>
         </div>
     </div>
@@ -335,10 +335,73 @@
         </div>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div class="upload-modal-backdrop" id="deleteModalBackdrop"></div>
+    <div class="upload-modal" id="deleteModal">
+        <div class="upload-modal-content">
+            <div class="upload-modal-header">
+                <h4 class="upload-modal-title">Confirm Deletion</h4>
+                <button type="button" class="upload-modal-close" id="closeDeleteModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="upload-modal-body">
+                <p>Are you sure you want to delete this document? This action cannot be undone.</p>
+            </div>
+            <div class="upload-modal-footer">
+                <button type="button" class="btn-minimalist btn-cancel" id="cancelDeleteBtn">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button type="button" class="btn-minimalist btn-upload btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash-alt"></i>
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let deleteFormId = null;
+
+        function confirmDelete(docId) {
+            deleteFormId = `delete-form-${docId}`;
+            const deleteModal = document.getElementById('deleteModal');
+            const deleteModalBackdrop = document.getElementById('deleteModalBackdrop');
+
+            // Show modal and backdrop
+            deleteModal.classList.add('show');
+            deleteModalBackdrop.classList.add('show');
+            document.body.style.overflow = 'hidden';
+
+            // Close modal on backdrop click
+            deleteModalBackdrop.addEventListener('click', closeDeleteModal);
+        }
+
+        function closeDeleteModal() {
+            const deleteModal = document.getElementById('deleteModal');
+            const deleteModalBackdrop = document.getElementById('deleteModalBackdrop');
+
+            // Hide modal and backdrop
+            deleteModal.classList.remove('show');
+            deleteModalBackdrop.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+            if (deleteFormId) {
+                document.getElementById(deleteFormId).submit();
+            }
+        });
+
+        document.getElementById('cancelDeleteBtn').addEventListener('click', closeDeleteModal);
+        document.getElementById('closeDeleteModalBtn').addEventListener('click', closeDeleteModal);
+    </script>
+
     <style>
         /* ========================================
-           MINIMALIST UPLOAD MODAL STYLING
-           ======================================== */
+                           MINIMALIST UPLOAD MODAL STYLING
+                           ======================================== */
 
         /* Modal Backdrop */
         .upload-modal-backdrop {
@@ -880,12 +943,12 @@
                     document.getElementById('panel-doc-source').textContent = docSource;
                     document.getElementById('panel-doc-category').textContent = docCategory;
                     document.getElementById('panel-doc-date').textContent = `${docDate} at ${docTime}`;
-                   // This would be dynamic in real implementation
+                    // This would be dynamic in real implementation
                     document.getElementById('panel-doc-description').textContent = 'This document contains detailed information about {{ $doc->kb_title }}'; // This would be dynamic
 
                     // Set action button links
                     document.getElementById('panel-view-btn').href = `{{ route('kb.view', ':id') }}`.replace(':id', docId);
-                   
+
 
                     // Show panel and backdrop
                     docDetailsPanel.classList.add('show');
@@ -1224,18 +1287,18 @@
                     const newRow = document.createElement('tr');
                     newRow.id = 'noSearchResults';
                     newRow.innerHTML = `
-                    <td colspan="5" class="no-data">
-                        <div class="empty-docs">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
-                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                <line x1="12" y1="9" x2="12" y2="13"></line>
-                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                            </svg>
-                            <h5>No matching documents</h5>
-                            <p>Try a different search term or category</p>
-                        </div>
-                    </td>
-                `;
+                                    <td colspan="5" class="no-data">
+                                        <div class="empty-docs">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+                                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                            </svg>
+                                            <h5>No matching documents</h5>
+                                            <p>Try a different search term or category</p>
+                                        </div>
+                                    </td>
+                                `;
                     tableBody.appendChild(newRow);
                 }
             }

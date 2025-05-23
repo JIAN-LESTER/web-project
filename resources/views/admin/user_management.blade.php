@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="action-buttons">
-                        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                        <button id="openAddUserBtn" class="btn btn-primary">
                             <i class="fas fa-user-plus"></i> Add New User
                         </button>
                     </div>
@@ -50,7 +50,7 @@
             </div>
         </div>
 
-      
+
 
         <div class="users-card">
             <div class="card-body">
@@ -58,85 +58,91 @@
                     <div class="col-lg-8">
                         <form method="GET" action="{{ route('admin.user_management') }}" class="users-search-form"
                             id="searchForm">
-                            <div class="search-wrapper">
-                                <input type="text" name="search" class="form-control search-input" id="liveSearch"
-                                    placeholder="Search by name, email or role..." value="{{ $search }}">
-                                <button type="submit" class="search-button">Search</button>
-                                
+                            <div class="row g-2">
+                                <div class="col-lg-8 col-md-7">
+                                    <input type="text" name="search" class="form-control" id="liveSearch"
+                                        placeholder="Search by name, email or role..." value="{{ $search }}">
+                                </div>
+                                <div class="col-lg-4 col-md-5">
+                                    <div class="dropdown filter-dropdown">
+                                        <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
+                                            id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fas fa-filter"></i> Filter Options
+                                        </button>
+
+                                        <ul class="dropdown-menu p-3 shadow-sm bg-white border rounded-3"
+                                            style="min-width: 300px;" aria-labelledby="filterDropdown">
+                                            <!-- Filter by Role -->
+                                            <li class="mb-3">
+                                                <h6 class="text-primary mb-2">Filter by Role</h6>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="admin"
+                                                        id="adminCheck">
+                                                    <label class="form-check-label" for="adminCheck">Admin</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="user"
+                                                        id="userCheck">
+                                                    <label class="form-check-label" for="userCheck">User</label>
+                                                </div>
+                                            </li>
+
+                                            <!-- Filter by Status -->
+                                            <li class="mb-3">
+                                                <h6 class="text-primary mb-2">Filter by Status</h6>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="active"
+                                                        id="activeCheck">
+                                                    <label class="form-check-label" for="activeCheck">Active</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="checkbox" value="inactive"
+                                                        id="inactiveCheck">
+                                                    <label class="form-check-label" for="inactiveCheck">Inactive</label>
+                                                </div>
+                                            </li>
+
+                                            <!-- Filter by Year/Course -->
+                                            <li class="mb-3">
+                                                <h6 class="text-primary mb-2">Filter by Year/Course</h6>
+                                                <div class="mb-2">
+                                                    <label for="yearSelect" class="form-label">Year</label>
+                                                    <select class="form-select form-select-sm" id="yearSelect" name="year">
+                                                        <option value="">Select Year</option>
+                                                        @foreach ($years as $year)
+                                                            <option value="{{ $year->year_level }}">{{ $year->year_level }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+
+                                                <!-- Filter by Course -->
+                                                <div>
+                                                    <label for="courseSelect" class="form-label">Course</label>
+                                                    <select class="form-select form-select-sm" id="courseSelect"
+                                                        name="course">
+                                                        <option value="">Select Course</option>
+                                                        @foreach ($courses as $course)
+                                                            <option value="{{ $course->course_name }}">
+                                                                {{ $course->course_name }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </li>
+
+                                            <!-- Actions -->
+                                            <li class="d-flex justify-content-between mt-2">
+                                                <button type="button" class="btn btn-sm btn-primary" id="applyFilters">Apply
+                                                    Filters</button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    id="clearFilters">Clear</button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="col-lg-4">
-                        <div class="dropdown filter-dropdown">
-                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="filterDropdown"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-filter"></i> Filter Options
-                            </button>
-
-                            <ul class="dropdown-menu p-3 shadow-sm bg-white border rounded-3" style="min-width: 300px;"
-                                aria-labelledby="filterDropdown">
-                                <!-- Filter by Role -->
-                                <li class="mb-3">
-                                    <h6 class="text-primary mb-2">Filter by Role</h6>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="admin" id="adminCheck">
-                                        <label class="form-check-label" for="adminCheck">Admin</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="user" id="userCheck">
-                                        <label class="form-check-label" for="userCheck">User</label>
-                                    </div>
-                                </li>
-
-                                <!-- Filter by Status -->
-                                <li class="mb-3">
-                                    <h6 class="text-primary mb-2">Filter by Status</h6>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="active" id="activeCheck">
-                                        <label class="form-check-label" for="activeCheck">Active</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="inactive" id="inactiveCheck">
-                                        <label class="form-check-label" for="inactiveCheck">Inactive</label>
-                                    </div>
-                                </li>
-
-                                <!-- Filter by Year/Course -->
-                                <li class="mb-3">
-                                    <h6 class="text-primary mb-2">Filter by Year/Course</h6>
-                                    <div class="mb-2">
-                                        <label for="yearSelect" class="form-label">Year</label>
-                                        <select class="form-select form-select-sm" id="yearSelect" name="year">
-                                            <option value="">Select Year</option>
-                                            @foreach ($years as $year)
-                                                <option value="{{ $year->year_level }}">{{ $year->year_level }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <!-- Filter by Course -->
-                                    <div>
-                                        <label for="courseSelect" class="form-label">Course</label>
-                                        <select class="form-select form-select-sm" id="courseSelect" name="course">
-                                            <option value="">Select Course</option>
-                                            @foreach ($courses as $course)
-                                                <option value="{{ $course->course_name }}">{{ $course->course_name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </li>
-
-                                <!-- Actions -->
-                                <li class="d-flex justify-content-between mt-2">
-                                    <button type="button" class="btn btn-sm btn-primary" id="applyFilters">Apply
-                                        Filters</button>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary"
-                                        id="clearFilters">Clear</button>
-                                </li>
-                            </ul>
-                        </div>
                         </form>
-                    </div>
-                    
                     </div>
                 </div>
 
@@ -224,11 +230,13 @@
                                     </td>
                                     <td class="user-actions-cell">
                                         <div class="action-buttons">
-                                            <button type="button" class="btn-icon" data-bs-toggle="modal"
-                                                data-bs-target="#editUserModal" title="Edit User"
-                                                onclick="populateEditModal({{ $user->userID }})">
+
+                                            <button type="button" class="btn-icon"
+                                                onclick="populateEditModal({{ $user->userID }})" title="Edit User">
                                                 <i class="fas fa-edit"></i>
                                             </button>
+
+
                                             <button class="btn-icon" onclick="confirmDelete({{ $user->userID }})"
                                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User">
                                                 <i class="fas fa-trash-alt"></i>
@@ -346,209 +354,517 @@
     </div>
     <div class="user-details-backdrop" id="userDetailsBackdrop"></div>
 
-      <!-- Add New User Modal -->
-      <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form method="POST" action="{{ route('admin.store') }}" enctype="multipart/form-data">
-                        @csrf
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addUserModalLabel">Add New User</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+    <!-- Edit User Modal -->
+    <div class="upload-modal-backdrop" id="editUserModalBackdrop"></div>
+    <div class="upload-modal" id="editUserModal">
+        <div class="upload-modal-content">
+            <div class="upload-modal-header">
+                <h4 class="upload-modal-title">Edit User</h4>
+                <button type="button" class="upload-modal-close" id="closeEditUserModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="upload-modal-body">
+                <form method="POST" action="{{ route() }}" enctype="multipart/form-data" id="editUserForm">
+                    @csrf
+                    @method('PUT')
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="editName" class="minimalist-label">
+                                <i class="fas fa-user"></i>
+                                Name
+                            </label>
+                            <input type="text" id="editName" name="name" class="minimalist-input" required
+                                placeholder="Enter user name">
+                            <div class="invalid-feedback" id="edit-name-error"></div>
                         </div>
-                        <div class="modal-body">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="password" class="form-label">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="password_confirmation" class="form-label">Confirm Password</label>
-                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="role" class="form-label">Role</label>
-                                    <select class="form-select" id="role" name="role">
-                                        <option value="user">User</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="avatar" class="form-label">Avatar</label>
-                                    <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="year_id" class="form-label">Year</label>
-                                    <select class="form-select" id="year_id" name="year_id">
-                                        <option value="">Select Year</option>
-                                        @foreach ($years as $year)
-                                            <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="course_id" class="form-label">Course</label>
-                                    <select class="form-select" id="course_id" name="course_id">
-                                        <option value="">Select Course</option>
-                                        @foreach ($courses as $course)
-                                            <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
+
+                        <div class="form-group">
+                            <label for="editEmail" class="minimalist-label">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </label>
+                            <input type="email" id="editEmail" name="email" class="minimalist-input" required
+                                placeholder="Enter user email">
+                            <div class="invalid-feedback" id="edit-email-error"></div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add User</button>
+
+                        <div class="form-group">
+                            <label for="editRole" class="minimalist-label">
+                                <i class="fas fa-user-tag"></i>
+                                Role
+                            </label>
+                            <select name="role" id="editRole" class="minimalist-select" required>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <div class="invalid-feedback" id="edit-role-error"></div>
                         </div>
-                    </form>
-                </div>
+
+                        <div class="form-group">
+                            <label for="editAvatar" class="minimalist-label">
+                                <i class="fas fa-image"></i>
+                                Avatar
+                            </label>
+                            <input type="file" id="editAvatar" name="avatar" class="file-input" accept="image/*">
+                            <div class="invalid-feedback" id="edit-avatar-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editYear" class="minimalist-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                Year
+                            </label>
+                            <select name="year_id" id="editYear" class="minimalist-select">
+                                <option value="">Select Year</option>
+                                @foreach ($years as $year)
+                                    <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="edit-year-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editCourse" class="minimalist-label">
+                                <i class="fas fa-book"></i>
+                                Course
+                            </label>
+                            <select name="course_id" id="editCourse" class="minimalist-select">
+                                <option value="">Select Course</option>
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="edit-course-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="editStatus" class="minimalist-label">
+                                <i class="fas fa-toggle-on"></i>
+                                Status
+                            </label>
+                            <select name="user_status" id="editStatus" class="minimalist-select">
+                                <option value="active">Active</option>
+                                <option value="inactive">Inactive</option>
+                            </select>
+                            <div class="invalid-feedback" id="edit-status-error"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="upload-modal-footer">
+                <button type="button" class="btn-minimalist btn-cancel" id="cancelEditUserBtn">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button type="submit" form="editUserForm" class="btn-minimalist btn-upload">
+                    <i class="fas fa-save"></i>
+                    Save Changes
+                </button>
             </div>
         </div>
+    </div>
 
-        <!-- Edit User Modal -->
-        <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form method="POST" action="{{ route('admin.update', $user->userID) }}" id="editUserForm" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- Add User Modal -->
+    <div class="upload-modal-backdrop" id="addUserModalBackdrop"></div>
+    <div class="upload-modal" id="addUserModal">
+        <div class="upload-modal-content">
+            <div class="upload-modal-header">
+                <h4 class="upload-modal-title">Add New User</h4>
+                <button type="button" class="upload-modal-close" id="closeAddUserModalBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="upload-modal-body">
+                <form method="POST" action="{{ route('admin.store') }}" enctype="multipart/form-data" id="addUserForm">
+                    @csrf
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="name" class="minimalist-label">
+                                <i class="fas fa-user"></i>
+                                Name
+                            </label>
+                            <input type="text" id="name" name="name" class="minimalist-input" required
+                                placeholder="Enter user name">
+                            <div class="invalid-feedback" id="name-error"></div>
                         </div>
-                        <div class="modal-body">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="editName" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="editName" name="name" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="editEmail" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="editEmail" name="email" required>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="editRole" class="form-label">Role</label>
-                                    <select class="form-select" id="editRole" name="role">
-                                        <option value="user">User</option>
-                                        <option value="admin">Admin</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="editAvatar" class="form-label">Avatar</label>
-                                    <input type="file" class="form-control" id="editAvatar" name="avatar" accept="image/*">
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="editYear" class="form-label">Year</label>
-                                    <select class="form-select" id="editYear" name="year_id">
-                                        <option value="">Select Year</option>
-                                        @foreach ($years as $year)
-                                            <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="editCourse" class="form-label">Course</label>
-                                    <select class="form-select" id="editCourse" name="course_id">
-                                        <option value="">Select Course</option>
-                                        @foreach ($courses as $course)
-                                            <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="editStatus" class="form-label">Status</label>
-                                    <select class="form-select" id="editStatus" name="user_status">
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
-                                    </select>
-                                </div>
-                            </div>
+
+                        <div class="form-group">
+                            <label for="email" class="minimalist-label">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </label>
+                            <input type="email" id="email" name="email" class="minimalist-input" required
+                                placeholder="Enter user email">
+                            <div class="invalid-feedback" id="email-error"></div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
+
+                        <div class="form-group">
+                            <label for="password" class="minimalist-label">
+                                <i class="fas fa-lock"></i>
+                                Password
+                            </label>
+                            <input type="password" id="password" name="password" class="minimalist-input" required
+                                placeholder="Enter password">
+                            <div class="invalid-feedback" id="password-error"></div>
                         </div>
-                    </form>
-                </div>
+
+                        <div class="form-group">
+                            <label for="password_confirmation" class="minimalist-label">
+                                <i class="fas fa-lock"></i>
+                                Confirm Password
+                            </label>
+                            <input type="password" id="password_confirmation" name="password_confirmation"
+                                class="minimalist-input" required placeholder="Confirm password">
+                            <div class="invalid-feedback" id="password-confirmation-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="role" class="minimalist-label">
+                                <i class="fas fa-user-tag"></i>
+                                Role
+                            </label>
+                            <select name="role" id="role" class="minimalist-select" required>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                            <div class="invalid-feedback" id="role-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="avatar" class="minimalist-label">
+                                <i class="fas fa-image"></i>
+                                Avatar
+                            </label>
+                            <input type="file" id="avatar" name="avatar" class="file-input" accept="image/*">
+                            <div class="invalid-feedback" id="avatar-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="year_id" class="minimalist-label">
+                                <i class="fas fa-calendar-alt"></i>
+                                Year
+                            </label>
+                            <select name="year_id" id="year_id" class="minimalist-select">
+                                <option value="">Select Year</option>
+                                @foreach ($years as $year)
+                                    <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="year-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="course_id" class="minimalist-label">
+                                <i class="fas fa-book"></i>
+                                Course
+                            </label>
+                            <select name="course_id" id="course_id" class="minimalist-select">
+                                <option value="">Select Course</option>
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
+                                @endforeach
+                            </select>
+                            <div class="invalid-feedback" id="course-error"></div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="upload-modal-footer">
+                <button type="button" class="btn-minimalist btn-cancel" id="cancelAddUserBtn">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button type="submit" form="addUserForm" class="btn-minimalist btn-upload">
+                    <i class="fas fa-user-plus"></i>
+                    Add User
+                </button>
             </div>
         </div>
+    </div>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const editButtons = document.querySelectorAll('.btn-icon[data-bs-toggle="tooltip"][title="Edit User"]');
-                const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
-                const editUserForm = document.getElementById('editUserForm');
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Elements
+            const addUserModal = document.getElementById('addUserModal');
+            const addUserModalBackdrop = document.getElementById('addUserModalBackdrop');
+            const closeAddUserModalBtn = document.getElementById('closeAddUserModalBtn');
+            const cancelAddUserBtn = document.getElementById('cancelAddUserBtn');
+            const openAddUserBtn = document.getElementById('openAddUserBtn');
+            const addUserForm = document.getElementById('addUserForm');
 
-                editButtons.forEach(button => {
-                    button.addEventListener('click', function (e) {
-                        e.preventDefault();
+            // Show modal
+            const showModal = () => {
+                addUserModal.classList.add('show');
+                addUserModalBackdrop.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            };
 
-                        const userRow = this.closest('.user-row');
-                        const userId = userRow.getAttribute('data-user-id');
-                        const userName = userRow.querySelector('.user-name')?.textContent.trim() || '';
-                        const userEmail = userRow.querySelector('.user-email')?.textContent.trim() || '';
-                        const userRole = userRow.querySelector('.role-badge')?.textContent.trim() || '';
-                        const userStatus = userRow.querySelector('.status-badge')?.textContent.trim() || '';
-                        const userCourse = userRow.querySelector('.user-course-cell')?.getAttribute('data-course-id') || '';
-                        const userYear = userRow.querySelector('.user-year-cell')?.getAttribute('data-year-id') || '';
+            // Close modal
+            const closeModal = () => {
+                addUserModal.classList.remove('show');
+                addUserModalBackdrop.classList.remove('show');
+                document.body.style.overflow = '';
+                resetForm();
+            };
 
-                        // Populate modal fields
-                        editUserForm.action = `/admin/users/${userId}`;
-                        document.getElementById('editName').value = userName;
-                        document.getElementById('editEmail').value = userEmail;
-                        document.getElementById('editRole').value = userRole.toLowerCase();
-                        document.getElementById('editStatus').value = userStatus.toLowerCase();
-                        document.getElementById('editCourse').value = userCourse;
-                        document.getElementById('editYear').value = userYear;
+            // Reset form
+            const resetForm = () => {
+                addUserForm.reset();
+                clearValidationErrors();
+            };
 
-                        // Show modal
-                        editUserModal.show();
-                    });
-                });
-            });
-        </script>
+            // Clear all validation messages (customizable)
+            const clearValidationErrors = () => {
+                const errorFields = document.querySelectorAll('.invalid-feedback');
+                errorFields.forEach(field => field.textContent = '');
+            };
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const yearSelect = document.getElementById('year_id');
-                const courseSelect = document.getElementById('course_id');
+            // Event Listeners
+            openAddUserBtn.addEventListener('click', showModal);
+            closeAddUserModalBtn.addEventListener('click', closeModal);
+            cancelAddUserBtn.addEventListener('click', closeModal);
+            addUserModalBackdrop.addEventListener('click', closeModal);
 
-                yearSelect.addEventListener('change', function () {
-                    if (!this.value) {
-                        courseSelect.value = '';
-                        courseSelect.disabled = true;
-                    } else {
-                        courseSelect.disabled = false;
-                    }
-                });
-
-                // Disable course select initially if no year is selected
-                if (!yearSelect.value) {
-                    courseSelect.disabled = true;
+            // ESC key closes modal
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && addUserModal.classList.contains('show')) {
+                    closeModal();
                 }
             });
-        </script>
+        });
+    </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Elements
+        const editUserModal = document.getElementById('editUserModal');
+        const editUserModalBackdrop = document.getElementById('editUserModalBackdrop');
+        const closeEditUserModalBtn = document.getElementById('closeEditUserModalBtn');
+        const cancelEditUserBtn = document.getElementById('cancelEditUserBtn');
+        const editUserForm = document.getElementById('editUserForm');
+
+        // Show modal
+        const showEditModal = () => {
+            editUserModal.classList.add('show');
+            editUserModalBackdrop.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        };
+
+        // Close modal
+        const closeEditModal = () => {
+            editUserModal.classList.remove('show');
+            editUserModalBackdrop.classList.remove('show');
+            document.body.style.overflow = '';
+            resetEditForm();
+        };
+
+        // Reset form
+        const resetEditForm = () => {
+            editUserForm.reset();
+            clearEditValidationErrors();
+        };
+
+        // Clear validation errors
+        const clearEditValidationErrors = () => {
+            const errorFields = editUserForm.querySelectorAll('.invalid-feedback');
+            errorFields.forEach(field => field.textContent = '');
+        };
+
+        // Event Listeners
+        closeEditUserModalBtn.addEventListener('click', closeEditModal);
+        cancelEditUserBtn.addEventListener('click', closeEditModal);
+        editUserModalBackdrop.addEventListener('click', closeEditModal);
+
+        // ESC key closes modal
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && editUserModal.classList.contains('show')) {
+                closeEditModal();
+            }
+        });
+
+        // Expose globally to be called when clicking "Edit" button
+        window.populateEditModal = function (userId) {
+            const userRow = document.querySelector(`.user-row[data-user-id="${userId}"]`);
+            if (!userRow) return;
+
+            document.getElementById('editName').value = userRow.querySelector('.user-name')?.textContent.trim() || '';
+            document.getElementById('editEmail').value = userRow.querySelector('.user-email')?.textContent.trim() || '';
+            document.getElementById('editRole').value = userRow.querySelector('.role-badge')?.textContent.trim().toLowerCase() || '';
+            document.getElementById('editStatus').value = userRow.querySelector('.status-badge')?.textContent.trim().toLowerCase() || '';
+            document.getElementById('editYear').value = userRow.querySelector('.user-year-cell')?.getAttribute('data-year-id') || '';
+            document.getElementById('editCourse').value = userRow.querySelector('.user-course-cell')?.getAttribute('data-course-id') || '';
+
+            // Set form action dynamically
+            editUserForm.action = `/admin/users/${userId}`;
+
+            showEditModal();
+        };
+    });
+</script>
+
+
+    <style>
+        .upload-modal,
+        .upload-modal-backdrop {
+            display: none;
+        }
+
+        .upload-modal.show,
+        .upload-modal-backdrop.show {
+            display: block;
+        }
+
+        .upload-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+            background: #fff;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+        }
+
+        .upload-modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1040;
+        }
+
+        .upload-modal-header {
+            background-color: #28a745;
+            /* Green header */
+            color: #fff;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .upload-modal-title {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .upload-modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .upload-modal-close:hover {
+            color: #e0e0e0;
+        }
+
+        .upload-modal-body {
+            padding: 1.5rem;
+            font-size: 1rem;
+            color: #212529;
+        }
+
+        .upload-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1rem 1.5rem;
+            gap: 0.5rem;
+            border-top: 1px solid #e9ecef;
+            background-color: #f9f9f9;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        @media (min-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .minimalist-label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .minimalist-input,
+        .minimalist-select {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .minimalist-input:focus,
+        .minimalist-select:focus {
+            border-color: #28a745;
+            box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
+        }
+
+        .file-input {
+            padding: 0.5rem 0;
+        }
+
+        .invalid-feedback {
+            font-size: 0.85rem;
+            color: #dc3545;
+            margin-top: 0.25rem;
+        }
+
+        .btn-minimalist {
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-upload {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .btn-upload:hover {
+            background-color: #218838;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+    </style>
+
+
+
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -735,18 +1051,18 @@
                             const newRow = document.createElement('tr');
                             newRow.id = 'noSearchResults';
                             newRow.innerHTML = `
-                            <td colspan="7" class="no-data">
-                                <div class="empty-users">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
-                                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                        <line x1="12" y1="9" x2="12" y2="13"></line>
-                                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                    </svg>
-                                    <h5>No matching users</h5>
-                                    <p>Try a different search term</p>
-                                </div>
-                            </td>
-                        `;
+                                    <td colspan="7" class="no-data">
+                                        <div class="empty-users">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+                                                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                                <line x1="12" y1="9" x2="12" y2="13"></line>
+                                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                            </svg>
+                                            <h5>No matching users</h5>
+                                            <p>Try a different search term</p>
+                                        </div>
+                                    </td>
+                                `;
                             tableBody.appendChild(newRow);
                         }
                     } else if (noResultsRow) {

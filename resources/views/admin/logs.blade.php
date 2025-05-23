@@ -61,7 +61,7 @@
                                 <div class="col-lg-8 col-md-7 d-flex">
                                     <input type="text" name="search" class="form-control" id="liveSearch"
                                         placeholder="Search by user, action, or date..." value="{{ request('search') }}">
-                                    <button type="submit" class="btn btn-primary ms-2">Search</button>
+                               
                                 </div>
 
                                 <!-- Filter dropdown -->
