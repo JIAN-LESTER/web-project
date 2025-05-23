@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('sender');
             $table->string('message_type');
             $table->timestamp('sent_at')->nullable();
-            $table->float('response_time', 8, 4)->nullable(); // FIXED
+            $table->float('response_time', 8, 4)->nullable(); 
             $table->foreignId('categoryID')->references('categoryID')->on('categories')->onDelete('cascade');
             $table->timestamp('responded_at')->nullable();
             $table->timestamps();
