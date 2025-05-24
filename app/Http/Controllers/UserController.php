@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categories;
-use App\Models\Faq;
+
 use App\Models\Logs;
 use App\Models\Message;
 use App\Models\User;
@@ -16,17 +16,9 @@ class UserController extends Controller
 {
     public function index()
     {
-        $firstFaq = Faq::where('question', 'like', '%how do i start%')->first();
+      
 
-        $otherFaqs = Faq::where('faqID', '!=', optional($firstFaq)->id)
-            ->inRandomOrder()
-            ->take(5)
-            ->get();
-
-        // Combine into one collection
-        $faqs = collect([$firstFaq])->filter()->merge($otherFaqs);
-
-        return view('user.chatbot', compact('faqs'));
+        return view('user.chatbot');
     }
     public function viewDashboard(Request $request)
     {

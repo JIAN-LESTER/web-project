@@ -98,12 +98,12 @@ Route::get('/reports/ajax-data', [ReportsController::class, 'ajaxReportData'])->
 Route::get('/faqs', [FAQController::class, 'index'])->name('faqs');
 Route::get('/faqs/create', [FAQController::class, 'create'])->name('faqs.create');
 Route::post('/faqs/store', [FAQController::class, 'store'])->name('faqs.store');
-Route::get('/faqs/edit/{id}', [FAQController::class, 'edit'])->name('faqs.edit');
-Route::post('/faqs/update/{id}', [FAQController::class, 'update'])->name('faqs.update');
+
+Route::put('/faqs/update/{id}', [FAQController::class, 'update'])->name('faqs.update');
 Route::delete('/faqs/destroy/{id}', [FAQController::class, 'destroy'])->name('faqs.destroy');
 
 Route::post('/faq/question', [FAQController::class, 'handleFaqQuestion']);
-
+Route::get('/faqs/json/{id}', [FAQController::class, 'edit'])->name('faqs.json');
 
 
 

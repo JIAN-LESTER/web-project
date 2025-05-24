@@ -2,6 +2,8 @@
 
 @section('content')
 
+<title>OASP Assist</title>
+
 <style>
   html {
     overflow: hidden;
@@ -905,23 +907,7 @@
         </button>
       </div>
 
-      <!-- FAQ Quick Buttons Container -->
-      <div id="faq-quick-buttons-container">
-        <div class="faq-header">
-          <span>Quick Questions</span>
-          <button class="faq-close" id="faq-close">&times;</button>
-        </div>
-        <div class="faq-quick-buttons">
-          @foreach($faqs as $faq)
-          <button type="button"
-            class="faq-button"
-            data-id="{{ $faq->faqID }}"
-            data-question="{{ $faq->question }}">
-            {{ $faq->question }}
-          </button>
-          @endforeach
-        </div>
-      </div>
+ 
     </div>
   </div>
 </div>
@@ -972,6 +958,7 @@
           aria-describedby="chat-input-help"
           autocomplete="off"
           rows="1"
+          style="overflow: hidden;"
         ></textarea>
         <div class="input-actions">
           {{-- <button type="button" class="input-btn" id="chat-attach-btn" title="Attach file">

@@ -117,6 +117,9 @@
 </li>
 
 
+@if (request()->routeIs('chatbot'))
+
+
 <li class="nav-item dropdown">
   <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="chatHistoryDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <img
@@ -127,6 +130,7 @@
     />
     Chat History
   </a>
+  
 
   @php
     $initialLoadCount = 10;
@@ -170,6 +174,7 @@
     </li>
   </ul>
 </li>
+@endif
 
   @endif
 </ul>

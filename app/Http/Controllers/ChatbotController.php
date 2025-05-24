@@ -96,10 +96,15 @@ class ChatbotController extends Controller
             $context = implode("\n\n", array_map(fn($kb) => $kb['content'], $kbEntries));
 
             $formattedPrompt = <<<PROMPT
-            You are a helpful assistant.
+            You are a helpful assistant that answers questions based on the given context.
             
-            - For factual or numeric answers (like calculations), respond plainly without any HTML.
-            - For detailed or list answers, use simple HTML tags like <strong>, <ul>, <li>, <br>.
+            Instructions:
+            - If the answer is factual or numeric (e.g., a date, fee, schedule), reply plainly with no HTML.
+            - If the answer involves steps, lists, or multiple points, format the response using basic HTML:
+              - Use <ul> for unordered lists
+              - Use <ol> for ordered steps
+              - Use <li> for each list item
+              - Use <strong> to highlight key points
             
             Context:
             $context
@@ -109,6 +114,7 @@ class ChatbotController extends Controller
             
             Answer:
             PROMPT;
+            
             
             $responseText = $this->llm->generateCompletion($formattedPrompt);
             $kbID = $kbEntries[0]['kbID'] ?? null;

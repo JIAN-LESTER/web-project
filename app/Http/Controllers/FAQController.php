@@ -137,13 +137,7 @@ class FAQController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(String $id)
-    {
-        $faq = Faq::findOrFail($id);
-        $categories = Categories::all();
-        return view('admin.faqs_crud.edit_faqs', compact('faq', 'categories'));
-    
-    }
+ 
 
     /**
      * Update the specified resource in storage.
@@ -166,6 +160,18 @@ class FAQController extends Controller
     
         return redirect()->route('faqs');
     }
+    
+
+    public function edit($id)
+{
+    $faq = Faq::findOrFail($id);
+
+    return response()->json([
+        'question' => $faq->question,
+        'answer' => $faq->answer,
+        'category_id' => $faq->categoryID,  // Match JS key `category_id`
+    ]);
+}
     /**
      * Remove the specified resource from storage.
      */public function destroy(String $id)

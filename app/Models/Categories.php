@@ -25,7 +25,5 @@ class Categories extends Model
         return $this->hasMany(Message::class, 'conversationID', 'conversationID');
     }
 
-    public function faq(){
-        return $this->hasMany(Faq::class, 'categoryID', 'categoryID');
-    }
+ 
 }
