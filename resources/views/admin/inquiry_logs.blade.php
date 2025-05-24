@@ -27,10 +27,7 @@
             z-index: 1;
         }
 
-        .dropdown-menu {
-            background-color: white !important;
-            color: #212529 !important;
-        }
+   
     </style>
 
     <div class="container-fluid logs-container">
@@ -66,7 +63,8 @@
                                             <i class="fas fa-filter"></i> Filter Options
                                         </button>
 
-                                        <ul class="dropdown-menu p-3 shadow-sm w-100" aria-labelledby="filterDropdown">
+                                        <ul class="dropdown-menu p-3 shadow-sm w-100" aria-labelledby="filterDropdown" style="background-color: white !important;
+            color: #212529 !important;">
                                             <!-- Filter Type -->
                                             <li class="mb-3">
                                                 <h6 class="text-secondary fw-semibold mb-2">Filter Type</h6>

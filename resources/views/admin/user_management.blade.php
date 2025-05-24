@@ -8,11 +8,6 @@
     <!-- Include Custom CSS -->
     <link rel="stylesheet" href="{{ asset('admin/user_management.css') }}">
 
-
-
-
-
-
     <style>
         .form-select:disabled {
             background-color: #e9ecef;
@@ -33,10 +28,7 @@
             z-index: 1;
         }
 
-        .dropdown-menu {
-            background-color: white !important;
-            color: #212529 !important;
-        }
+     
     </style>
 
     <div class="container-fluid users-container">
@@ -75,7 +67,8 @@
                 id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fas fa-filter"></i> Filter Options
             </button>
-            <ul class="dropdown-menu p-3 shadow-sm bg-white border rounded-3" style="min-width: 300px;" aria-labelledby="filterDropdown">
+            <ul class="dropdown-menu p-3 shadow-sm bg-white border rounded-3" style="min-width: 300px;background-color: white !important;
+            color: #212529 !important;" aria-labelledby="filterDropdown">
                 <!-- Filter by Role -->
                 <li class="mb-3">
                     <h6 class="text-primary mb-2">Filter by Role</h6>
