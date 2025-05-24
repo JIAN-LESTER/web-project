@@ -8,29 +8,6 @@
     <!-- Include Custom CSS -->
     <link rel="stylesheet" href="{{ asset('admin/user_management.css') }}">
 
-    <style>
-        .form-select:disabled {
-            background-color: #e9ecef;
-            cursor: not-allowed;
-        }
-
-        .filter-dropdown {
-            position: relative;
-            z-index: 1050;
-            /* Bootstrap default dropdown z-index */
-        }
-
-        /* Prevent clipping from table wrapper */
-        .logs-table-wrapper {
-            position: relative;
-            overflow: visible !important;
-            /* override any overflow:hidden */
-            z-index: 1;
-        }
-
-     
-    </style>
-
     <div class="container-fluid users-container">
         <div class="users-header">
             <div class="row align-items-center">
@@ -40,95 +17,31 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="action-buttons">
-                        <button id="openAddUserBtn" class="btn btn-primary">
-                            <i class="fas fa-user-plus"></i> Add New User
+                        <button id="openAddUserBtn" class="btn upload-document-btn">
+                            <i class="fas fa-user-plus"></i>Add New User
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-
-
         <div class="users-card">
             <div class="card-body">
                 <div class="row mb-4">
                     <div class="col-lg-8">
-                        <form method="GET" action="{{ route('admin.user_management') }}" class="users-search-form"
-                            id="searchForm">
+                        <form method="GET" action="{{ route('admin.user_management') }}" class="users-search-form" id="searchForm">
                             <div class="row g-2">
                                 <div class="col-lg-8 col-md-7">
                                     <input type="text" name="search" class="form-control" id="liveSearch"
                                         placeholder="Search by name, email or role..." value="{{ $search }}">
                                 </div>
                                 <div class="col-lg-4 col-md-5">
-        <div class="dropdown filter-dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
-                id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-filter"></i> Filter Options
-            </button>
-            <ul class="dropdown-menu p-3 shadow-sm bg-white border rounded-3" style="min-width: 300px;background-color: white !important;
-            color: #212529 !important;" aria-labelledby="filterDropdown">
-                <!-- Filter by Role -->
-                <li class="mb-3">
-                    <h6 class="text-primary mb-2">Filter by Role</h6>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="admin" id="adminCheck">
-                        <label class="form-check-label" for="adminCheck">Admin</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="user" id="userCheck">
-                        <label class="form-check-label" for="userCheck">User</label>
-                    </div>
-                </li>
-
-                <!-- Filter by Status -->
-                <li class="mb-3">
-                    <h6 class="text-primary mb-2">Filter by Status</h6>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="active" id="activeCheck">
-                        <label class="form-check-label" for="activeCheck">Active</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="inactive" id="inactiveCheck">
-                        <label class="form-check-label" for="inactiveCheck">Inactive</label>
-                    </div>
-                </li>
-
-                <!-- Filter by Year -->
-                <li class="mb-3">
-                    <h6 class="text-primary mb-2">Filter by Year</h6>
-                    <select class="form-select form-select-sm" id="yearSelect">
-                        <option value="">Select Year</option>
-                        @foreach ($years as $year)
-                            <option value="{{ $year->year_level }}" {{ request('year') == $year->year_level ? 'selected' : '' }}>
-                                {{ $year->year_level }}
-                            </option>
-                        @endforeach
-                    </select>
-                </li>
-
-                <!-- Filter by Course -->
-                <li class="mb-3">
-                    <h6 class="text-primary mb-2">Filter by Course</h6>
-                    <select class="form-select form-select-sm" id="courseSelect">
-                        <option value="">Select Course</option>
-                        @foreach ($courses as $course)
-                            <option value="{{ $course->course_name }}" {{ request('course') == $course->course_name ? 'selected' : '' }}>
-                                {{ $course->course_name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </li>
-
-                <!-- Actions -->
-                <li class="d-flex justify-content-between mt-2">
-                    <button type="button" class="btn btn-sm btn-primary" id="applyFilters">Apply Filters</button>
-                    <a href="{{ route('admin.user_management') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
-                </li>
-            </ul>
-        </div>
-    </div>
+                                    <select name="category_filter" class="form-control category-filter" id="categoryFilter">
+                                        <option value="">All Roles</option>
+                                        <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                                        <option value="user" {{ request('role') == 'user' ? 'selected' : '' }}>User</option>
+                                    </select>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -163,7 +76,6 @@
                                         Course <i class="fas fa-sort"></i>
                                     </div>
                                 </th>
-
                                 <th class="sortable col-status" data-sort="status">
                                     <div class="sort-header">
                                         Status <i class="fas fa-sort"></i>
@@ -210,7 +122,6 @@
                                     <td class="user-course-cell" data-course-id="{{ $user->courseID }}">
                                         {{ $user->course->course_name ?? 'N/A' }}
                                     </td>
-
                                     <td class="user-status-cell">
                                         @if($user->user_status == 'active')
                                             <span class="status-badge status-active">
@@ -224,13 +135,10 @@
                                     </td>
                                     <td class="user-actions-cell">
                                         <div class="action-buttons">
-
                                             <button type="button" class="btn-icon"
                                                 onclick="populateEditModal({{ $user->userID }})" title="Edit User">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-
-
                                             <button class="btn-icon" onclick="confirmDelete({{ $user->userID }})"
                                                 data-bs-toggle="tooltip" data-bs-placement="top" title="Delete User">
                                                 <i class="fas fa-trash-alt"></i>
@@ -342,13 +250,11 @@
             </div>
         </div>
         <div class="user-details-footer">
-            <a href="#" class="btn btn-edit" id="panel-edit-btn">Edit User</a>
+            <a href="#" class="btn btn-primary" id="panel-edit-btn">Edit User</a>
             <button type="button" class="btn btn-secondary" id="panelCloseBtn">Close</button>
         </div>
     </div>
     <div class="user-details-backdrop" id="userDetailsBackdrop"></div>
-
-
 
     <!-- Edit User Modal -->
     <div class="upload-modal-backdrop" id="editUserModalBackdrop"></div>
@@ -366,7 +272,6 @@
                     @method('PUT')
 
                     <div class="form-grid">
-
                         <div class="form-group">
                             <label for="editName" class="minimalist-label">
                                 <i class="fas fa-user"></i> Name
@@ -404,49 +309,31 @@
                             <div class="invalid-feedback" id="edit-avatar-error"></div>
                         </div>
 
-                      <!-- Year Level -->
-<div class="form-group">
-    <label for="edit-year" class="minimalist-label">
-        <i class="fas fa-graduation-cap"></i> Year Level
-    </label>
-    <select class="minimalist-select" id="edit-year" name="year_id" @if ($user->role === 'admin') disabled @endif>
-        @if ($user->year)
-            <option value="{{ $user->yearID }}" selected>{{ $user->year->year_level }}</option>
-        @else
-            <!-- Empty default option instead of N/A -->
-            <option value="" selected disabled>Select Year</option>
-        @endif
-        <option disabled>──────────</option>
-        {{-- Removed <option value="">N/A</option> --}}
-        @foreach ($years as $year)
-            @if (!$user->year || $year->yearID != $user->yearID)
-                <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
-            @endif
-        @endforeach
-    </select>
-</div>
+                        <!-- Year Level -->
+                        <div class="form-group">
+                            <label for="edit-year" class="minimalist-label">
+                                <i class="fas fa-graduation-cap"></i> Year Level
+                            </label>
+                            <select class="minimalist-select" id="edit-year" name="year_id">
+                                <option value="" selected disabled>Select Year</option>
+                                @foreach ($years as $year)
+                                    <option value="{{ $year->yearID }}">{{ $year->year_level }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
-<!-- Course -->
-<div class="form-group">
-    <label for="edit-course" class="minimalist-label">
-        <i class="fas fa-book-open"></i> Course
-    </label>
-    <select class="minimalist-select" id="edit-course" name="course_id" @if ($user->role === 'admin') disabled @endif>
-        @if ($user->course)
-            <option value="{{ $user->courseID }}" selected>{{ $user->course->course_name }}</option>
-        @else
-            <!-- Empty default option instead of N/A -->
-            <option value="" selected disabled>Select Course</option>
-        @endif
-        <option disabled>──────────</option>
-        {{-- Removed <option value="">N/A</option> --}}
-        @foreach ($courses as $course)
-            @if (!$user->course || $course->courseID != $user->courseID)
-                <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
-            @endif
-        @endforeach
-    </select>
-</div>
+                        <!-- Course -->
+                        <div class="form-group">
+                            <label for="edit-course" class="minimalist-label">
+                                <i class="fas fa-book-open"></i> Course
+                            </label>
+                            <select class="minimalist-select" id="edit-course" name="course_id">
+                                <option value="" selected disabled>Select Course</option>
+                                @foreach ($courses as $course)
+                                    <option value="{{ $course->courseID }}">{{ $course->course_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <div class="form-group">
                             <label for="editStatus" class="minimalist-label">
@@ -458,7 +345,6 @@
                             </select>
                             <div class="invalid-feedback" id="edit-status-error"></div>
                         </div>
-
                     </div>
                 </form>
             </div>
@@ -540,12 +426,31 @@
                             <div class="invalid-feedback" id="role-error"></div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="avatar" class="minimalist-label">
+                        <div class="form-group file-upload-group">
+                            <label class="minimalist-label">
                                 <i class="fas fa-image"></i>
                                 Avatar
                             </label>
-                            <input type="file" id="avatar" name="avatar" class="file-input" accept="image/*">
+                            <div class="file-upload-area">
+                                <input type="file" id="avatar" name="avatar" class="file-input" accept="image/*">
+                                <div class="file-upload-display">
+                                    <div class="upload-placeholder">
+                                        <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                        <span class="upload-text">Choose image or drag & drop</span>
+                                        <span class="upload-subtitle">PNG, JPG, JPEG (max 2MB)</span>
+                                    </div>
+                                    <div class="file-selected" id="fileSelected" style="display: none;">
+                                        <i class="fas fa-image selected-icon"></i>
+                                        <div class="file-info">
+                                            <span class="file-name" id="selectedFileName"></span>
+                                            <span class="file-size" id="selectedFileSize"></span>
+                                        </div>
+                                        <button type="button" class="remove-file" id="removeFile">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="invalid-feedback" id="avatar-error"></div>
                         </div>
 
@@ -591,377 +496,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Elements for Add User Modal
-    const addUserModal = document.getElementById('addUserModal');
-    const addUserModalBackdrop = document.getElementById('addUserModalBackdrop');
-    const closeAddUserModalBtn = document.getElementById('closeAddUserModalBtn');
-    const cancelAddUserBtn = document.getElementById('cancelAddUserBtn');
-    const openAddUserBtn = document.getElementById('openAddUserBtn');
-    const addUserForm = document.getElementById('addUserForm');
-
-    // Show modal
-    const showModal = () => {
-        addUserModal.classList.add('show');
-        addUserModalBackdrop.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    };
-
-    // Close modal
-    const closeModal = () => {
-        addUserModal.classList.remove('show');
-        addUserModalBackdrop.classList.remove('show');
-        document.body.style.overflow = '';
-        resetForm();
-    };
-
-    // Reset form and clear validation errors
-    const resetForm = () => {
-        addUserForm.reset();
-        clearValidationErrors();
-    };
-
-    const clearValidationErrors = () => {
-        const errorFields = addUserForm.querySelectorAll('.invalid-feedback');
-        errorFields.forEach(field => field.textContent = '');
-    };
-
-    // Event Listeners for modal open/close
-    openAddUserBtn.addEventListener('click', showModal);
-    closeAddUserModalBtn.addEventListener('click', closeModal);
-    cancelAddUserBtn.addEventListener('click', closeModal);
-    addUserModalBackdrop.addEventListener('click', closeModal);
-
-    // ESC key closes modal
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && addUserModal.classList.contains('show')) {
-            closeModal();
-        }
-    });
-
-    // Role, Year, Course selects
-    const roleSelect = document.getElementById('role');
-    const yearSelect = document.getElementById('year_id');
-    const courseSelect = document.getElementById('course_id');
-
-    // Helper: Set select value to N/A (empty string or option with value="")
-    function setToNA(selectElement) {
-        const naOption = Array.from(selectElement.options).find(opt => opt.value === "");
-        if (naOption) {
-            selectElement.value = naOption.value;
-        } else {
-            selectElement.selectedIndex = 0;
-        }
-    }
-
-    // Toggle year and course inputs based on role
-    function toggleFieldsBasedOnRole() {
-        const isAdmin = roleSelect.value === 'admin';
-
-        if (isAdmin) {
-            setToNA(yearSelect);
-            setToNA(courseSelect);
-            yearSelect.disabled = true;
-            courseSelect.disabled = true;
-        } else {
-            yearSelect.disabled = false;
-            courseSelect.disabled = false;
-        }
-    }
-
-    // Initial call on page load
-    toggleFieldsBasedOnRole();
-
-    // Add event listener on role select change
-    roleSelect.addEventListener('change', toggleFieldsBasedOnRole);
-});
-</script>
-
-
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    // Modal elements
-    const editUserModal = document.getElementById('editUserModal');
-    const editUserModalBackdrop = document.getElementById('editUserModalBackdrop');
-    const closeEditUserModalBtn = document.getElementById('closeEditUserModalBtn');
-    const cancelEditUserBtn = document.getElementById('cancelEditUserBtn');
-    const editUserForm = document.getElementById('editUserForm');
-
-    // Form selects
-    const yearSelect = document.getElementById('edit-year');
-    const courseSelect = document.getElementById('edit-course');
-    const roleSelect = document.getElementById('editRole');
-
-    // Show modal
-    const showEditModal = () => {
-        editUserModal.classList.add('show');
-        editUserModalBackdrop.classList.add('show');
-        document.body.style.overflow = 'hidden';
-    };
-
-    // Close modal
-    const closeEditModal = () => {
-        editUserModal.classList.remove('show');
-        editUserModalBackdrop.classList.remove('show');
-        document.body.style.overflow = '';
-        resetEditForm();
-    };
-
-    // Reset form and clear validation
-    const resetEditForm = () => {
-        editUserForm.reset();
-        clearEditValidationErrors();
-    };
-
-    const clearEditValidationErrors = () => {
-        const errorFields = editUserForm.querySelectorAll('.invalid-feedback');
-        errorFields.forEach(field => field.textContent = '');
-    };
-
-    // Event Listeners for modal close
-    closeEditUserModalBtn.addEventListener('click', closeEditModal);
-    cancelEditUserBtn.addEventListener('click', closeEditModal);
-    editUserModalBackdrop.addEventListener('click', closeEditModal);
-
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && editUserModal.classList.contains('show')) {
-            closeEditModal();
-        }
-    });
-
-    // Set select to N/A or empty value
-    function setToNA(selectElement) {
-        const naOption = Array.from(selectElement.options).find(opt => opt.value === "" || opt.text.toLowerCase() === "n/a");
-        if (naOption) {
-            selectElement.value = naOption.value;
-        } else {
-            selectElement.selectedIndex = 0;
-        }
-    }
-
-    // Toggle year and course based on role and year values
-    function toggleFieldsBasedOnRole() {
-        const isAdmin = roleSelect.value === 'admin';
-
-        if (isAdmin) {
-            setToNA(yearSelect);
-            setToNA(courseSelect);
-            yearSelect.disabled = true;
-            courseSelect.disabled = true;
-        } else {
-            yearSelect.disabled = false;
-            // Enable course only if year is valid (not empty or 0 or "incoming")
-            courseSelect.disabled = !yearSelect.value || yearSelect.value === '0' || yearSelect.value.toLowerCase() === 'incoming';
-        }
-    }
-
-    // Handle year change: disables/enables course accordingly
-    function handleYearChange() {
-        if (!yearSelect.value || yearSelect.value === '0' || yearSelect.value.toLowerCase() === 'incoming' || yearSelect.value === 'N/A') {
-            courseSelect.value = '';
-            courseSelect.disabled = true;
-        } else if (roleSelect.value !== 'admin') {
-            courseSelect.disabled = false;
-        }
-    }
-
-    // Listen for changes
-    roleSelect.addEventListener('change', function() {
-        toggleFieldsBasedOnRole();
-    });
-
-    yearSelect.addEventListener('change', function() {
-        handleYearChange();
-    });
-
-    // Initial state on load
-    toggleFieldsBasedOnRole();
-
-    // Expose function to populate modal with user data and show modal
-    window.populateEditModal = function (userId) {
-        const userRow = document.querySelector(`.user-row[data-user-id="${userId}"]`);
-        if (!userRow) return;
-
-        document.getElementById('editName').value = userRow.querySelector('.user-name')?.textContent.trim() || '';
-        document.getElementById('editEmail').value = userRow.querySelector('.user-email')?.textContent.trim() || '';
-        document.getElementById('editRole').value = userRow.querySelector('.role-badge')?.textContent.trim().toLowerCase() || '';
-        document.getElementById('editStatus').value = userRow.querySelector('.status-badge')?.textContent.trim().toLowerCase() || '';
-        document.getElementById('edit-year').value = userRow.querySelector('.user-year-cell')?.getAttribute('data-year-id') || '';
-        document.getElementById('edit-course').value = userRow.querySelector('.user-course-cell')?.getAttribute('data-course-id') || '';
-
-        // Make sure controls are correctly enabled/disabled based on loaded role/year
-        toggleFieldsBasedOnRole();
-        handleYearChange();
-
-        editUserForm.action = `/admin/user_crud/update/${userId}`;
-
-        showEditModal();
-    };
-});
-</script>
-
-
-    <style>
-        .upload-modal,
-        .upload-modal-backdrop {
-            display: none;
-        }
-
-        .upload-modal.show,
-        .upload-modal-backdrop.show {
-            display: block;
-        }
-
-        .upload-modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1050;
-            background: #fff;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 600px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-        }
-
-        .upload-modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 1040;
-        }
-
-        .upload-modal-header {
-            background-color: #28a745;
-            /* Green header */
-            color: #fff;
-            padding: 1rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .upload-modal-title {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .upload-modal-close {
-            background: none;
-            border: none;
-            color: #fff;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .upload-modal-close:hover {
-            color: #e0e0e0;
-        }
-
-        .upload-modal-body {
-            padding: 1.5rem;
-            font-size: 1rem;
-            color: #212529;
-        }
-
-        .upload-modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            padding: 1rem 1.5rem;
-            gap: 0.5rem;
-            border-top: 1px solid #e9ecef;
-            background-color: #f9f9f9;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
-        @media (min-width: 600px) {
-            .form-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .minimalist-label {
-            display: block;
-            margin-bottom: 0.25rem;
-            font-weight: 500;
-            color: #333;
-        }
-
-        .minimalist-input,
-        .minimalist-select {
-            width: 100%;
-            padding: 0.5rem 0.75rem;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 1rem;
-            outline: none;
-        }
-
-        .minimalist-input:focus,
-        .minimalist-select:focus {
-            border-color: #28a745;
-            box-shadow: 0 0 0 2px rgba(40, 167, 69, 0.2);
-        }
-
-        .file-input {
-            padding: 0.5rem 0;
-        }
-
-        .invalid-feedback {
-            font-size: 0.85rem;
-            color: #dc3545;
-            margin-top: 0.25rem;
-        }
-
-        .btn-minimalist {
-            padding: 0.5rem 1rem;
-            font-size: 1rem;
-            border-radius: 6px;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.2s, color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-upload {
-            background-color: #28a745;
-            color: #fff;
-        }
-
-        .btn-upload:hover {
-            background-color: #218838;
-        }
-
-        .btn-cancel {
-            background-color: #6c757d;
-            color: #fff;
-        }
-
-        .btn-cancel:hover {
-            background-color: #5a6268;
-        }
-    </style>
-
-
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -1034,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     text: "You won't be able to revert this!",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#12823e',
+                    confirmButtonColor: '#0F4C3A',
                     cancelButtonColor: '#d33',
                     confirmButtonText: 'Yes, delete it!',
                     cancelButtonText: 'Cancel',
@@ -1049,40 +583,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             };
 
-            // Filter functionality
-            document.getElementById('applyFilters').addEventListener('click', function () {
-                const roleFilters = [];
-                if (document.getElementById('adminCheck').checked) roleFilters.push('admin');
-                if (document.getElementById('userCheck').checked) roleFilters.push('user');
+            // Filter functionality (simplified for dropdown)
+            const categoryFilter = document.getElementById('categoryFilter');
+            if (categoryFilter) {
+                categoryFilter.addEventListener('change', function () {
+                    const currentUrl = new URL(window.location.href);
 
-                const statusFilters = [];
-                if (document.getElementById('activeCheck').checked) statusFilters.push('active');
-                if (document.getElementById('inactiveCheck').checked) statusFilters.push('inactive');
+                    // Clear existing role param
+                    currentUrl.searchParams.delete('role');
 
-                const currentUrl = new URL(window.location.href);
+                    // Add selected filter if not empty
+                    if (this.value) {
+                        currentUrl.searchParams.set('role', this.value);
+                    }
 
-                // Clear existing role and status params
-                currentUrl.searchParams.delete('role');
-                currentUrl.searchParams.delete('status');
-
-                // Add selected filters
-                roleFilters.forEach(role => {
-                    currentUrl.searchParams.append('role', role);
+                    window.location.href = currentUrl.toString();
                 });
-
-                statusFilters.forEach(status => {
-                    currentUrl.searchParams.append('status', status);
-                });
-
-                window.location.href = currentUrl.toString();
-            });
-
-            document.getElementById('clearFilters').addEventListener('click', function () {
-                const currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.delete('role');
-                currentUrl.searchParams.delete('status');
-                window.location.href = currentUrl.toString();
-            });
+            }
 
             // Add sorting functionality
             const sortHeaders = document.querySelectorAll('.sortable');
@@ -1121,14 +638,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     rows.forEach(row => {
                         const userName = row.querySelector('.user-name')?.textContent.toLowerCase() || '';
-
+                        const userEmail = row.querySelector('.user-email')?.textContent.toLowerCase() || '';
                         const userRole = row.querySelector('.role-badge')?.textContent.toLowerCase() || '';
                         const userCourse = row.querySelector('.user-course-cell')?.textContent.toLowerCase() || '';
                         const userYear = row.querySelector('.user-year-cell')?.textContent.toLowerCase() || '';
 
                         // Check if any field contains the search term
                         const isMatch = userName.includes(searchTerm) ||
-
+                            userEmail.includes(searchTerm) ||
                             userRole.includes(searchTerm) ||
                             userCourse.includes(searchTerm) ||
                             userYear.includes(searchTerm);
@@ -1148,18 +665,18 @@ document.addEventListener('DOMContentLoaded', function () {
                             const newRow = document.createElement('tr');
                             newRow.id = 'noSearchResults';
                             newRow.innerHTML = `
-                                                <td colspan="7" class="no-data">
-                                                    <div class="empty-users">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
-                                                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                                        </svg>
-                                                        <h5>No matching users</h5>
-                                                        <p>Try a different search term</p>
-                                                    </div>
-                                                </td>
-                                            `;
+                                <td colspan="7" class="no-data">
+                                    <div class="empty-users">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+                                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                        </svg>
+                                        <h5>No matching users</h5>
+                                        <p>Try a different search term</p>
+                                    </div>
+                                </td>
+                            `;
                             tableBody.appendChild(newRow);
                         }
                     } else if (noResultsRow) {
@@ -1177,7 +694,299 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         });
-    </script>
 
+        // Add User Modal functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            // Elements for Add User Modal
+            const addUserModal = document.getElementById('addUserModal');
+            const addUserModalBackdrop = document.getElementById('addUserModalBackdrop');
+            const closeAddUserModalBtn = document.getElementById('closeAddUserModalBtn');
+            const cancelAddUserBtn = document.getElementById('cancelAddUserBtn');
+            const openAddUserBtn = document.getElementById('openAddUserBtn');
+            const addUserForm = document.getElementById('addUserForm');
+
+            // File input elements
+            const fileInput = document.getElementById('avatar');
+            const fileUploadArea = document.querySelector('.file-upload-area');
+            const uploadPlaceholder = document.querySelector('.upload-placeholder');
+            const fileSelected = document.getElementById('fileSelected');
+            const selectedFileName = document.getElementById('selectedFileName');
+            const selectedFileSize = document.getElementById('selectedFileSize');
+            const removeFileBtn = document.getElementById('removeFile');
+
+            // Show modal
+            const showModal = () => {
+                addUserModal.classList.add('show');
+                addUserModalBackdrop.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            };
+
+            // Close modal
+            const closeModal = () => {
+                addUserModal.classList.remove('show');
+                addUserModalBackdrop.classList.remove('show');
+                document.body.style.overflow = '';
+                resetForm();
+            };
+
+            // Reset form and clear validation errors
+            const resetForm = () => {
+                addUserForm.reset();
+                hideFileSelected();
+                clearValidationErrors();
+            };
+
+            const clearValidationErrors = () => {
+                const errorFields = addUserForm.querySelectorAll('.invalid-feedback');
+                errorFields.forEach(field => field.textContent = '');
+            };
+
+            // File input functionality
+            const showFileSelected = function (file) {
+                const fileSize = formatFileSize(file.size);
+                selectedFileName.textContent = file.name;
+                selectedFileSize.textContent = fileSize;
+
+                uploadPlaceholder.style.display = 'none';
+                fileSelected.style.display = 'flex';
+            };
+
+            const hideFileSelected = function () {
+                uploadPlaceholder.style.display = 'flex';
+                fileSelected.style.display = 'none';
+            };
+
+            const formatFileSize = function (bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            };
+
+            // File input events
+            if (fileInput) {
+                fileInput.addEventListener('change', function () {
+                    if (this.files.length > 0) {
+                        const file = this.files[0];
+                        if (validateFile(file)) {
+                            showFileSelected(file);
+                        }
+                    }
+                });
+            }
+
+            if (removeFileBtn) {
+                removeFileBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    fileInput.value = '';
+                    hideFileSelected();
+                });
+            }
+
+            // File validation
+            const validateFile = function (file) {
+                const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+                const maxSize = 2 * 1024 * 1024; // 2MB
+
+                if (!allowedTypes.includes(file.type)) {
+                    showFieldError('avatar-error', 'Please select a valid image file (PNG, JPG, JPEG)');
+                    return false;
+                }
+
+                if (file.size > maxSize) {
+                    showFieldError('avatar-error', 'File size must be less than 2MB');
+                    return false;
+                }
+
+                clearFieldError('avatar-error');
+                return true;
+            };
+
+            const showFieldError = function (errorId, message) {
+                const errorElement = document.getElementById(errorId);
+                if (errorElement) {
+                    errorElement.textContent = message;
+                }
+            };
+
+            const clearFieldError = function (errorId) {
+                const errorElement = document.getElementById(errorId);
+                if (errorElement) {
+                    errorElement.textContent = '';
+                }
+            };
+
+            // Event Listeners for modal open/close
+            openAddUserBtn.addEventListener('click', showModal);
+            closeAddUserModalBtn.addEventListener('click', closeModal);
+            cancelAddUserBtn.addEventListener('click', closeModal);
+            addUserModalBackdrop.addEventListener('click', closeModal);
+
+            // ESC key closes modal
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && addUserModal.classList.contains('show')) {
+                    closeModal();
+                }
+            });
+
+            // Role, Year, Course selects
+            const roleSelect = document.getElementById('role');
+            const yearSelect = document.getElementById('year_id');
+            const courseSelect = document.getElementById('course_id');
+
+            // Helper: Set select value to N/A (empty string or option with value="")
+            function setToNA(selectElement) {
+                const naOption = Array.from(selectElement.options).find(opt => opt.value === "");
+                if (naOption) {
+                    selectElement.value = naOption.value;
+                } else {
+                    selectElement.selectedIndex = 0;
+                }
+            }
+
+            // Toggle year and course inputs based on role
+            function toggleFieldsBasedOnRole() {
+                const isAdmin = roleSelect.value === 'admin';
+
+                if (isAdmin) {
+                    setToNA(yearSelect);
+                    setToNA(courseSelect);
+                    yearSelect.disabled = true;
+                    courseSelect.disabled = true;
+                } else {
+                    yearSelect.disabled = false;
+                    courseSelect.disabled = false;
+                }
+            }
+
+            // Initial call on page load
+            toggleFieldsBasedOnRole();
+
+            // Add event listener on role select change
+            roleSelect.addEventListener('change', toggleFieldsBasedOnRole);
+        });
+
+        // Edit User Modal functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            // Modal elements
+            const editUserModal = document.getElementById('editUserModal');
+            const editUserModalBackdrop = document.getElementById('editUserModalBackdrop');
+            const closeEditUserModalBtn = document.getElementById('closeEditUserModalBtn');
+            const cancelEditUserBtn = document.getElementById('cancelEditUserBtn');
+            const editUserForm = document.getElementById('editUserForm');
+
+            // Form selects
+            const yearSelect = document.getElementById('edit-year');
+            const courseSelect = document.getElementById('edit-course');
+            const roleSelect = document.getElementById('editRole');
+
+            // Show modal
+            const showEditModal = () => {
+                editUserModal.classList.add('show');
+                editUserModalBackdrop.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            };
+
+            // Close modal
+            const closeEditModal = () => {
+                editUserModal.classList.remove('show');
+                editUserModalBackdrop.classList.remove('show');
+                document.body.style.overflow = '';
+                resetEditForm();
+            };
+
+            // Reset form and clear validation
+            const resetEditForm = () => {
+                editUserForm.reset();
+                clearEditValidationErrors();
+            };
+
+            const clearEditValidationErrors = () => {
+                const errorFields = editUserForm.querySelectorAll('.invalid-feedback');
+                errorFields.forEach(field => field.textContent = '');
+            };
+
+            // Event Listeners for modal close
+            closeEditUserModalBtn.addEventListener('click', closeEditModal);
+            cancelEditUserBtn.addEventListener('click', closeEditModal);
+            editUserModalBackdrop.addEventListener('click', closeEditModal);
+
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && editUserModal.classList.contains('show')) {
+                    closeEditModal();
+                }
+            });
+
+            // Set select to N/A or empty value
+            function setToNA(selectElement) {
+                const naOption = Array.from(selectElement.options).find(opt => opt.value === "" || opt.text.toLowerCase() === "n/a");
+                if (naOption) {
+                    selectElement.value = naOption.value;
+                } else {
+                    selectElement.selectedIndex = 0;
+                }
+            }
+
+            // Toggle year and course based on role and year values
+            function toggleFieldsBasedOnRole() {
+                const isAdmin = roleSelect.value === 'admin';
+
+                if (isAdmin) {
+                    setToNA(yearSelect);
+                    setToNA(courseSelect);
+                    yearSelect.disabled = true;
+                    courseSelect.disabled = true;
+                } else {
+                    yearSelect.disabled = false;
+                    // Enable course only if year is valid (not empty or 0 or "incoming")
+                    courseSelect.disabled = !yearSelect.value || yearSelect.value === '0' || yearSelect.value.toLowerCase() === 'incoming';
+                }
+            }
+
+            // Handle year change: disables/enables course accordingly
+            function handleYearChange() {
+                if (!yearSelect.value || yearSelect.value === '0' || yearSelect.value.toLowerCase() === 'incoming' || yearSelect.value === 'N/A') {
+                    courseSelect.value = '';
+                    courseSelect.disabled = true;
+                } else if (roleSelect.value !== 'admin') {
+                    courseSelect.disabled = false;
+                }
+            }
+
+            // Listen for changes
+            roleSelect.addEventListener('change', function() {
+                toggleFieldsBasedOnRole();
+            });
+
+            yearSelect.addEventListener('change', function() {
+                handleYearChange();
+            });
+
+            // Initial state on load
+            toggleFieldsBasedOnRole();
+
+            // Expose function to populate modal with user data and show modal
+            window.populateEditModal = function (userId) {
+                const userRow = document.querySelector(`.user-row[data-user-id="${userId}"]`);
+                if (!userRow) return;
+
+                document.getElementById('editName').value = userRow.querySelector('.user-name')?.textContent.trim() || '';
+                document.getElementById('editEmail').value = userRow.querySelector('.user-email')?.textContent.trim() || '';
+                document.getElementById('editRole').value = userRow.querySelector('.role-badge')?.textContent.trim().toLowerCase() || '';
+                document.getElementById('editStatus').value = userRow.querySelector('.status-badge')?.textContent.trim().toLowerCase() || '';
+                document.getElementById('edit-year').value = userRow.querySelector('.user-year-cell')?.getAttribute('data-year-id') || '';
+                document.getElementById('edit-course').value = userRow.querySelector('.user-course-cell')?.getAttribute('data-course-id') || '';
+
+                // Make sure controls are correctly enabled/disabled based on loaded role/year
+                toggleFieldsBasedOnRole();
+                handleYearChange();
+
+                editUserForm.action = `/admin/user_crud/update/${userId}`;
+
+                showEditModal();
+            };
+        });
+    </script>
 
 @endsection

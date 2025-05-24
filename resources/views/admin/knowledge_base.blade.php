@@ -1261,7 +1261,7 @@
 
                 rows.forEach(row => {
                     const docTitle = row.querySelector('.doc-title')?.textContent.toLowerCase() || '';
-                
+
                     const docCategory = row.querySelector('.category-badge')?.getAttribute('data-category-id') || '';
 
                     const matchesSearch = !searchTerm ||

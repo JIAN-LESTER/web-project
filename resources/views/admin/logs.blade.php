@@ -8,39 +8,16 @@
     <!-- Include Custom CSS -->
     <link rel="stylesheet" href="{{ asset('admin/logs.css') }}">
 
-    <style>
-        html {
-            overflow: hidden;
-        }
-
-        .filter-dropdown {
-            position: relative;
-            z-index: 1050;
-            /* Bootstrap default dropdown z-index */
-        }
-
-        /* Prevent clipping from table wrapper */
-        .logs-table-wrapper {
-            position: relative;
-            overflow: visible !important;
-            /* override any overflow:hidden */
-            z-index: 1;
-        }
-
-    
-    </style>
-
-    <div class="container-fluid logs-container">
-        <div class="logs-header">
+    <div class="container-fluid page-container">
+        <div class="page-header">
             <div class="row align-items-center">
                 <div class="col-md-6">
-                    <h1 class="logs-title">User Activity Logs</h1>
-                    <p class="logs-subtitle">Track user interactions and system events</p>
+                    <h1 class="page-title">User Activity Logs</h1>
+                    <p class="page-subtitle">Track user interactions and system events</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="action-buttons">
-
-                        <button id="refreshLogs" class="btn">
+                        <button id="refreshLogs" class="btn primary-btn">
                             <i class="fas fa-sync-alt"></i>Refresh
                         </button>
                     </div>
@@ -48,90 +25,31 @@
             </div>
         </div>
 
-        <div class="logs-card">
+        <div class="main-card">
             <div class="card-body">
                 <div class="row mb-4">
-                    <div class="col-lg-8 col-md-7">
-                        <form method="GET" action="{{ route('admin.logs') }}" id="searchForm">
-                            <div class="row g-2 align-items-center">
-                                <!-- Search input + button -->
-                                <div class="col-lg-8 col-md-7 d-flex">
+                    <div class="col-lg-8">
+                        <form method="GET" action="{{ route('admin.logs') }}" class="search-form" id="searchForm">
+                            <div class="row g-2">
+                                <div class="col-lg-8 col-md-7">
                                     <input type="text" name="search" class="form-control" id="liveSearch"
                                         placeholder="Search by user, action, or date..." value="{{ request('search') }}">
-
                                 </div>
-
-                                <!-- Filter dropdown -->
                                 <div class="col-lg-4 col-md-5">
-                                    <div class="dropdown filter-dropdown">
-                                        <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
-                                            id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fas fa-filter"></i> Filter Options
-                                        </button>
-
-                                        <ul class="dropdown-menu p-3 shadow-sm w-100" aria-labelledby="filterDropdown" style="background-color: white !important;
-            color: #212529 !important;">
-                                            <!-- Filter Type -->
-                                            <li class="mb-3">
-                                                <h6 class="text-secondary fw-semibold mb-2">Filter Type</h6>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="filter" value="user"
-                                                        id="filterUser" {{ request('filter') == 'user' ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="filterUser">User</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="filter"
-                                                        value="action" id="filterAction" {{ request('filter') == 'action' ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="filterAction">Action</label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="filter" value="all"
-                                                        id="filterAll" {{ request('filter', 'all') == 'all' ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="filterAll">All</label>
-                                                </div>
-                                            </li>
-
-                                            <!-- Date Range -->
-                                            <li class="mb-3">
-                                                <h6 class="text-secondary fw-semibold mb-2">Date Range</h6>
-                                                <div class="row g-2">
-                                                    <div class="col-6">
-                                                        <label for="startDate" class="form-label">From</label>
-                                                        <input type="date" id="startDate" name="start_date"
-                                                            class="form-control form-control-sm"
-                                                            value="{{ request('start_date') }}">
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <label for="endDate" class="form-label">To</label>
-                                                        <input type="date" id="endDate" name="end_date"
-                                                            class="form-control form-control-sm"
-                                                            value="{{ request('end_date') }}">
-                                                    </div>
-                                                </div>
-                                            </li>
-
-                                            <!-- Buttons -->
-                                            <li class="d-flex justify-content-between mt-3">
-                                                <button type="submit" class="btn btn-sm btn-primary">
-                                                    <i class="fas fa-filter me-1"></i> Apply
-                                                </button>
-                                                <a href="{{ route('admin.logs') }}"
-                                                    class="btn btn-sm btn-outline-secondary">
-                                                    <i class="fas fa-times me-1"></i> Clear
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <select name="filter" class="form-control category-filter" id="filterDropdown">
+                                        <option value="all" {{ request('filter', 'all') == 'all' ? 'selected' : '' }}>All Activities</option>
+                                        <option value="user" {{ request('filter') == 'user' ? 'selected' : '' }}>User Actions</option>
+                                        <option value="action" {{ request('filter') == 'action' ? 'selected' : '' }}>System Actions</option>
+                                        <option value="login" {{ request('filter') == 'login' ? 'selected' : '' }}>Login Activities</option>
+                                    </select>
                                 </div>
                             </div>
                         </form>
-
                     </div>
-
                 </div>
 
-                <div class="logs-table-wrapper mt-4">
-                    <table class="table logs-table">
+                <div class="table-wrapper">
+                    <table class="table data-table">
                         <thead>
                             <tr>
                                 <th class="sortable col-id" data-sort="id">
@@ -158,61 +76,61 @@
                         </thead>
                         <tbody>
                             @forelse($logs as $log)
-                                                <tr class="log-row" data-log-id="{{ $log->logID }}" style="--i: {{ $loop->index }}">
-                                                    <td class="log-id">{{ $log->logID }}</td>
-                                                    <td class="log-user">
-                                                        <div class="user-info">
-                                                            <div class="user-avatar">
-                                                                {{ substr($log->user->name ?? 'U', 0, 1) }}
-                                                            </div>
-                                                            <div class="user-details">
-                                                                <div class="user-name">{{ $log->user->name ?? 'Unknown User' }}</div>
-                                                                <div class="user-email">{{ $log->user->email ?? '' }}</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td class="log-action">
-                                                        @php
-                                                            $actionClass = '';
-
-                                                            if (stripos($log->action_type, 'login') !== false) {
-                                                                $actionClass = 'action-login';
-                                                            } elseif (stripos($log->action_type, 'verified') !== false) {
-                                                                $actionClass = 'action-verified';
-                                                            } elseif (stripos($log->action_type, 'register') !== false || stripos($log->action_type, 'account') !== false) {
-                                                                $actionClass = 'action-register';
-                                                            } elseif (stripos($log->action_type, 'attempt') !== false) {
-                                                                $actionClass = 'action-attempt';
-                                                            } else {
-                                                                $actionClass = 'action-other';
-                                                            }
-                                                        @endphp
-
-                                                        <span class="action-badge {{ $actionClass }}">
-                                                            {{ $log->action_type }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="log-timestamp">
-                                                        <div class="timestamp-group">
-                                                            <div class="log-date">
-                                                                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->created_at)
-                                ->subHours(8)
-                                ->timezone('Asia/Manila')
-                                ->format('F j, Y') }}
-                                                            </div>
-                                                            <div class="log-time">
-                                                                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->created_at)
-                                ->subHours(8)
-                                ->timezone('Asia/Manila')
-                                ->format('h:i A') }}
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                <tr class="data-row" data-log-id="{{ $log->logID }}" style="--i: {{ $loop->index }}">
+                                    <td class="log-id-cell">
+                                        <span class="log-id-badge">{{ $log->logID }}</span>
+                                    </td>
+                                    <td class="log-user-cell">
+                                        <div class="user-info">
+                                            <div class="user-avatar">
+                                                {{ substr($log->user->name ?? 'U', 0, 1) }}
+                                            </div>
+                                            <div class="user-details">
+                                                <div class="user-name">{{ $log->user->name ?? 'Unknown User' }}</div>
+                                                <div class="user-email">{{ $log->user->email ?? '' }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="log-action-cell">
+                                        @php
+                                            $actionClass = '';
+                                            if (stripos($log->action_type, 'login') !== false) {
+                                                $actionClass = 'action-login';
+                                            } elseif (stripos($log->action_type, 'verified') !== false) {
+                                                $actionClass = 'action-verified';
+                                            } elseif (stripos($log->action_type, 'register') !== false || stripos($log->action_type, 'account') !== false) {
+                                                $actionClass = 'action-register';
+                                            } elseif (stripos($log->action_type, 'attempt') !== false) {
+                                                $actionClass = 'action-attempt';
+                                            } else {
+                                                $actionClass = 'action-other';
+                                            }
+                                        @endphp
+                                        <span class="badge {{ $actionClass }}">
+                                            {{ $log->action_type }}
+                                        </span>
+                                    </td>
+                                    <td class="log-timestamp-cell">
+                                        <div class="timestamp-group">
+                                            <div class="log-date">
+                                                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->created_at)
+                                                    ->subHours(8)
+                                                    ->timezone('Asia/Manila')
+                                                    ->format('M j, Y') }}
+                                            </div>
+                                            <div class="log-time">
+                                                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->created_at)
+                                                    ->subHours(8)
+                                                    ->timezone('Asia/Manila')
+                                                    ->format('h:i A') }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
                             @empty
                                 <tr>
                                     <td colspan="4" class="no-data">
-                                        <div class="empty-logs">
+                                        <div class="empty-state">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                 stroke-linejoin="round" class="empty-icon">
@@ -234,8 +152,7 @@
 
                 <div class="pagination-wrapper">
                     <div class="pagination-info">
-                        Showing {{ $logs->firstItem() ?? 0 }} to {{ $logs->lastItem() ?? 0 }} of {{ $logs->total() }}
-                        results
+                        Showing {{ $logs->firstItem() ?? 0 }} to {{ $logs->lastItem() ?? 0 }} of {{ $logs->total() }} results
                     </div>
                     <div class="pagination">
                         <!-- Left arrow -->
@@ -263,80 +180,52 @@
     </div>
 
     <!-- Log Details Panel -->
-    <div class="log-details-panel" id="logDetailsPanel">
-        <div class="log-details-header">
-            <h5 class="log-details-title">Log Details</h5>
-            <button type="button" class="log-details-close" id="closeLogDetails">
+    <div class="details-panel" id="logDetailsPanel">
+        <div class="details-header">
+            <h5 class="details-title">Log Details</h5>
+            <button type="button" class="details-close" id="closeLogDetails">
                 <i class="fas fa-times"></i>
             </button>
         </div>
-        <div class="log-details-content">
-            <div class="log-details-section">
-                <h6 class="log-details-section-title">Basic Information</h6>
-                <div class="log-detail-item">
+        <div class="details-content">
+            <div class="details-section">
+                <h6 class="details-section-title">Basic Information</h6>
+                <div class="detail-item">
                     <span class="detail-label">Log ID:</span>
                     <span class="detail-value highlight" id="panel-log-id"></span>
                 </div>
-                <div class="log-detail-item">
+                <div class="detail-item">
                     <span class="detail-label">User:</span>
                     <span class="detail-value" id="panel-user"></span>
                 </div>
-                <div class="log-detail-item">
+                <div class="detail-item">
                     <span class="detail-label">Email:</span>
                     <span class="detail-value" id="panel-email"></span>
                 </div>
             </div>
 
-            <div class="log-details-section">
-                <h6 class="log-details-section-title">Activity Details</h6>
-                <div class="log-detail-item">
+            <div class="details-section">
+                <h6 class="details-section-title">Activity Details</h6>
+                <div class="detail-item">
                     <span class="detail-label">Action:</span>
                     <span class="detail-value highlight" id="panel-action"></span>
                 </div>
-                <div class="log-detail-item">
+                <div class="detail-item">
                     <span class="detail-label">Date & Time:</span>
                     <span class="detail-value" id="panel-timestamp"></span>
                 </div>
             </div>
-
-            <div class="log-details-section">
-                <h6 class="log-details-section-title">Technical Details</h6>
-                <div class="log-detail-item">
-                    <span class="detail-label">IP Address:</span>
-                    <div class="detail-value">
-                        <div class="ip-address-info">
-                            <i class="fas fa-globe info-icon"></i>
-                            <div class="info-details">
-                                <span class="info-main" id="panel-ip">192.168.1.1</span>
-                                <span class="info-secondary">Local Network</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="log-detail-item">
-                    <span class="detail-label">Browser:</span>
-                    <div class="detail-value">
-                        <div class="browser-info">
-                            <i class="fab fa-chrome info-icon"></i>
-                            <div class="info-details">
-                                <span class="info-main" id="panel-browser">Chrome</span>
-                                <span class="info-secondary" id="panel-os">Windows</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-        <div class="log-details-footer">
-            <button type="button" class="btn btn-secondary" id="panelCloseBtn">Close</button>
+        <div class="details-footer">
+            <button type="button" class="btn secondary-btn" id="panelCloseBtn">Close</button>
         </div>
     </div>
-    <div class="log-details-backdrop" id="logDetailsBackdrop"></div>
+    <div class="details-backdrop" id="logDetailsBackdrop"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Make table rows clickable to show details
-            const logRows = document.querySelectorAll('.log-row');
+            const logRows = document.querySelectorAll('.data-row');
             const logDetailsPanel = document.getElementById('logDetailsPanel');
             const logDetailsBackdrop = document.getElementById('logDetailsBackdrop');
 
@@ -345,7 +234,7 @@
                     const logId = this.getAttribute('data-log-id');
                     const userName = this.querySelector('.user-name')?.textContent || 'Unknown';
                     const userEmail = this.querySelector('.user-email')?.textContent || '';
-                    const action = this.querySelector('.action-badge')?.textContent.trim() || '';
+                    const action = this.querySelector('.badge')?.textContent.trim() || '';
                     const date = this.querySelector('.log-date')?.textContent || '';
                     const time = this.querySelector('.log-time')?.textContent || '';
 
@@ -356,68 +245,11 @@
                     document.getElementById('panel-action').textContent = action;
                     document.getElementById('panel-timestamp').textContent = `${date} at ${time}`;
 
-                    // Set browser info with separate OS
-                    const browserInfo = getBrowserInfo();
-                    document.getElementById('panel-browser').textContent = browserInfo.browser;
-                    document.getElementById('panel-os').textContent = browserInfo.os;
-
-                    // Set IP info - in a real app, this would come from the server
-                    document.getElementById('panel-ip').textContent = '192.168.1.1';
-
-                    // Set appropriate icon for browser
-                    const browserIcon = document.querySelector('.browser-info .info-icon');
-                    if (browserInfo.browser.toLowerCase().includes('chrome')) {
-                        browserIcon.className = 'fab fa-chrome info-icon';
-                    } else if (browserInfo.browser.toLowerCase().includes('firefox')) {
-                        browserIcon.className = 'fab fa-firefox info-icon';
-                    } else if (browserInfo.browser.toLowerCase().includes('edge')) {
-                        browserIcon.className = 'fab fa-edge info-icon';
-                    } else if (browserInfo.browser.toLowerCase().includes('safari')) {
-                        browserIcon.className = 'fab fa-safari info-icon';
-                    } else {
-                        browserIcon.className = 'fas fa-globe info-icon';
-                    }
-
                     // Show panel and backdrop
                     logDetailsPanel.classList.add('show');
                     logDetailsBackdrop.classList.add('show');
                 });
             });
-
-            // Function to detect browser and OS
-            function getBrowserInfo() {
-                const userAgent = navigator.userAgent;
-                let browser = "Unknown";
-                let os = "Unknown";
-
-                // Detect browser
-                if (userAgent.indexOf("Firefox") > -1) {
-                    browser = "Firefox";
-                } else if (userAgent.indexOf("Chrome") > -1) {
-                    browser = "Chrome";
-                } else if (userAgent.indexOf("Safari") > -1) {
-                    browser = "Safari";
-                } else if (userAgent.indexOf("Edge") > -1) {
-                    browser = "Edge";
-                } else if (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1) {
-                    browser = "Internet Explorer";
-                }
-
-                // Detect OS
-                if (userAgent.indexOf("Win") > -1) {
-                    os = "Windows";
-                } else if (userAgent.indexOf("Mac") > -1) {
-                    os = "MacOS";
-                } else if (userAgent.indexOf("Linux") > -1) {
-                    os = "Linux";
-                } else if (userAgent.indexOf("Android") > -1) {
-                    os = "Android";
-                } else if (userAgent.indexOf("iOS") > -1 || userAgent.indexOf("iPhone") > -1 || userAgent.indexOf("iPad") > -1) {
-                    os = "iOS";
-                }
-
-                return { browser, os };
-            }
 
             // Close panel functionality
             const closePanel = function () {
@@ -437,7 +269,7 @@
                 }
             });
 
-            // Add loading spinner functionality
+            // Add loading spinner functionality for refresh button
             document.getElementById('refreshLogs').addEventListener('click', function () {
                 this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Refreshing...';
                 this.disabled = true;
@@ -446,123 +278,36 @@
                 }, 800);
             });
 
-            // Add CSV export functionality
-            document.getElementById('exportCSV').addEventListener('click', function () {
-                // Show loading state
-                const originalText = this.innerHTML;
-                this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Exporting...';
-                this.disabled = true;
+            // Filter functionality (simplified for dropdown)
+            const filterDropdown = document.getElementById('filterDropdown');
+            if (filterDropdown) {
+                filterDropdown.addEventListener('change', function () {
+                    const currentUrl = new URL(window.location.href);
 
-                // Get current applied filters to pass to the export endpoint
-                const filterBoxes = document.querySelectorAll('.filter-check:checked');
-                const startDate = document.getElementById('startDate').value;
-                const endDate = document.getElementById('endDate').value;
-                const searchTerm = document.querySelector('.search-input').value;
+                    // Clear existing filter param
+                    currentUrl.searchParams.delete('filter');
 
-                // Build query parameters
-                let params = new URLSearchParams();
-                if (searchTerm) params.append('search', searchTerm);
-                if (startDate) params.append('start_date', startDate);
-                if (endDate) params.append('end_date', endDate);
-
-                // Add selected actions
-                filterBoxes.forEach(box => {
-                    params.append('actions[]', box.value);
-                });
-
-                // Make a request to the export endpoint
-                fetch(`/admin/logs/export?${params.toString()}`, {
-                    method: 'GET',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'text/csv'
+                    // Add selected filter if not 'all'
+                    if (this.value && this.value !== 'all') {
+                        currentUrl.searchParams.set('filter', this.value);
                     }
-                })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.blob();
-                    })
-                    .then(blob => {
-                        // Create a download link and trigger it
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.style.display = 'none';
-                        a.href = url;
 
-                        // Get current date for filename
-                        const date = new Date();
-                        const formattedDate = date.getFullYear() + '-' +
-                            ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
-                            ('0' + date.getDate()).slice(-2);
-
-                        a.download = `user_activity_logs_${formattedDate}.csv`;
-                        document.body.appendChild(a);
-                        a.click();
-                        window.URL.revokeObjectURL(url);
-
-                        // Reset button
-                        this.innerHTML = originalText;
-                        this.disabled = false;
-                    })
-                    .catch(error => {
-                        console.error('Error exporting CSV:', error);
-
-                        // Reset button
-                        this.innerHTML = originalText;
-                        this.disabled = false;
-
-                        // Show error message
-                        alert('An error occurred while exporting logs. Please try again.');
-                    });
-            });
-
-            // Add filter functionality
-            document.getElementById('applyFilters').addEventListener('click', function () {
-                const filterBoxes = document.querySelectorAll('.filter-check:checked');
-                const startDate = document.getElementById('startDate').value;
-                const endDate = document.getElementById('endDate').value;
-
-                // Create filter pills display
-                let activeFilters = [];
-                filterBoxes.forEach(box => activeFilters.push(box.value));
-
-                if (startDate) activeFilters.push(`From: ${startDate}`);
-                if (endDate) activeFilters.push(`To: ${endDate}`);
-
-                if (activeFilters.length > 0) {
-                    alert(`Filters applied: ${activeFilters.join(', ')}`);
-                    // Here you would actually apply the filters via AJAX or form submit
-                }
-
-                // Close dropdown
-                const dropdownToggle = document.querySelector('.dropdown-toggle');
-                const bsDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
-                if (bsDropdown) {
-                    bsDropdown.hide();
-                }
-            });
-
-            // Clear filters
-            document.getElementById('clearFilters').addEventListener('click', function () {
-                document.querySelectorAll('.filter-check').forEach(el => el.checked = false);
-                document.getElementById('startDate').value = '';
-                document.getElementById('endDate').value = '';
-            });
+                    window.location.href = currentUrl.toString();
+                });
+            }
 
             // Add live search functionality
             const liveSearch = document.getElementById('liveSearch');
             if (liveSearch) {
                 liveSearch.addEventListener('input', function () {
                     const searchTerm = this.value.toLowerCase();
-                    const rows = document.querySelectorAll('.log-row');
+                    const rows = document.querySelectorAll('.data-row');
 
                     rows.forEach(row => {
                         const userName = row.querySelector('.user-name')?.textContent.toLowerCase() || '';
                         const userEmail = row.querySelector('.user-email')?.textContent.toLowerCase() || '';
-                        const logId = row.querySelector('.log-id')?.textContent.toLowerCase() || '';
-                        const action = row.querySelector('.action-badge')?.textContent.toLowerCase() || '';
+                        const logId = row.querySelector('.log-id-badge')?.textContent.toLowerCase() || '';
+                        const action = row.querySelector('.badge')?.textContent.toLowerCase() || '';
 
                         // Check if any field contains the search term
                         const isMatch = userName.includes(searchTerm) ||
@@ -575,8 +320,8 @@
                     });
 
                     // Check if no results found
-                    const visibleRows = document.querySelectorAll('.log-row[style="display: none;"]');
-                    const tableBody = document.querySelector('.logs-table tbody');
+                    const visibleRows = document.querySelectorAll('.data-row[style="display: none;"]');
+                    const tableBody = document.querySelector('.data-table tbody');
                     const noResultsRow = document.getElementById('noSearchResults');
 
                     if (visibleRows.length === rows.length && searchTerm !== '') {
@@ -585,18 +330,18 @@
                             const newRow = document.createElement('tr');
                             newRow.id = 'noSearchResults';
                             newRow.innerHTML = `
-                                                <td colspan="4" class="no-data">
-                                                    <div class="empty-logs">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
-                                                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                                        </svg>
-                                                        <h5>No matching logs</h5>
-                                                        <p>Try a different search term</p>
-                                                    </div>
-                                                </td>
-                                            `;
+                                <td colspan="4" class="no-data">
+                                    <div class="empty-state">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+                                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                        </svg>
+                                        <h5>No matching logs</h5>
+                                        <p>Try a different search term</p>
+                                    </div>
+                                </td>
+                            `;
                             tableBody.appendChild(newRow);
                         }
                     } else if (noResultsRow) {
@@ -613,6 +358,8 @@
                     }
                 });
             }
+
+            // Add sorting functionality
             const sortHeaders = document.querySelectorAll('.sortable');
             sortHeaders.forEach(header => {
                 header.addEventListener('click', function () {
@@ -632,10 +379,14 @@
                     this.setAttribute('data-direction', newDirection);
                     this.querySelector('i').className = `fas fa-sort-${newDirection === 'asc' ? 'up' : 'down'}`;
 
-                    // Here you would actually perform the sorting via AJAX or form submit
-                    alert(`Sorting by ${sort} (${newDirection})`);
+                    // Add actual sorting logic (you can implement AJAX or form submit here)
+                    const currentUrl = new URL(window.location.href);
+                    currentUrl.searchParams.set('sort', sort);
+                    currentUrl.searchParams.set('direction', newDirection);
+                    window.location.href = currentUrl.toString();
                 });
             });
         });
     </script>
+
 @endsection

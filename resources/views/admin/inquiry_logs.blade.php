@@ -6,39 +6,24 @@
     <!-- Include Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Include Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('admin/logs.css') }}">
-
-    <style>
-          html {
-            overflow: hidden;
-        }
-
-        .filter-dropdown {
-            position: relative;
-            z-index: 1050;
-            /* Bootstrap default dropdown z-index */
-        }
-
-        /* Prevent clipping from table wrapper */
-        .logs-table-wrapper {
-            position: relative;
-            overflow: visible !important;
-            /* override any overflow:hidden */
-            z-index: 1;
-        }
-
-   
-    </style>
+    <link rel="stylesheet" href="{{ asset('admin/inquiry_logs.css') }}">
 
     <div class="container-fluid logs-container">
         <div class="logs-header">
             <div class="row align-items-center">
                 <div class="col-md-6">
                     <h1 class="logs-title">User Inquiry Logs</h1>
-                    <p class="logs-subtitle">Track user messages</p>
+                    <p class="logs-subtitle">Track user messages and inquiries</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-
+                    <div class="action-buttons">
+                        <button id="refreshLogs" class="btn primary-btn">
+                            <i class="fas fa-sync-alt"></i>Refresh
+                        </button>
+                        <button id="exportCSV" class="btn secondary-btn">
+                            <i class="fas fa-download"></i>Export CSV
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,25 +31,21 @@
         <div class="logs-card">
             <div class="card-body">
                 <div class="row mb-4">
-                    <div class="col-lg-8 col-md-7">
-                        <form method="GET" action="{{ route('admin.inquiry_logs') }}" class="logs-search-form"
-                            id="searchForm">
-                            <div class="row g-2 align-items-center">
-                            <div class="col-lg-8 col-md-7 d-flex">
-                                <input type="text" name="search" class="form-control " id="liveSearch"
-                                    placeholder="Search by user, action, or ID..." value="{{ request('search') }}">
-                              
-                            </div>
-
-                            <div class="col-lg-4 col-md-5">
+                    <div class="col-lg-8">
+                        <form method="GET" action="{{ route('admin.inquiry_logs') }}" class="logs-search-form" id="searchForm">
+                            <div class="row g-2">
+                                <div class="col-lg-8 col-md-7">
+                                    <input type="text" name="search" class="form-control" id="liveSearch"
+                                        placeholder="Search by user, message, or ID..." value="{{ request('search') }}">
+                                </div>
+                                <div class="col-lg-4 col-md-5">
                                     <div class="dropdown filter-dropdown">
                                         <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button"
                                             id="filterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fas fa-filter"></i> Filter Options
                                         </button>
 
-                                        <ul class="dropdown-menu p-3 shadow-sm w-100" aria-labelledby="filterDropdown" style="background-color: white !important;
-            color: #212529 !important;">
+                                        <ul class="dropdown-menu p-3 shadow-sm" aria-labelledby="filterDropdown">
                                             <!-- Filter Type -->
                                             <li class="mb-3">
                                                 <h6 class="text-secondary fw-semibold mb-2">Filter Type</h6>
@@ -75,8 +56,8 @@
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="filter"
-                                                        value="action" id="filterAction" {{ request('filter') == 'message' ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="filterAction">Message</label>
+                                                        value="message" id="filterMessage" {{ request('filter') == 'message' ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="filterMessage">Message</label>
                                                 </div>
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio" name="filter" value="all"
@@ -109,7 +90,7 @@
                                                 <button type="submit" class="btn btn-sm btn-primary">
                                                     <i class="fas fa-filter me-1"></i> Apply
                                                 </button>
-                                                <a href="{{ route('admin.logs') }}"
+                                                <a href="{{ route('admin.inquiry_logs') }}"
                                                     class="btn btn-sm btn-outline-secondary">
                                                     <i class="fas fa-times me-1"></i> Clear
                                                 </a>
@@ -117,16 +98,11 @@
                                         </ul>
                                     </div>
                                 </div>
-                                
-
-
-                                </div>
-
-
+                            </div>
                         </form>
                     </div>
-                    </div>
-                   
+                </div>
+
                 <div class="logs-table-wrapper">
                     <table class="table logs-table">
                         <thead>
@@ -141,7 +117,7 @@
                                         User <i class="fas fa-sort"></i>
                                     </div>
                                 </th>
-                                <th class="sortable col-action" data-sort="action">
+                                <th class="sortable col-action" data-sort="message">
                                     <div class="sort-header">
                                         Message <i class="fas fa-sort"></i>
                                     </div>
@@ -154,61 +130,63 @@
                             </tr>
                         </thead>
                         <tbody>
-                        @forelse($logs as $log)
-        <tr class="log-row" data-log-id="{{ $log->logID }}" style="--i: {{ $loop->index }}">
-            <td class="log-id">{{ $log->logID }}</td>
-            <td class="log-user">
-                <div class="user-info">
-                    <div class="user-avatar">
-                        {{ substr($log->user->name ?? 'U', 0, 1) }}
-                    </div>
-                    <div class="user-details">
-                        <div class="user-name">{{ $log->user->name ?? 'Unknown User' }}</div>
-                        <div class="user-email">{{ $log->user->email ?? '' }}</div>
-                    </div>
-                </div>
-            </td>
-            <td class="log-action">
-                <span class="action-badge">
-                    {{ $log->message->content }}
-                </span>
-            </td>
-            <td class="log-timestamp">
-                <div class="timestamp-group">
-                    <div class="log-date">
-                        {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->created_at)
-                            ->subHours(8)
-                            ->timezone('Asia/Manila')
-                            ->format('F j, Y') }}
-                    </div>
-                    <div class="log-time">
-                        {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->created_at)
-                            ->subHours(8)
-                            ->timezone('Asia/Manila')
-                            ->format('h:i A') }}
-                    </div>
-                </div>
-            </td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="4" class="no-data">
-                <div class="empty-logs">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="empty-icon">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                        <polyline points="14 2 14 8 20 8"></polyline>
-                        <line x1="16" y1="13" x2="8" y2="13"></line>
-                        <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
-                    </svg>
-                    <h5>No logs found</h5>
-                    <p>No matching logs with the current search criteria</p>
-                </div>
-            </td>
-        </tr>
-    @endforelse
+                            @forelse($logs as $log)
+                                <tr class="log-row" data-log-id="{{ $log->logID }}" style="--i: {{ $loop->index }}">
+                                    <td class="log-id-cell">
+                                        <span class="log-id">{{ $log->logID }}</span>
+                                    </td>
+                                    <td class="log-user-cell">
+                                        <div class="user-info">
+                                            <div class="user-avatar">
+                                                {{ substr($log->user->name ?? 'U', 0, 1) }}
+                                            </div>
+                                            <div class="user-details">
+                                                <div class="user-name">{{ $log->user->name ?? 'Unknown User' }}</div>
+                                                <div class="user-email">{{ $log->user->email ?? '' }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="log-action-cell">
+                                        <span class="action-badge">
+                                            {{ Str::limit($log->message->content ?? 'No message', 50) }}
+                                        </span>
+                                    </td>
+                                    <td class="log-timestamp-cell">
+                                        <div class="timestamp-group">
+                                            <div class="log-date">
+                                                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->created_at)
+                                                    ->subHours(8)
+                                                    ->timezone('Asia/Manila')
+                                                    ->format('M j, Y') }}
+                                            </div>
+                                            <div class="log-time">
+                                                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $log->created_at)
+                                                    ->subHours(8)
+                                                    ->timezone('Asia/Manila')
+                                                    ->format('h:i A') }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="no-data">
+                                        <div class="empty-logs">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" class="empty-icon">
+                                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                                <polyline points="14 2 14 8 20 8"></polyline>
+                                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                                <polyline points="10 9 9 9 8 9"></polyline>
+                                            </svg>
+                                            <h5>No inquiry logs found</h5>
+                                            <p>No matching logs with the current search criteria</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
@@ -246,7 +224,7 @@
     <!-- Log Details Panel -->
     <div class="log-details-panel" id="logDetailsPanel">
         <div class="log-details-header">
-            <h5 class="log-details-title">Log Details</h5>
+            <h5 class="log-details-title">Inquiry Log Details</h5>
             <button type="button" class="log-details-close" id="closeLogDetails">
                 <i class="fas fa-times"></i>
             </button>
@@ -269,10 +247,10 @@
             </div>
 
             <div class="log-details-section">
-                <h6 class="log-details-section-title">Activity Details</h6>
+                <h6 class="log-details-section-title">Message Details</h6>
                 <div class="log-detail-item">
                     <span class="detail-label">Message:</span>
-                    <span class="detail-value highlight" id="panel-action"></span>
+                    <span class="detail-value highlight" id="panel-message"></span>
                 </div>
                 <div class="log-detail-item">
                     <span class="detail-label">Date & Time:</span>
@@ -280,33 +258,7 @@
                 </div>
             </div>
 
-            <div class="log-details-section">
-                <h6 class="log-details-section-title">Technical Details</h6>
-                <div class="log-detail-item">
-                    <span class="detail-label">IP Address:</span>
-                    <div class="detail-value">
-                        <div class="ip-address-info">
-                            <i class="fas fa-globe info-icon"></i>
-                            <div class="info-details">
-                                <span class="info-main" id="panel-ip">192.168.1.1</span>
-                                <span class="info-secondary">Local Network</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="log-detail-item">
-                    <span class="detail-label">Browser:</span>
-                    <div class="detail-value">
-                        <div class="browser-info">
-                            <i class="fab fa-chrome info-icon"></i>
-                            <div class="info-details">
-                                <span class="info-main" id="panel-browser">Chrome</span>
-                                <span class="info-secondary" id="panel-os">Windows</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
         <div class="log-details-footer">
             <button type="button" class="btn btn-secondary" id="panelCloseBtn">Close</button>
@@ -326,7 +278,7 @@
                     const logId = this.getAttribute('data-log-id');
                     const userName = this.querySelector('.user-name')?.textContent || 'Unknown';
                     const userEmail = this.querySelector('.user-email')?.textContent || '';
-                    const action = this.querySelector('.action-badge')?.textContent.trim() || '';
+                    const message = this.querySelector('.action-badge')?.textContent.trim() || '';
                     const date = this.querySelector('.log-date')?.textContent || '';
                     const time = this.querySelector('.log-time')?.textContent || '';
 
@@ -334,30 +286,8 @@
                     document.getElementById('panel-log-id').textContent = logId;
                     document.getElementById('panel-user').textContent = userName;
                     document.getElementById('panel-email').textContent = userEmail;
-                    document.getElementById('panel-action').textContent = action;
+                    document.getElementById('panel-message').textContent = message;
                     document.getElementById('panel-timestamp').textContent = `${date} at ${time}`;
-
-                    // Set browser info with separate OS
-                    const browserInfo = getBrowserInfo();
-                    document.getElementById('panel-browser').textContent = browserInfo.browser;
-                    document.getElementById('panel-os').textContent = browserInfo.os;
-
-                    // Set IP info - in a real app, this would come from the server
-                    document.getElementById('panel-ip').textContent = '192.168.1.1';
-
-                    // Set appropriate icon for browser
-                    const browserIcon = document.querySelector('.browser-info .info-icon');
-                    if (browserInfo.browser.toLowerCase().includes('chrome')) {
-                        browserIcon.className = 'fab fa-chrome info-icon';
-                    } else if (browserInfo.browser.toLowerCase().includes('firefox')) {
-                        browserIcon.className = 'fab fa-firefox info-icon';
-                    } else if (browserInfo.browser.toLowerCase().includes('edge')) {
-                        browserIcon.className = 'fab fa-edge info-icon';
-                    } else if (browserInfo.browser.toLowerCase().includes('safari')) {
-                        browserIcon.className = 'fab fa-safari info-icon';
-                    } else {
-                        browserIcon.className = 'fas fa-globe info-icon';
-                    }
 
                     // Show panel and backdrop
                     logDetailsPanel.classList.add('show');
@@ -365,40 +295,7 @@
                 });
             });
 
-            // Function to detect browser and OS
-            function getBrowserInfo() {
-                const userAgent = navigator.userAgent;
-                let browser = "Unknown";
-                let os = "Unknown";
 
-                // Detect browser
-                if (userAgent.indexOf("Firefox") > -1) {
-                    browser = "Firefox";
-                } else if (userAgent.indexOf("Chrome") > -1) {
-                    browser = "Chrome";
-                } else if (userAgent.indexOf("Safari") > -1) {
-                    browser = "Safari";
-                } else if (userAgent.indexOf("Edge") > -1) {
-                    browser = "Edge";
-                } else if (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1) {
-                    browser = "Internet Explorer";
-                }
-
-                // Detect OS
-                if (userAgent.indexOf("Win") > -1) {
-                    os = "Windows";
-                } else if (userAgent.indexOf("Mac") > -1) {
-                    os = "MacOS";
-                } else if (userAgent.indexOf("Linux") > -1) {
-                    os = "Linux";
-                } else if (userAgent.indexOf("Android") > -1) {
-                    os = "Android";
-                } else if (userAgent.indexOf("iOS") > -1 || userAgent.indexOf("iPhone") > -1 || userAgent.indexOf("iPad") > -1) {
-                    os = "iOS";
-                }
-
-                return { browser, os };
-            }
 
             // Close panel functionality
             const closePanel = function () {
@@ -418,7 +315,7 @@
                 }
             });
 
-            // Add loading spinner functionality
+            // Add loading spinner functionality for refresh button
             document.getElementById('refreshLogs').addEventListener('click', function () {
                 this.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Refreshing...';
                 this.disabled = true;
@@ -435,10 +332,10 @@
                 this.disabled = true;
 
                 // Get current applied filters to pass to the export endpoint
-                const filterBoxes = document.querySelectorAll('.filter-check:checked');
+                const filterRadios = document.querySelectorAll('input[name="filter"]:checked');
                 const startDate = document.getElementById('startDate').value;
                 const endDate = document.getElementById('endDate').value;
-                const searchTerm = document.querySelector('.search-input').value;
+                const searchTerm = document.getElementById('liveSearch').value;
 
                 // Build query parameters
                 let params = new URLSearchParams();
@@ -446,13 +343,15 @@
                 if (startDate) params.append('start_date', startDate);
                 if (endDate) params.append('end_date', endDate);
 
-                // Add selected actions
-                filterBoxes.forEach(box => {
-                    params.append('actions[]', box.value);
+                // Add selected filter
+                filterRadios.forEach(radio => {
+                    if (radio.value !== 'all') {
+                        params.append('filter', radio.value);
+                    }
                 });
 
                 // Make a request to the export endpoint
-                fetch(`/admin/logs/export?${params.toString()}`, {
+                fetch(`{{ route('admin.inquiry_logs') }}/export?${params.toString()}`, {
                     method: 'GET',
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest',
@@ -478,7 +377,7 @@
                             ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
                             ('0' + date.getDate()).slice(-2);
 
-                        a.download = `user_activity_logs_${formattedDate}.csv`;
+                        a.download = `inquiry_logs_${formattedDate}.csv`;
                         document.body.appendChild(a);
                         a.click();
                         window.URL.revokeObjectURL(url);
@@ -499,37 +398,32 @@
                     });
             });
 
-            // Add filter functionality
-            document.getElementById('applyFilters').addEventListener('click', function () {
-                const filterBoxes = document.querySelectorAll('.filter-check:checked');
-                const startDate = document.getElementById('startDate').value;
-                const endDate = document.getElementById('endDate').value;
-
-                // Create filter pills display
-                let activeFilters = [];
-                filterBoxes.forEach(box => activeFilters.push(box.value));
-
-                if (startDate) activeFilters.push(`From: ${startDate}`);
-                if (endDate) activeFilters.push(`To: ${endDate}`);
-
-                if (activeFilters.length > 0) {
-                    alert(`Filters applied: ${activeFilters.join(', ')}`);
-                    // Here you would actually apply the filters via AJAX or form submit
-                }
-
-                // Close dropdown
-                const dropdownToggle = document.querySelector('.dropdown-toggle');
-                const bsDropdown = bootstrap.Dropdown.getInstance(dropdownToggle);
-                if (bsDropdown) {
-                    bsDropdown.hide();
-                }
+            // Filter functionality (radio buttons)
+            const filterRadios = document.querySelectorAll('input[name="filter"]');
+            filterRadios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    // Auto-submit form when filter changes
+                    const form = document.getElementById('searchForm');
+                    if (form) {
+                        form.submit();
+                    }
+                });
             });
 
-            // Clear filters
-            document.getElementById('clearFilters').addEventListener('click', function () {
-                document.querySelectorAll('.filter-check').forEach(el => el.checked = false);
-                document.getElementById('startDate').value = '';
-                document.getElementById('endDate').value = '';
+            // Date range functionality
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            [startDateInput, endDateInput].forEach(input => {
+                if (input) {
+                    input.addEventListener('change', function () {
+                        // Auto-submit form when dates change
+                        const form = document.getElementById('searchForm');
+                        if (form) {
+                            form.submit();
+                        }
+                    });
+                }
             });
 
             // Add live search functionality
@@ -543,13 +437,13 @@
                         const userName = row.querySelector('.user-name')?.textContent.toLowerCase() || '';
                         const userEmail = row.querySelector('.user-email')?.textContent.toLowerCase() || '';
                         const logId = row.querySelector('.log-id')?.textContent.toLowerCase() || '';
-                        const action = row.querySelector('.action-badge')?.textContent.toLowerCase() || '';
+                        const message = row.querySelector('.action-badge')?.textContent.toLowerCase() || '';
 
                         // Check if any field contains the search term
                         const isMatch = userName.includes(searchTerm) ||
                             userEmail.includes(searchTerm) ||
                             logId.includes(searchTerm) ||
-                            action.includes(searchTerm);
+                            message.includes(searchTerm);
 
                         // Show/hide row based on match
                         row.style.display = isMatch ? '' : 'none';
@@ -561,23 +455,23 @@
                     const noResultsRow = document.getElementById('noSearchResults');
 
                     if (visibleRows.length === rows.length && searchTerm !== '') {
-                        // No matches found
+                        // No matches found - show no results message
                         if (!noResultsRow) {
                             const newRow = document.createElement('tr');
                             newRow.id = 'noSearchResults';
                             newRow.innerHTML = `
-                                                <td colspan="4" class="no-data">
-                                                    <div class="empty-logs">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
-                                                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                                                            <line x1="12" y1="9" x2="12" y2="13"></line>
-                                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                                                        </svg>
-                                                        <h5>No matching logs</h5>
-                                                        <p>Try a different search term</p>
-                                                    </div>
-                                                </td>
-                                            `;
+                                <td colspan="4" class="no-data">
+                                    <div class="empty-logs">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon">
+                                            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                            <line x1="12" y1="9" x2="12" y2="13"></line>
+                                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                                        </svg>
+                                        <h5>No matching logs</h5>
+                                        <p>Try a different search term</p>
+                                    </div>
+                                </td>
+                            `;
                             tableBody.appendChild(newRow);
                         }
                     } else if (noResultsRow) {
@@ -586,14 +480,16 @@
                     }
                 });
 
-                // Prevent form submission on enter key
+                // Prevent form submission on enter key for live search
                 liveSearch.form.addEventListener('submit', function (e) {
-                    // Only prevent default if it's the live search form being submitted by pressing Enter
+                    // Only prevent default if it's being submitted by pressing Enter (no submitter)
                     if (e.submitter === null || e.submitter === undefined) {
                         e.preventDefault();
                     }
                 });
             }
+
+            // Add sorting functionality
             const sortHeaders = document.querySelectorAll('.sortable');
             sortHeaders.forEach(header => {
                 header.addEventListener('click', function () {
@@ -613,11 +509,14 @@
                     this.setAttribute('data-direction', newDirection);
                     this.querySelector('i').className = `fas fa-sort-${newDirection === 'asc' ? 'up' : 'down'}`;
 
-                    // Here you would actually perform the sorting via AJAX or form submit
-                    alert(`Sorting by ${sort} (${newDirection})`);
+                    // Add actual sorting logic (you can implement AJAX or form submit here)
+                    const currentUrl = new URL(window.location.href);
+                    currentUrl.searchParams.set('sort', sort);
+                    currentUrl.searchParams.set('direction', newDirection);
+                    window.location.href = currentUrl.toString();
                 });
             });
         });
     </script>
-@endsection
 
+@endsection
